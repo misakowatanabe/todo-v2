@@ -9,6 +9,7 @@
       "error",
       {
         "ignoreDeclarationSort": true
+        
       }
     ],
     "react/no-unused-prop-types": "error",
