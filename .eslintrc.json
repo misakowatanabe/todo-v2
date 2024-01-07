@@ -5,13 +5,7 @@
     "prettier/prettier": "warn",
     "no-console": ["error"],
     "no-unused-vars": ["error"],
-    "sort-imports": [
-      "error",
-      {
-        "ignoreDeclarationSort": true
-        
-      }
-    ],
+    "sort-imports": ["error", { "ignoreDeclarationSort": true }],
     "react/no-unused-prop-types": "error",
     "react/prefer-stateless-function": "error",
     "react/jsx-sort-default-props": "error",
