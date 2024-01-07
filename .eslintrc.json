@@ -13,6 +13,12 @@
     "react/jsx-pascal-case": "error",
     "react/void-dom-elements-no-children": "error",
     "react-hooks/exhaustive-deps": "error",
-    "react-hooks/rules-of-hooks": "error"
+    "react-hooks/rules-of-hooks": "error",
+    "import/export": "error",
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-absolute-path": "error",
+    "import/no-cycle": "error",
+    "import/no-mutable-exports": "error"
   }
 }
