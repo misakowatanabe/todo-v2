@@ -12,10 +12,9 @@ export const metadata: Metadata = {
 type RootLayoutProps = { children: React.ReactNode }
 
 export default function RootLayout({ children }: RootLayoutProps) {
-  const test
   return (
     <html lang="en">
-      <body className={inter.className}>{}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   )
 }
