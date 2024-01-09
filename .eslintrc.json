@@ -8,7 +8,7 @@
     "sort-imports": ["error", { "ignoreDeclarationSort": true }],
     "react/no-unused-prop-types": "error",
     "react/prefer-stateless-function": "error",
-    "react/jsx-sort-default-props": "error",
+    "react/sort-default-props": "error",
     "react/jsx-fragments": "error",
     "react/jsx-pascal-case": "error",
     "react/void-dom-elements-no-children": "error",
