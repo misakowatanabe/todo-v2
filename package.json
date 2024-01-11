@@ -15,7 +15,8 @@
     "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "test:e2e:dev": "PORT=3000 npm run dev & npm run cypress:open"
   },
   "dependencies": {
     "clsx": "^2.1.0",
