@@ -37,3 +37,7 @@ next-env.d.ts
 
 # vscode settings
 /.vscode/
+
+# backend
+backend/APIkey
+backend/sslcert
