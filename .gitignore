@@ -42,4 +42,3 @@ next-env.d.ts
 backend/APIkey
 backend/sslcert
 backend/node_modules
-
