@@ -1,10 +1,10 @@
 import Link from 'next/link'
 
-export default function Home() {
+export default function Page() {
   return (
-    <div>
-      <h1>Home</h1>
-      <Link href="https://misakowatanabe.github.io/">Misako</Link>
-    </div>
+    <>
+      <h1>Root route</h1>
+      <Link href="https://misakowatanabe.github.io/">Footer</Link>
+    </>
   )
 }

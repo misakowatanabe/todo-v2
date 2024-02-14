@@ -201,7 +201,7 @@ app.delete('/deleteCollection/:userUid/', (req, res) => {
       deleteCollection()
       return res.status(200).json({ message: 200 })
     } catch (error) {
-      return res.status(200).json({ message: 500 })
+      return res.status(500).json({ message: 500 })
     }
   })()
 })
@@ -224,7 +224,7 @@ app.post('/catch-user-uid', (req, res) => {
       userUid = req.body.uid
       return res.status(200).json({ message: null })
     } catch (error) {
-      return res.status(200).json({ message: error.message })
+      return res.status(500).json({ message: error.message })
     }
   })()
 })
@@ -236,18 +236,6 @@ const pushDbChange = (socket) => {
     (docSnapshot) => {
       const todoList = docSnapshot.docs.map((doc) => doc.data())
       socket.emit('newChangesInTodos', todoList)
-    },
-    (err) => {
-      // eslint-disable-next-line no-console
-      console.log(`Encountered error: ${err}`)
-    },
-  )
-
-  const snapshotProfile = db.collection(userUid)
-  snapshotProfile.onSnapshot(
-    (docSnapshot) => {
-      const profileList = docSnapshot.docs.map((doc) => doc.data())
-      socket.emit('newChangesInProfile', profileList)
     },
     (err) => {
       // eslint-disable-next-line no-console
