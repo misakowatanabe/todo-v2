@@ -19,10 +19,7 @@ export default function CreateTodo() {
   const titleInputId = useId()
   const bodyInputId = useId()
 
-  const onSubmitTodo = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    const formData = new FormData(e.target as HTMLFormElement)
+  const onSubmitTodo = async (formData: FormData) => {
     const date = format(new Date(), 'yyyy-MM-dd')
     const id = nanoid(8)
 
@@ -58,7 +55,7 @@ export default function CreateTodo() {
 
   return (
     <div>
-      <form noValidate autoComplete="off" onSubmit={onSubmitTodo}>
+      <form autoComplete="off" action={onSubmitTodo}>
         <label htmlFor={titleInputId}>Title:</label>
         <input id={titleInputId} name="title" type="text" />
         <label htmlFor={bodyInputId}>Body:</label>
