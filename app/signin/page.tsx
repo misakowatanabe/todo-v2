@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase'
 import { useRouter } from 'next/navigation'
 import { useId } from 'react'
+import { Button } from '../../stories/Button'
 
 export default function Signin() {
   const router = useRouter()
@@ -32,9 +33,10 @@ export default function Signin() {
     <form onSubmit={onSubmit} autoComplete="off">
       <label htmlFor={emailInputId}>Email:</label>
       <input id={emailInputId} type="email" name="email" required />
-      <label htmlFor={passwordInputId}>Email:</label>
+      <label htmlFor={passwordInputId}>Password:</label>
       <input id={passwordInputId} type="password" name="password" required />
-      <button type="submit">Signin</button>
+      <Button type="submit" label="Submit" />
+      {/* <button type="submit">Signin</button> */}
     </form>
   )
 }
