@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase'
 import { useRouter } from 'next/navigation'
 import { useId } from 'react'
-import { Button } from '../../components/Button'
+import { Button } from 'components/Button'
 
 export default function Signin() {
   const router = useRouter()
@@ -36,7 +36,6 @@ export default function Signin() {
       <label htmlFor={passwordInputId}>Password:</label>
       <input id={passwordInputId} type="password" name="password" required />
       <Button type="submit" label="Submit" />
-      {/* <button type="submit">Signin</button> */}
     </form>
   )
 }

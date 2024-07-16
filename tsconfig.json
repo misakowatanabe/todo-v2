@@ -24,7 +24,8 @@
     ],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "baseUrl": "."
   },
   "ts-node": {
     "compilerOptions": {

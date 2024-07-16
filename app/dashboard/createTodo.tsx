@@ -5,6 +5,7 @@ import React, { useId } from 'react'
 import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 import { useFirebaseContext } from '../appContext'
+import { Button } from 'components/Button'
 
 type Todo = {
   userUid: string
@@ -60,8 +61,8 @@ export default function CreateTodo() {
         <input id={titleInputId} name="title" type="text" />
         <label htmlFor={bodyInputId}>Body:</label>
         <input id={bodyInputId} name="body" type="text" />
-        <button type="reset">Reset form</button>
-        <button type="submit">Create Todo</button>
+        <Button type="reset" label="Reset form" style="text" />
+        <Button type="submit" label="Create Todo" />
       </form>
     </div>
   )
