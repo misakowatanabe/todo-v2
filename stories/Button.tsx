@@ -27,6 +27,7 @@ export const Button = ({
           'text-white bg-[#1ea7fd]': style === 'primary',
           'text-[#333333] bg-transparent shadow-[0_0_0_1px_rgba(0,0,0,0.15)]':
             style === 'secondary',
+          'text-[#1ea7fd]': style === 'text',
         },
         {
           'text-xs py-2.5 px-4': size === 'small',
