@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase'
 import { useRouter } from 'next/navigation'
 import { useId } from 'react'
-import { Button } from '../../stories/Button'
+import { Button } from '../../components/Button'
 
 export default function Signin() {
   const router = useRouter()
