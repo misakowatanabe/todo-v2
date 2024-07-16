@@ -4,7 +4,7 @@
   "rules": {
     "prettier/prettier": "warn",
     "no-console": ["error", { "allow": ["warn", "error"] }],
-    "no-unused-vars": ["warn"],
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
     "sort-imports": ["error", { "ignoreDeclarationSort": true }],
     "react/no-unused-prop-types": "error",
     "react/prefer-stateless-function": "error",

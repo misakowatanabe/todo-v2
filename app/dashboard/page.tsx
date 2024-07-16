@@ -5,6 +5,7 @@ import { auth } from '../firebase'
 import { signOut } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import CreateTodo from './createTodo'
+import { Button } from 'components/Button'
 
 export default function Page() {
   const router = useRouter()
@@ -25,7 +26,7 @@ export default function Page() {
     <>
       <CreateTodo />
       <Data />
-      <button onClick={onSignout}>Signout</button>
+      <Button onClick={onSignout} label="Signout" />
     </>
   )
 }

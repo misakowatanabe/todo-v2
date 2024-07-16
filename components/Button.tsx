@@ -6,7 +6,7 @@ interface ButtonProps {
   backgroundColor?: string
   size?: 'small' | 'medium' | 'large'
   label: string
-  onClick?: () => void
+  onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
   type?: 'button' | 'submit' | 'reset'
 }
 
@@ -16,6 +16,7 @@ export const Button = ({
   backgroundColor,
   label,
   type = 'button',
+  onClick,
   ...props
 }: ButtonProps) => {
   return (
@@ -35,6 +36,7 @@ export const Button = ({
           'text-base py-3 px-6': size === 'large',
         },
       )}
+      onClick={onClick}
       {...props}
     >
       {label}
