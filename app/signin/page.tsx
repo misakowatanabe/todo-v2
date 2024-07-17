@@ -2,12 +2,10 @@
 
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase'
-import { useRouter } from 'next/navigation'
 import { useId } from 'react'
 import { Button } from 'components/Button'
 
 export default function Signin() {
-  const router = useRouter()
   const emailInputId = useId()
   const passwordInputId = useId()
 
@@ -23,7 +21,6 @@ export default function Signin() {
       // setting user is not needed since it's handled on authentication state observer (onAuthStateChanged)
       await signInWithEmailAndPassword(auth, email, password)
       // TODO: check if succesfully signed in
-      router.push('/dashboard')
     } catch (error) {
       console.error('Error signing in', error instanceof Error ? error.message : String(error))
     }

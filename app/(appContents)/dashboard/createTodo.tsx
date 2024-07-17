@@ -1,10 +1,10 @@
 'use client'
 
-import { ENDPOINT } from '../config'
+import { ENDPOINT } from '../../config'
 import React, { useId } from 'react'
 import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
-import { useFirebaseContext } from '../appContext'
+import { useFirebaseContext } from '../../appContext'
 import { Button } from 'components/Button'
 
 type Todo = {

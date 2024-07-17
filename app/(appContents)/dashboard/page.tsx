@@ -1,21 +1,17 @@
 'use client'
 
-import Data from './data'
-import { auth } from '../firebase'
+import Todo from './todo'
+import { auth } from '../../firebase'
 import { signOut } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
 import CreateTodo from './createTodo'
 import { Button } from 'components/Button'
 
 export default function Page() {
-  const router = useRouter()
-
   const onSignout = async (ev: React.MouseEvent<HTMLButtonElement>) => {
     ev.preventDefault()
 
     try {
       await signOut(auth)
-      router.push('/signin')
     } catch (error) {
       // TODO: redirect to error page
       // or use error boundary
@@ -24,8 +20,9 @@ export default function Page() {
 
   return (
     <>
+      <div>Dashboard</div>
       <CreateTodo />
-      <Data />
+      <Todo />
       <Button onClick={onSignout} label="Signout" />
     </>
   )

@@ -5,6 +5,7 @@ import { User, onAuthStateChanged } from 'firebase/auth'
 import { auth } from './firebase'
 import io from 'socket.io-client'
 import { ENDPOINT } from './config'
+import { useRouter } from 'next/navigation'
 
 export type Todo = {
   body: string
@@ -26,6 +27,8 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
   const [todo, setTodo] = useState<Todo>([])
   const [user, setUser] = useState<User | null>(null)
 
+  const router = useRouter()
+
   useEffect(() => {
     const socketTodo = io(ENDPOINT, {
       autoConnect: false,
@@ -33,6 +36,8 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        router.push('/dashboard')
+
         const uid = user.uid
         const uidData = { uid: uid }
         setUser(auth.currentUser)
@@ -65,6 +70,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
           )
         }
       } else {
+        router.push('/signin')
         socketTodo.disconnect()
         socketTodo.removeAllListeners('newChangesInTodos')
         setTodo([])
@@ -73,7 +79,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [router])
 
   const value = { user, todo }
 
