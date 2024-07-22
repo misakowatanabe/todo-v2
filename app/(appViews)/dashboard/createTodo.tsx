@@ -1,19 +1,11 @@
 'use client'
 
-import { ENDPOINT } from '../../config'
 import React, { useId } from 'react'
 import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 import { useFirebaseContext } from '../../appContext'
 import { Button } from 'components/Button'
-
-type Todo = {
-  userUid: string
-  todoId: string
-  title: string
-  body: string
-  createdAt: string
-}
+import { create } from 'app/api/route'
 
 export default function CreateTodo() {
   const { user } = useFirebaseContext()
@@ -21,36 +13,24 @@ export default function CreateTodo() {
   const bodyInputId = useId()
 
   const onSubmitTodo = async (formData: FormData) => {
+    if (!user) return
+
     const date = format(new Date(), 'yyyy-MM-dd')
     const id = nanoid(8)
 
     const todo = {
-      userUid: user?.uid,
+      userUid: user.uid,
       todoId: id,
-      title: formData.get('title'),
-      body: formData.get('body'),
+      title: (formData.get('title') ?? '<No title>') as string,
+      body: (formData.get('body') ?? '<No body>') as string,
       createdAt: date,
     }
 
-    try {
-      const res = await fetch(`${ENDPOINT}/create`, {
-        method: 'POST',
-        body: JSON.stringify(todo as Todo),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        mode: 'cors',
-      })
+    const res = await create(todo)
 
-      res.json().then((res) => {
-        if (res.message === 200) {
-          // TODO: delete inputs
-        } else if (res.message === 500) {
-          //
-        }
-      })
-    } catch (error) {
-      //
+    // check if create succedded
+    if (!res.ok) {
+      throw new Error('Failed to get response from database')
     }
   }
 

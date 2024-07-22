@@ -52,7 +52,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
             mode: 'cors',
           })
 
-          if (res.status) {
+          if (res.status === 200) {
             socketTodo.connect()
             socketTodo.on('newChangesInTodos', (todoList: Todo) => {
               setTodo(todoList)
@@ -60,6 +60,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
           } else {
             // TODO: redirect to error page
             // or use error boundary
+            throw new Error('Failed to get user')
           }
         } catch (error) {
           // TODO: redirect to error page
@@ -68,6 +69,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
             'Error, node.js backend is not available',
             error instanceof Error ? error.message : String(error),
           )
+          throw new Error('Failed to connect to backend')
         }
       } else {
         router.push('/signin')

@@ -53,7 +53,7 @@ admin.database()
 // create todo
 app.post('/create', (req, res) => {
   ;(async () => {
-    try {
+    res.send(
       await db
         .collection(req.body.userUid)
         .doc('todos')
@@ -64,11 +64,8 @@ app.post('/create', (req, res) => {
           createdAt: req.body.createdAt,
           title: req.body.title,
           body: req.body.body,
-        })
-      return res.status(200).json({ message: 200 })
-    } catch (error) {
-      return res.status(500).json({ message: 500 })
-    }
+        }),
+    )
   })()
 })
 
@@ -224,7 +221,7 @@ app.post('/catch-user-uid', (req, res) => {
       userUid = req.body.uid
       return res.status(200).json({ message: null })
     } catch (error) {
-      return res.status(500).json({ message: error.message })
+      return res.status(404).json({ message: error.message })
     }
   })()
 })
