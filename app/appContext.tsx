@@ -6,6 +6,7 @@ import { auth } from './firebase'
 import io from 'socket.io-client'
 import { ENDPOINT } from './config'
 import { useRouter } from 'next/navigation'
+import { Uid, sendUserId } from 'app/api/route'
 
 export type Todo = {
   body: string
@@ -38,38 +39,20 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
       if (user) {
         router.push('/dashboard')
 
-        const uid = user.uid
-        const uidData = { uid: uid }
         setUser(auth.currentUser)
 
-        try {
-          const res = await fetch(`${ENDPOINT}/catch-user-uid`, {
-            method: 'POST',
-            body: JSON.stringify(uidData),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            mode: 'cors',
-          })
+        const uidObject = { userUid: user.uid } as Uid
+        const res = await sendUserId(uidObject)
 
-          if (res.status === 200) {
-            socketTodo.connect()
-            socketTodo.on('newChangesInTodos', (todoList: Todo) => {
-              setTodo(todoList)
-            })
-          } else {
-            // TODO: redirect to error page
-            // or use error boundary
-            throw new Error('Failed to get user')
-          }
-        } catch (error) {
-          // TODO: redirect to error page
-          // or use error boundary
-          console.error(
-            'Error, node.js backend is not available',
-            error instanceof Error ? error.message : String(error),
-          )
-          throw new Error('Failed to connect to backend')
+        // check if sedning user ID to node.js backend has succedded for Firebase admin SDK use
+        if (!res.ok) {
+          // This uses global error view (global-error.tsx) in prod
+          throw new Error('Failed to send user to backend')
+        } else {
+          socketTodo.connect()
+          socketTodo.on('newChangesInTodos', (todoList: Todo) => {
+            setTodo(todoList)
+          })
         }
       } else {
         router.push('/signin')

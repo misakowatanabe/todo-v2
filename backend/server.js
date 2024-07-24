@@ -217,12 +217,8 @@ const io = socketIo(server, {
 var userUid
 app.post('/catch-user-uid', (req, res) => {
   ;(() => {
-    try {
-      userUid = req.body.uid
-      return res.status(200).json({ message: null })
-    } catch (error) {
-      return res.status(404).json({ message: error.message })
-    }
+    userUid = req.body.userUid
+    res.status(200).send()
   })()
 })
 
