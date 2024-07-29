@@ -35,25 +35,34 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
       autoConnect: false,
     })
 
+    socketTodo.on('connect_error', () => {
+      socketTodo.removeAllListeners('newChangesInTodos')
+      setTodo((prev) => {
+        if (prev.length === 0) return prev
+        return []
+      })
+    })
+
+    socketTodo.on('connect', async () => {
+      if (!auth.currentUser) return
+
+      const uidObject = { userUid: auth.currentUser.uid } as Uid
+      const res = await sendUserId(uidObject)
+      if (!res.ok) {
+        // This uses global error view (global-error.tsx) in prod
+        throw new Error('Failed to send user to backend')
+      } else {
+        socketTodo.on('newChangesInTodos', (todoList: Todo) => {
+          setTodo(todoList)
+        })
+      }
+    })
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         router.push('/dashboard')
-
+        socketTodo.connect()
         setUser(auth.currentUser)
-
-        const uidObject = { userUid: user.uid } as Uid
-        const res = await sendUserId(uidObject)
-
-        // check if sedning user ID to node.js backend has succedded for Firebase admin SDK use
-        if (!res.ok) {
-          // This uses global error view (global-error.tsx) in prod
-          throw new Error('Failed to send user to backend')
-        } else {
-          socketTodo.connect()
-          socketTodo.on('newChangesInTodos', (todoList: Todo) => {
-            setTodo(todoList)
-          })
-        }
       } else {
         router.push('/signin')
         socketTodo.disconnect()

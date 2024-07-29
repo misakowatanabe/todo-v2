@@ -41,16 +41,15 @@ export async function sendUserId(userUid: Uid) {
         'Content-Type': 'application/json',
       },
       mode: 'cors',
-      cache: 'no-store',
     })
 
     return NextResponse.json(res)
   } catch (error) {
     console.error(
-      'Error, node.js backend is not available',
+      'Error, node.js backend is not available:',
       error instanceof Error ? error.message : String(error),
     )
     // This uses global error view (global-error.tsx) in prod
-    throw new Error('Failed to connect to backend')
+    throw new Error('Error connecting to server2')
   }
 }

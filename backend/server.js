@@ -213,16 +213,26 @@ const io = socketIo(server, {
   },
 })
 
+var connectionSocket = null
+io.on('connection', (socket) => {
+  // eslint-disable-next-line no-console
+  console.log('new client connected')
+  connectionSocket = socket
+  socket.on('disconnect', () => {
+    // eslint-disable-next-line no-console
+    console.log('client disconnected')
+  })
+})
+
 // catch user uid
-var userUid
 app.post('/catch-user-uid', (req, res) => {
   ;(() => {
-    userUid = req.body.userUid
+    pushDbChange(connectionSocket, req.body.userUid)
     res.status(200).send()
   })()
 })
 
-const pushDbChange = (socket) => {
+const pushDbChange = (socket, userUid) => {
   // TODO: think about the case admin accidentally deleted existing user todo data, but user account exists.
   const snapshotTodo = db.collection(userUid).doc('todos').collection('active')
   snapshotTodo.onSnapshot(
@@ -236,13 +246,3 @@ const pushDbChange = (socket) => {
     },
   )
 }
-
-io.on('connection', (socket) => {
-  // eslint-disable-next-line no-console
-  console.log('new client connected')
-  pushDbChange(socket)
-  socket.on('disconnect', () => {
-    // eslint-disable-next-line no-console
-    console.log('client disconected')
-  })
-})
