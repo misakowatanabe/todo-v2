@@ -1,5 +1,4 @@
 import { ENDPOINT } from 'app/config'
-import { NextResponse } from 'next/server'
 
 type Todo = {
   userUid: string
@@ -33,23 +32,14 @@ export type Uid = {
 }
 
 export async function sendUserId(userUid: Uid) {
-  try {
-    const res = await fetch(`${ENDPOINT}/catch-user-uid`, {
-      method: 'POST',
-      body: JSON.stringify(userUid),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      mode: 'cors',
-    })
+  const res = await fetch(`${ENDPOINT}/catch-user-uid`, {
+    method: 'POST',
+    body: JSON.stringify(userUid),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+  })
 
-    return NextResponse.json(res)
-  } catch (error) {
-    console.error(
-      'Error, node.js backend is not available:',
-      error instanceof Error ? error.message : String(error),
-    )
-    // This uses global error view (global-error.tsx) in prod
-    throw new Error('Error connecting to server2')
-  }
+  return res
 }

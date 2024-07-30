@@ -3,10 +3,11 @@
 import { useFirebaseContext } from '../../appContext'
 
 export default function Todo() {
-  const { todo } = useFirebaseContext()
+  const { todo, socketError } = useFirebaseContext()
 
   return (
     <div>
+      <div className="text-red-700">{socketError}</div>
       {todo.map((todo) => {
         return (
           <div key={todo.todoId} className="border">

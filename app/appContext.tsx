@@ -15,9 +15,12 @@ export type Todo = {
   todoId: string
 }[]
 
+type SocketError = 'backendNotAvailable' | 'dataNotFound' | null
+
 type FirebaseContextType = {
   user: User | null
   todo: Todo
+  socketError: SocketError
 }
 
 const FirebaseContext = createContext<FirebaseContextType | null>(null)
@@ -27,32 +30,36 @@ type FirebaseContextProps = { children: React.ReactNode }
 export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
   const [todo, setTodo] = useState<Todo>([])
   const [user, setUser] = useState<User | null>(null)
+  const [socketError, setSocketError] = useState<SocketError>(null)
 
   const router = useRouter()
 
   useEffect(() => {
-    const socketTodo = io(ENDPOINT, {
+    const socket = io(ENDPOINT, {
       autoConnect: false,
     })
 
-    socketTodo.on('connect_error', () => {
-      socketTodo.removeAllListeners('newChangesInTodos')
+    socket.on('connect_error', () => {
+      setSocketError('backendNotAvailable')
+      socket.removeAllListeners('newChangesInTodos')
       setTodo((prev) => {
         if (prev.length === 0) return prev
         return []
       })
     })
 
-    socketTodo.on('connect', async () => {
+    socket.on('connect', async () => {
       if (!auth.currentUser) return
 
+      // This sends user ID to node.js backend for Firebase admin SDK use
       const uidObject = { userUid: auth.currentUser.uid } as Uid
       const res = await sendUserId(uidObject)
+
       if (!res.ok) {
-        // This uses global error view (global-error.tsx) in prod
-        throw new Error('Failed to send user to backend')
+        setSocketError('dataNotFound')
       } else {
-        socketTodo.on('newChangesInTodos', (todoList: Todo) => {
+        setSocketError(null)
+        socket.on('newChangesInTodos', (todoList: Todo) => {
           setTodo(todoList)
         })
       }
@@ -61,12 +68,12 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         router.push('/dashboard')
-        socketTodo.connect()
+        socket.connect()
         setUser(auth.currentUser)
       } else {
         router.push('/signin')
-        socketTodo.disconnect()
-        socketTodo.removeAllListeners('newChangesInTodos')
+        socket.disconnect()
+        socket.removeAllListeners('newChangesInTodos')
         setTodo([])
         setUser(null)
       }
@@ -75,7 +82,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
     return () => unsubscribe()
   }, [router])
 
-  const value = { user, todo }
+  const value = { user, todo, socketError }
 
   return <FirebaseContext.Provider value={value}>{children}</FirebaseContext.Provider>
 }

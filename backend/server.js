@@ -226,23 +226,27 @@ io.on('connection', (socket) => {
 
 // catch user uid
 app.post('/catch-user-uid', (req, res) => {
-  ;(() => {
-    pushDbChange(connectionSocket, req.body.userUid)
-    res.status(200).send()
+  ;(async () => {
+    const todoRef = db.collection(req.body.userUid).doc('todos')
+    const doc = await todoRef.get()
+
+    if (!doc.exists) {
+      // this means an occasion when an existing user todos data got accidentally deleted by admin, while user account exists.
+      res.sendStatus(404)
+    } else {
+      // TODO: deal with completed tasks as well as active ones
+      todoRef.collection('active').onSnapshot(
+        (docSnapshot) => {
+          const todoList = docSnapshot.docs.map((doc) => doc.data())
+          connectionSocket.emit('newChangesInTodos', todoList)
+        },
+        (err) => {
+          // eslint-disable-next-line no-console
+          console.log(`Encountered error: ${err}`)
+        },
+      )
+
+      res.sendStatus(200)
+    }
   })()
 })
-
-const pushDbChange = (socket, userUid) => {
-  // TODO: think about the case admin accidentally deleted existing user todo data, but user account exists.
-  const snapshotTodo = db.collection(userUid).doc('todos').collection('active')
-  snapshotTodo.onSnapshot(
-    (docSnapshot) => {
-      const todoList = docSnapshot.docs.map((doc) => doc.data())
-      socket.emit('newChangesInTodos', todoList)
-    },
-    (err) => {
-      // eslint-disable-next-line no-console
-      console.log(`Encountered error: ${err}`)
-    },
-  )
-}
