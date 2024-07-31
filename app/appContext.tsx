@@ -27,6 +27,11 @@ const FirebaseContext = createContext<FirebaseContextType | null>(null)
 
 type FirebaseContextProps = { children: React.ReactNode }
 
+/**
+ * Socket.IO client needs to be excluded from SSR.
+ * https://socket.io/how-to/use-with-nextjs#client
+ */
+
 export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
   const [todo, setTodo] = useState<Todo>([])
   const [user, setUser] = useState<User | null>(null)
