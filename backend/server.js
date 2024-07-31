@@ -241,8 +241,8 @@ app.post('/catch-user-uid', (req, res) => {
           connectionSocket.emit('newChangesInTodos', todoList)
         },
         (err) => {
-          // eslint-disable-next-line no-console
-          console.log(`Encountered error: ${err}`)
+          // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
+          res.status(401).send(err.message)
         },
       )
 
