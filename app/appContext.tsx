@@ -6,7 +6,7 @@ import { auth } from './firebase'
 import io from 'socket.io-client'
 import { ENDPOINT } from './config'
 import { useRouter } from 'next/navigation'
-import { Uid, sendUserId } from 'app/api/route'
+import { Uid, sendUserId } from 'app/actions'
 
 export type Todo = {
   body: string
@@ -55,7 +55,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
       const uidObject = { userUid: auth.currentUser.uid } as Uid
       const res = await sendUserId(uidObject)
 
-      if (!res.ok) {
+      if (!res) {
         setSocketError('dataNotFound')
       } else {
         setSocketError(null)
