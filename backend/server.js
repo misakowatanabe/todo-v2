@@ -50,21 +50,27 @@ const db = admin.firestore()
 const auth = admin.auth()
 admin.database()
 
+// update auth user profile
+app.post('/updateUser', (req, res) => {
+  ;(async () => {
+    res.send(
+      await auth.updateUser(req.body.userUid, {
+        displayName: req.body.displayName,
+      }),
+    )
+  })()
+})
+
 // create todo
 app.post('/create', (req, res) => {
   ;(async () => {
     res.send(
-      await db
-        .collection(req.body.userUid)
-        .doc('todos')
-        .collection('active')
-        .doc(req.body.todoId)
-        .create({
-          todoId: req.body.todoId,
-          createdAt: req.body.createdAt,
-          title: req.body.title,
-          body: req.body.body,
-        }),
+      await db.collection(req.body.userUid).doc(req.body.todoId).create({
+        todoId: req.body.todoId,
+        createdAt: req.body.createdAt,
+        title: req.body.title,
+        body: req.body.body,
+      }),
     )
   })()
 })
@@ -224,29 +230,19 @@ io.on('connection', (socket) => {
   })
 })
 
-// catch user uid
 app.post('/catch-user-uid', (req, res) => {
   ;(async () => {
-    const todoRef = db.collection(req.body.userUid).doc('todos')
-    const doc = await todoRef.get()
+    db.collection(req.body.userUid).onSnapshot(
+      (docSnapshot) => {
+        const todoList = docSnapshot.docs.map((doc) => doc.data())
+        connectionSocket.emit('newChangesInTodos', todoList)
+      },
+      (err) => {
+        // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
+        res.status(401).send(err.message)
+      },
+    )
 
-    if (!doc.exists) {
-      // this means an occasion when an existing user todos data got accidentally deleted by admin, while user account exists.
-      res.sendStatus(404)
-    } else {
-      // TODO: deal with completed tasks as well as active ones
-      todoRef.collection('active').onSnapshot(
-        (docSnapshot) => {
-          const todoList = docSnapshot.docs.map((doc) => doc.data())
-          connectionSocket.emit('newChangesInTodos', todoList)
-        },
-        (err) => {
-          // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
-          res.status(401).send(err.message)
-        },
-      )
-
-      res.sendStatus(200)
-    }
+    res.sendStatus(200)
   })()
 })

@@ -3,7 +3,7 @@
 import React, { useId, useState } from 'react'
 import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
-import { useFirebaseContext } from '../../appContext'
+import { useFirebaseContext } from 'app/appContext'
 import { Button } from 'components/Button'
 import { create } from 'app/actions'
 

@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <>
       <Form />
-      <Link href="/signup">Signup</Link>
+      <Link href="/signin">Signin</Link>
     </>
   )
 }

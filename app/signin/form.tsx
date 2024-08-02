@@ -4,35 +4,48 @@ import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase'
 import { useId } from 'react'
 import { Button } from 'components/Button'
+import { useState } from 'react'
 
 export default function Form() {
+  const [error, setError] = useState(false)
   const emailInputId = useId()
   const passwordInputId = useId()
 
   const onSubmit = async (formData: FormData) => {
-    const rawFormData = {
+    const data = {
       email: formData.get('email') as string,
       password: formData.get('password') as string,
     }
 
     try {
-      // setting user is not needed since it's handled on authentication state observer (onAuthStateChanged)
-      await signInWithEmailAndPassword(auth, rawFormData.email, rawFormData.password)
-
-      // TODO: check if succesfully signed in
+      await signInWithEmailAndPassword(auth, data.email, data.password)
     } catch (error) {
+      setError(true)
       console.error('Error signing in', error instanceof Error ? error.message : String(error))
     }
   }
 
-  // TODO: Add proper inputs for signing and remove emails
   return (
-    <form action={onSubmit} autoComplete="off">
-      <label htmlFor={emailInputId}>Email:</label>
-      <input id={emailInputId} type="email" name="email" required />
-      <label htmlFor={passwordInputId}>Password:</label>
-      <input id={passwordInputId} type="password" name="password" required />
-      <Button type="submit" label="Submit" />
-    </form>
+    <>
+      <form action={onSubmit} autoComplete="off" className="flex flex-col">
+        <label htmlFor={emailInputId}>Email:</label>
+        <input id={emailInputId} type="email" name="email" required />
+        <label htmlFor={passwordInputId}>Password:</label>
+        <input id={passwordInputId} type="password" name="password" required />
+        <Button type="submit" label="Submit" />
+      </form>
+      {error && (
+        <div className="flex items-center text-red-700">
+          <div>Failed to signin</div>
+          <Button
+            type="button"
+            style="text"
+            size="small"
+            label="OK"
+            onClick={() => setError(false)}
+          />
+        </div>
+      )}
+    </>
   )
 }
