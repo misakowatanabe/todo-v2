@@ -46,7 +46,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
 
     socket.on('connect_error', () => {
       setSocketError('backendNotAvailable')
-      socket.removeAllListeners('newChangesInTodos')
+      socket.removeAllListeners('todos')
       setTodo((prev) => {
         if (prev.length === 0) return prev
         return []
@@ -64,7 +64,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
         setSocketError('dataNotFound')
       } else {
         setSocketError(null)
-        socket.on('newChangesInTodos', (todoList: Todo) => {
+        socket.on('todos', (todoList: Todo) => {
           setTodo(todoList)
         })
       }
@@ -78,7 +78,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
       } else {
         router.push('/signin')
         socket.disconnect()
-        socket.removeAllListeners('newChangesInTodos')
+        socket.removeAllListeners('todos')
         setTodo([])
         setUser(null)
       }

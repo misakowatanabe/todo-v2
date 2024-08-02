@@ -235,7 +235,7 @@ app.post('/catch-user-uid', (req, res) => {
     db.collection(req.body.userUid).onSnapshot(
       (docSnapshot) => {
         const todoList = docSnapshot.docs.map((doc) => doc.data())
-        connectionSocket.emit('newChangesInTodos', todoList)
+        connectionSocket.emit('todos', todoList)
       },
       (err) => {
         // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
