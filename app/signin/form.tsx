@@ -5,11 +5,15 @@ import { auth } from '../firebase'
 import { useId } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { setCookies } from 'app/actions'
 
 export default function Form() {
   const [error, setError] = useState(false)
   const emailInputId = useId()
   const passwordInputId = useId()
+
+  const router = useRouter()
 
   const onSubmit = async (formData: FormData) => {
     const data = {
@@ -19,6 +23,8 @@ export default function Form() {
 
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password)
+      await setCookies('currentUser')
+      router.push('/dashboard')
     } catch (error) {
       setError(true)
       console.error('Error signing in', error instanceof Error ? error.message : String(error))

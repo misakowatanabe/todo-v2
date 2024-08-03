@@ -5,16 +5,22 @@ import { auth } from '../firebase'
 import { signOut } from 'firebase/auth'
 import { Button } from 'components/Button'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { deleteCookies } from 'app/actions'
 
 export default function Header() {
   const { user } = useFirebaseContext()
   const [error, setError] = useState(false)
+
+  const router = useRouter()
 
   const onSignout = async (ev: React.MouseEvent<HTMLButtonElement>) => {
     ev.preventDefault()
 
     try {
       await signOut(auth)
+      await deleteCookies('currentUser')
+      router.push('/signin')
     } catch (error) {
       setError(true)
     }

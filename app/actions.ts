@@ -1,6 +1,7 @@
 'use server'
 
 import { ENDPOINT } from 'app/config'
+import { cookies } from 'next/headers'
 
 type Todo = {
   userUid: string
@@ -57,4 +58,21 @@ export async function updateUser(userData: userData) {
   })
 
   return res.ok
+}
+
+export async function setCookies(name: string) {
+  const hasCookie = cookies().has(name)
+
+  if (!hasCookie) {
+    const oneDay = 24 * 60 * 60 * 1000
+    cookies().set(name, 'true', { expires: Date.now() + oneDay })
+  }
+
+  return true
+}
+
+export async function deleteCookies(name: string) {
+  cookies().delete(name)
+
+  return true
 }

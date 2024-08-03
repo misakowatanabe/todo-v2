@@ -72,11 +72,9 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        router.push('/dashboard')
         socket.connect()
         setUser(auth.currentUser)
       } else {
-        router.push('/signin')
         socket.disconnect()
         socket.removeAllListeners('todos')
         setTodo([])

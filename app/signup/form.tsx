@@ -9,6 +9,7 @@ import { updateUser } from 'app/actions'
 import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 import { create } from 'app/actions'
+import { useRouter } from 'next/navigation'
 
 type Data = {
   name: string
@@ -23,6 +24,8 @@ export default function Form() {
   const emailInputId = useId()
   const passwordInputId = useId()
   const confirmationPasswordInputId = useId()
+
+  const router = useRouter()
 
   const validateForm = (data: Data) => {
     // TODO: do proper validation
@@ -66,6 +69,7 @@ export default function Form() {
       }
 
       await create(todo)
+      router.push('/dashboard')
     } catch (error) {
       setError(true)
       console.error('Error signing in', error instanceof Error ? error.message : String(error))
