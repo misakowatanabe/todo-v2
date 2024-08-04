@@ -61,11 +61,10 @@ export async function updateUser(userData: userData) {
 }
 
 export async function setCookies(name: string) {
-  const hasCookie = cookies().has(name)
+  const hasCookie = cookies().get(name)?.value
 
   if (!hasCookie) {
-    const oneDay = 24 * 60 * 60 * 1000
-    cookies().set(name, 'true', { expires: Date.now() + oneDay })
+    cookies().set(name, 'true')
   }
 
   return true

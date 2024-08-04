@@ -10,6 +10,7 @@ import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 import { create } from 'app/actions'
 import { useRouter } from 'next/navigation'
+import { setCookies } from 'app/actions'
 
 type Data = {
   name: string
@@ -55,6 +56,8 @@ export default function Form() {
       const userData = { userUid: userCredential.user.uid, displayName: data.name }
       await updateUser(userData)
       await userCredential.user.reload()
+      await setCookies('currentUser')
+      router.push('/dashboard')
 
       // create a welcome todo
       const date = format(new Date(), 'yyyy-MM-dd')
