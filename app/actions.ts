@@ -64,7 +64,13 @@ export async function setCookies(name: string) {
   const hasCookie = cookies().get(name)?.value
 
   if (!hasCookie) {
-    cookies().set(name, 'true')
+    const oneDay = 24 * 60 * 60 * 1000
+    cookies().set(name, 'true', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      expires: Date.now() + oneDay,
+    })
   }
 
   return true
@@ -74,4 +80,8 @@ export async function deleteCookies(name: string) {
   cookies().delete(name)
 
   return true
+}
+
+export async function getCookies(name: string) {
+  return cookies().get(name)?.value
 }

@@ -23,6 +23,7 @@ export default function Header() {
       router.push('/signin')
     } catch (error) {
       setError(true)
+      console.error('Error signing out: ', error instanceof Error ? error.message : String(error))
     }
   }
 

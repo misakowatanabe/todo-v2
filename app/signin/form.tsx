@@ -27,7 +27,7 @@ export default function Form() {
       router.push('/dashboard')
     } catch (error) {
       setError(true)
-      console.error('Error signing in', error instanceof Error ? error.message : String(error))
+      console.error('Error signing in: ', error instanceof Error ? error.message : String(error))
     }
   }
 

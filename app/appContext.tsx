@@ -7,6 +7,8 @@ import io from 'socket.io-client'
 import { ENDPOINT } from './config'
 import { useRouter } from 'next/navigation'
 import { Uid, sendUserId } from 'app/actions'
+import { getCookies, setCookies } from 'app/actions'
+import { signOut } from 'firebase/auth'
 
 export type Todo = {
   body: string
@@ -21,6 +23,7 @@ type FirebaseContextType = {
   user: User | null
   todo: Todo
   socketError: SocketError
+  globalError: string | null
 }
 
 const FirebaseContext = createContext<FirebaseContextType | null>(null)
@@ -36,6 +39,7 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
   const [todo, setTodo] = useState<Todo>([])
   const [user, setUser] = useState<User | null>(null)
   const [socketError, setSocketError] = useState<SocketError>(null)
+  const [globalError, setGlobalErrorError] = useState<string | null>(null)
 
   const router = useRouter()
 
@@ -85,7 +89,33 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
     return () => unsubscribe()
   }, [router])
 
-  const value = { user, todo, socketError }
+  useEffect(() => {
+    if (!user) return
+
+    const interval = setInterval(async () => {
+      const hasCookie = await getCookies('currentUser')
+
+      // This becomes true either when currentUser cookie expired or when the cookie manually got deleted
+      if (!hasCookie && user) {
+        try {
+          await signOut(auth)
+          router.push('/signin')
+        } catch (error) {
+          // Setting cookie to keep the user inside the app routes when sign out failed
+          await setCookies('currentUser')
+          setGlobalErrorError('Sign out has failed')
+          console.error(
+            'Error signing out: ',
+            error instanceof Error ? error.message : String(error),
+          )
+        }
+      }
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [user, router])
+
+  const value = { user, todo, socketError, globalError }
 
   return <FirebaseContext.Provider value={value}>{children}</FirebaseContext.Provider>
 }
