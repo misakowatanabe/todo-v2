@@ -23,7 +23,7 @@ export default function Form() {
 
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password)
-      await setCookies('currentUser')
+      await setCookies('user_logged_in')
       router.push('/dashboard')
     } catch (error) {
       setError(true)

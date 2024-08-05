@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const currentUser = request.cookies.get('currentUser')?.value
+  const userLoggedIn = request.cookies.get('user_logged_in')?.value
 
   if (
-    currentUser &&
+    userLoggedIn &&
     !request.nextUrl.pathname.startsWith('/dashboard') &&
     !request.nextUrl.pathname.startsWith('/account')
   ) {
@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (
-    !currentUser &&
+    !userLoggedIn &&
     !request.nextUrl.pathname.startsWith('/signin') &&
     !request.nextUrl.pathname.startsWith('/signup')
   ) {

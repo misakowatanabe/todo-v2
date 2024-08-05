@@ -3,12 +3,12 @@
 import React, { useId, useState } from 'react'
 import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
-import { useFirebaseContext } from 'app/appContext'
+import { useAppContext } from 'app/appContext'
 import { Button } from 'components/Button'
 import { create } from 'app/actions'
 
 export default function CreateTodo() {
-  const { user } = useFirebaseContext()
+  const { user } = useAppContext()
   const [error, setError] = useState(false)
   const titleInputId = useId()
   const bodyInputId = useId()

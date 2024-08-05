@@ -1,6 +1,6 @@
 'use client'
 
-import { useFirebaseContext } from 'app/appContext'
+import { useAppContext } from 'app/appContext'
 import { auth } from '../firebase'
 import { signOut } from 'firebase/auth'
 import { Button } from 'components/Button'
@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import { deleteCookies } from 'app/actions'
 
 export default function Header() {
-  const { user } = useFirebaseContext()
+  const { user } = useAppContext()
   const [error, setError] = useState(false)
 
   const router = useRouter()
@@ -19,7 +19,7 @@ export default function Header() {
 
     try {
       await signOut(auth)
-      await deleteCookies('currentUser')
+      await deleteCookies('user_logged_in')
       router.push('/signin')
     } catch (error) {
       setError(true)

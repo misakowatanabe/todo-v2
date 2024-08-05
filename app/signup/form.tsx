@@ -56,7 +56,7 @@ export default function Form() {
       const userData = { userUid: userCredential.user.uid, displayName: data.name }
       await updateUser(userData)
       await userCredential.user.reload()
-      await setCookies('currentUser')
+      await setCookies('user_logged_in')
       router.push('/dashboard')
 
       // create a welcome todo

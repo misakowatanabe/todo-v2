@@ -19,23 +19,23 @@ export type Todo = {
 
 type SocketError = 'backendNotAvailable' | 'dataNotFound' | null
 
-type FirebaseContextType = {
+type AppContextType = {
   user: User | null
   todo: Todo
   socketError: SocketError
   globalError: string | null
 }
 
-const FirebaseContext = createContext<FirebaseContextType | null>(null)
+const AppContext = createContext<AppContextType | null>(null)
 
-type FirebaseContextProps = { children: React.ReactNode }
+type AppContextProps = { children: React.ReactNode }
 
 /**
  * Socket.IO client needs to be excluded from SSR.
  * https://socket.io/how-to/use-with-nextjs#client
  */
 
-export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
+export const AppContextProvider = ({ children }: AppContextProps) => {
   const [todo, setTodo] = useState<Todo>([])
   const [user, setUser] = useState<User | null>(null)
   const [socketError, setSocketError] = useState<SocketError>(null)
@@ -93,22 +93,19 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
     if (!user) return
 
     const interval = setInterval(async () => {
-      const hasCookie = await getCookies('currentUser')
+      const userLoggedIn = await getCookies('user_logged_in')
 
-      // This becomes true either when currentUser cookie expired or when the cookie manually got deleted
-      if (!hasCookie && user) {
-        try {
-          await signOut(auth)
-          router.push('/signin')
-        } catch (error) {
-          // Setting cookie to keep the user inside the app routes when sign out failed
-          await setCookies('currentUser')
-          setGlobalErrorError('Sign out has failed')
-          console.error(
-            'Error signing out: ',
-            error instanceof Error ? error.message : String(error),
-          )
-        }
+      if (userLoggedIn) return
+
+      // Sign out user either when user_logged_in cookie expired or when the cookie manually got deleted
+      try {
+        await signOut(auth)
+        router.push('/signin')
+      } catch (error) {
+        // Set login status cookie to keep the user inside the app routes when sign out failed
+        await setCookies('user_logged_in')
+        setGlobalErrorError('Sign out has failed')
+        console.error('Error signing out: ', error instanceof Error ? error.message : String(error))
       }
     }, 5000)
 
@@ -117,14 +114,14 @@ export const FirebaseContextProvider = ({ children }: FirebaseContextProps) => {
 
   const value = { user, todo, socketError, globalError }
 
-  return <FirebaseContext.Provider value={value}>{children}</FirebaseContext.Provider>
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
 
-export const useFirebaseContext = () => {
-  const context = useContext(FirebaseContext)
+export const useAppContext = () => {
+  const context = useContext(AppContext)
 
   if (!context) {
-    throw new Error('useFirebaseContext must be used within an FirebaseProvider')
+    throw new Error('useAppContext must be used within an FirebaseProvider')
   }
   return context
 }

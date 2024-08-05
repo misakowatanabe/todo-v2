@@ -1,9 +1,9 @@
 'use client'
 
-import { useFirebaseContext } from 'app/appContext'
+import { useAppContext } from 'app/appContext'
 
 export default function Todo() {
-  const { todo, socketError } = useFirebaseContext()
+  const { todo, socketError } = useAppContext()
 
   return (
     <div>
