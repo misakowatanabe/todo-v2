@@ -53,7 +53,8 @@ export default function Form() {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
-      const userData = { userUid: userCredential.user.uid, displayName: data.name }
+      const idToken = await userCredential.user.getIdToken(true)
+      const userData = { idToken: idToken, displayName: data.name }
       await updateUser(userData)
       await userCredential.user.reload()
       await setCookies('user_logged_in')
@@ -64,7 +65,6 @@ export default function Form() {
       const id = nanoid(8)
 
       const todo = {
-        userUid: userCredential.user.uid,
         todoId: id,
         title: 'Welcome!',
         body: 'Happy todo listing :)',

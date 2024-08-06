@@ -50,14 +50,73 @@ const db = admin.firestore()
 const auth = admin.auth()
 admin.database()
 
+const server = http.createServer(app)
+// eslint-disable-next-line no-console
+server.listen(port, () => console.log(`Listening on port ${port}`))
+const io = socketIo(server, {
+  cors: {
+    origin: frontendUrl,
+    credentials: true,
+  },
+})
+
+var connectionSocket = null
+io.on('connection', (socket) => {
+  // eslint-disable-next-line no-console
+  console.log('new client connected')
+  connectionSocket = socket
+  socket.on('disconnect', () => {
+    // eslint-disable-next-line no-console
+    console.log('client disconnected')
+  })
+})
+
+var uid = null
+async function getUidFromIdToken(idToken) {
+  const decodedToken = await auth.verifyIdToken(idToken, true)
+  uid = decodedToken.uid
+  return uid
+}
+
+app.post('/sendIdToken', (req, res) => {
+  ;(async () => {
+    try {
+      const uid = await getUidFromIdToken(req.body.idToken)
+
+      db.collection(uid).onSnapshot(
+        (docSnapshot) => {
+          const todoList = docSnapshot.docs.map((doc) => doc.data())
+          connectionSocket.emit('todos', todoList)
+        },
+        (err) => {
+          // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
+          res.status(401).send(err.message)
+        },
+      )
+
+      res.sendStatus(200)
+    } catch (err) {
+      // Error happens either when the corresponding user is disabled or the session corresponding to the ID token was revoked
+      res.status(401).send(err.message)
+    }
+  })()
+})
+
 // update auth user profile
 app.post('/updateUser', (req, res) => {
   ;(async () => {
-    res.send(
-      await auth.updateUser(req.body.userUid, {
-        displayName: req.body.displayName,
-      }),
-    )
+    try {
+      const uid = await getUidFromIdToken(req.body.idToken)
+
+      res.send(
+        await auth.updateUser(uid, {
+          displayName: req.body.displayName,
+        }),
+      )
+    } catch (err) {
+      // Error happens either when the corresponding user is disabled or the session corresponding to the ID token was revoked
+      res.status(401).send(err.message)
+    }
   })()
 })
 
@@ -65,7 +124,7 @@ app.post('/updateUser', (req, res) => {
 app.post('/create', (req, res) => {
   ;(async () => {
     res.send(
-      await db.collection(req.body.userUid).doc(req.body.todoId).create({
+      await db.collection(uid).doc(req.body.todoId).create({
         todoId: req.body.todoId,
         createdAt: req.body.createdAt,
         title: req.body.title,
@@ -205,52 +264,6 @@ app.delete('/deleteCollection/:userUid/', (req, res) => {
       return res.status(200).json({ message: 200 })
     } catch (error) {
       return res.status(500).json({ message: 500 })
-    }
-  })()
-})
-
-const server = http.createServer(app)
-// eslint-disable-next-line no-console
-server.listen(port, () => console.log(`Listening on port ${port}`))
-const io = socketIo(server, {
-  cors: {
-    origin: frontendUrl,
-    credentials: true,
-  },
-})
-
-var connectionSocket = null
-io.on('connection', (socket) => {
-  // eslint-disable-next-line no-console
-  console.log('new client connected')
-  connectionSocket = socket
-  socket.on('disconnect', () => {
-    // eslint-disable-next-line no-console
-    console.log('client disconnected')
-  })
-})
-
-app.post('/sendIdToken', (req, res) => {
-  ;(async () => {
-    try {
-      const decodedToken = await auth.verifyIdToken(req.body.idToken, true)
-      const uid = decodedToken.uid
-
-      db.collection(uid).onSnapshot(
-        (docSnapshot) => {
-          const todoList = docSnapshot.docs.map((doc) => doc.data())
-          connectionSocket.emit('todos', todoList)
-        },
-        (err) => {
-          // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
-          res.status(401).send(err.message)
-        },
-      )
-
-      res.sendStatus(200)
-    } catch (err) {
-      // Error happens either when the corresponding user is disabled or the session corresponding to the ID token was revoked
-      res.status(401).send(err.message)
     }
   })()
 })

@@ -4,7 +4,6 @@ import { ENDPOINT } from 'app/config'
 import { cookies } from 'next/headers'
 
 type Todo = {
-  userUid: string
   todoId: string
   title: string
   body: string
@@ -41,7 +40,7 @@ export async function sendIdToken(idToken: string) {
   return res.ok
 }
 
-type userData = { userUid: string; displayName: string }
+type userData = { idToken: string; displayName: string }
 
 export async function updateUser(userData: userData) {
   const res = await fetch(`${ENDPOINT}/updateUser`, {
