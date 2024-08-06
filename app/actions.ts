@@ -28,14 +28,10 @@ export async function create(todo: Todo) {
   return res.ok
 }
 
-export type Uid = {
-  userUid: string
-}
-
-export async function sendUserId(userUid: Uid) {
-  const res = await fetch(`${ENDPOINT}/catch-user-uid`, {
+export async function sendIdToken(idToken: string) {
+  const res = await fetch(`${ENDPOINT}/sendIdToken`, {
     method: 'POST',
-    body: JSON.stringify(userUid),
+    body: JSON.stringify({ idToken: idToken }),
     headers: {
       'Content-Type': 'application/json',
     },

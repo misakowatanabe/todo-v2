@@ -6,7 +6,7 @@ import { auth } from './firebase'
 import io from 'socket.io-client'
 import { ENDPOINT } from './config'
 import { useRouter } from 'next/navigation'
-import { Uid, sendUserId } from 'app/actions'
+import { sendIdToken } from 'app/actions'
 import { getCookies, setCookies } from 'app/actions'
 import { signOut } from 'firebase/auth'
 
@@ -60,9 +60,12 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     socket.on('connect', async () => {
       if (!auth.currentUser) return
 
-      // This sends user ID to node.js backend for Firebase admin SDK use
-      const uidObject = { userUid: auth.currentUser.uid } as Uid
-      const res = await sendUserId(uidObject)
+      /** This sends the user's ID token to Node.js server, verify the integrity and authenticity of
+       * the ID token and retrieve the uid from it.
+       * https://firebase.google.com/docs/auth/admin/verify-id-tokens#web
+       */
+      const idToken = await auth.currentUser.getIdToken(true)
+      const res = await sendIdToken(idToken)
 
       if (!res) {
         setSocketError('dataNotFound')

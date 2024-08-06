@@ -230,19 +230,27 @@ io.on('connection', (socket) => {
   })
 })
 
-app.post('/catch-user-uid', (req, res) => {
+app.post('/sendIdToken', (req, res) => {
   ;(async () => {
-    db.collection(req.body.userUid).onSnapshot(
-      (docSnapshot) => {
-        const todoList = docSnapshot.docs.map((doc) => doc.data())
-        connectionSocket.emit('todos', todoList)
-      },
-      (err) => {
-        // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
-        res.status(401).send(err.message)
-      },
-    )
+    try {
+      const decodedToken = await auth.verifyIdToken(req.body.idToken, true)
+      const uid = decodedToken.uid
 
-    res.sendStatus(200)
+      db.collection(uid).onSnapshot(
+        (docSnapshot) => {
+          const todoList = docSnapshot.docs.map((doc) => doc.data())
+          connectionSocket.emit('todos', todoList)
+        },
+        (err) => {
+          // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
+          res.status(401).send(err.message)
+        },
+      )
+
+      res.sendStatus(200)
+    } catch (err) {
+      // Error happens either when the corresponding user is disabled or the session corresponding to the ID token was revoked
+      res.status(401).send(err.message)
+    }
   })()
 })
