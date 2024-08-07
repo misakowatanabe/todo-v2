@@ -123,14 +123,19 @@ app.post('/updateUser', (req, res) => {
 // create todo
 app.post('/create', (req, res) => {
   ;(async () => {
-    res.send(
+    try {
       await db.collection(uid).doc(req.body.todoId).create({
         todoId: req.body.todoId,
         createdAt: req.body.createdAt,
         title: req.body.title,
         body: req.body.body,
-      }),
-    )
+      })
+
+      res.sendStatus(200)
+    } catch (err) {
+      // The write fails if the document already exists
+      res.status(400).send(err.details)
+    }
   })()
 })
 

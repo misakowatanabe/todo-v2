@@ -23,10 +23,10 @@ export default function CreateTodo() {
       createdAt: date,
     }
 
-    const res = await create(todo)
+    const resOk = await create(todo)
 
     // This checks if create action succeeded
-    if (!res) {
+    if (!resOk) {
       setError(true)
     }
   }

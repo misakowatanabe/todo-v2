@@ -24,6 +24,11 @@ export async function create(todo: Todo) {
     mode: 'cors',
   })
 
+  if (!res.ok) {
+    const error = await res.text()
+    console.error(error)
+  }
+
   return res.ok
 }
 
