@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 import { Button } from 'components/Button'
 import { create } from 'app/actions'
+import { Todo } from 'app/appContext'
 
 export default function CreateTodo() {
   const [error, setError] = useState(false)
@@ -16,11 +17,14 @@ export default function CreateTodo() {
     const date = format(new Date(), 'yyyy-MM-dd')
     const id = nanoid(8)
 
-    const todo = {
+    // TODO: label adding feature
+    const todo: Todo = {
       todoId: id,
       title: (formData.get('title') ?? '<No title>') as string,
       body: (formData.get('body') ?? '<No body>') as string,
       createdAt: date,
+      labels: ['Personal', 'Kids'],
+      completed: false,
     }
 
     const resOk = await create(todo)

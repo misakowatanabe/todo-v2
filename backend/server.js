@@ -170,16 +170,55 @@ app.post('/updateUser', (req, res) => {
 app.post('/create', (req, res) => {
   ;(async () => {
     try {
-      await db.collection(uid).doc(req.body.todoId).create({
-        todoId: req.body.todoId,
-        createdAt: req.body.createdAt,
-        title: req.body.title,
-        body: req.body.body,
-      })
+      // TODO: use actual uid
+      const order = await db.collection('UID').doc('order').get()
+      const activeOrder = order.data().active
+
+      await db
+        .collection('UID')
+        .doc('order')
+        .update({
+          active: FieldValue.arrayRemove(...activeOrder),
+        })
+
+      activeOrder.splice(0, 0, req.body.todoId)
+
+      await db
+        .collection('UID')
+        .doc('order')
+        .update({
+          active: FieldValue.arrayUnion(...activeOrder),
+        })
+    } catch (err) {
+      // The update will fail if applied to a document that does not exist
+      res.status(400).send(err.details)
+    }
+
+    try {
+      const id = req.body.todoId
+
+      const todoId = `${id}.todoId`
+      const title = `${id}.title`
+      const body = `${id}.body`
+      const createdAt = `${id}.createdAt`
+      const labels = `${id}.labels`
+      const completed = `${id}.completed`
+
+      await db
+        .collection('UID')
+        .doc('todos')
+        .update({
+          [todoId]: req.body.todoId,
+          [title]: req.body.title,
+          [body]: req.body.body,
+          [createdAt]: req.body.createdAt,
+          [labels]: req.body.labels,
+          [completed]: req.body.completed,
+        })
 
       res.sendStatus(200)
     } catch (err) {
-      // The write fails if the document already exists
+      // The update will fail if applied to a document that does not exist
       res.status(400).send(err.details)
     }
   })()
