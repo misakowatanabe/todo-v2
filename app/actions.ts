@@ -85,3 +85,16 @@ export async function deleteCookies(name: string) {
 export async function getCookies(name: string) {
   return cookies().get(name)?.value
 }
+
+export async function updateOrder(order: string[]) {
+  const res = await fetch(`${ENDPOINT}/updateOrder`, {
+    method: 'POST',
+    body: JSON.stringify({ order: order }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+  })
+
+  return res.ok
+}

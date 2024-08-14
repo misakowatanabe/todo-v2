@@ -15,15 +15,17 @@ export type Todo = {
   createdAt: string
   title: string
   todoId: string
-}[]
+  labels: string[]
+  completed: boolean
+}
 
-type SocketError = 'backendNotAvailable' | 'dataNotFound' | null
+type Error = string | null
 
 type AppContextType = {
   user: User | null
-  todo: Todo
-  socketError: SocketError
-  globalError: string | null
+  todos: Todo[]
+  socketError: Error
+  globalError: Error
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -36,10 +38,10 @@ type AppContextProps = { children: React.ReactNode }
  */
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
-  const [todo, setTodo] = useState<Todo>([])
+  const [todos, setTodos] = useState<Todo[]>([])
   const [user, setUser] = useState<User | null>(null)
-  const [socketError, setSocketError] = useState<SocketError>(null)
-  const [globalError, setGlobalErrorError] = useState<string | null>(null)
+  const [socketError, setSocketError] = useState<Error>(null)
+  const [globalError, setGlobalErrorError] = useState<Error>(null)
 
   const router = useRouter()
 
@@ -49,9 +51,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     })
 
     socket.on('connect_error', () => {
-      setSocketError('backendNotAvailable')
+      setSocketError('Server is currently not available')
       socket.removeAllListeners('todos')
-      setTodo((prev) => {
+      setTodos((prev) => {
         if (prev.length === 0) return prev
         return []
       })
@@ -68,11 +70,11 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       const res = await sendIdToken(idToken)
 
       if (!res) {
-        setSocketError('dataNotFound')
+        setSocketError('Todo data is not found')
       } else {
         setSocketError(null)
-        socket.on('todos', (todoList: Todo) => {
-          setTodo(todoList)
+        socket.on('todos', (todoList: Todo[]) => {
+          setTodos(todoList)
         })
       }
     })
@@ -84,7 +86,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       } else {
         socket.disconnect()
         socket.removeAllListeners('todos')
-        setTodo([])
+        setTodos([])
         setUser(null)
       }
     })
@@ -115,7 +117,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     return () => clearInterval(interval)
   }, [user, router])
 
-  const value = { user, todo, socketError, globalError }
+  const value = { user, todos, socketError, globalError }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
@@ -124,7 +126,7 @@ export const useAppContext = () => {
   const context = useContext(AppContext)
 
   if (!context) {
-    throw new Error('useAppContext must be used within an FirebaseProvider')
+    throw new Error('useAppContext must be used within an AppContextProvider')
   }
   return context
 }

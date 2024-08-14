@@ -1,4 +1,4 @@
-import Todo from './todo'
+import TodoList from './todoList'
 import CreateTodo from './createTodo'
 
 export default function Page() {
@@ -6,7 +6,7 @@ export default function Page() {
     <>
       <div>Dashboard</div>
       <CreateTodo />
-      <Todo />
+      <TodoList />
     </>
   )
 }

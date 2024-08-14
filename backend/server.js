@@ -49,6 +49,7 @@ admin.initializeApp({
 const db = admin.firestore()
 const auth = admin.auth()
 admin.database()
+const FieldValue = admin.firestore.FieldValue
 
 const server = http.createServer(app)
 // eslint-disable-next-line no-console
@@ -81,23 +82,68 @@ async function getUidFromIdToken(idToken) {
 app.post('/sendIdToken', (req, res) => {
   ;(async () => {
     try {
-      const uid = await getUidFromIdToken(req.body.idToken)
+      // const uid = await getUidFromIdToken(req.body.idToken)
 
-      db.collection(uid).onSnapshot(
-        (docSnapshot) => {
-          const todoList = docSnapshot.docs.map((doc) => doc.data())
-          connectionSocket.emit('todos', todoList)
-        },
-        (err) => {
-          // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
-          res.status(401).send(err.message)
-        },
-      )
+      db.collection('UID')
+        .doc('todos')
+        .onSnapshot(
+          async (docSnapshot) => {
+            // TODO: use actual uid
+            const order = await db.collection('UID').doc('order').get()
+            const activeOrder = order.data().active
+            const todoListActive = Object.values(docSnapshot.data()).filter((el) => {
+              return !el.completed
+            })
+
+            const sortArray = (activeOrder, todoListActive) => {
+              todoListActive.sort((a, b) => {
+                return activeOrder.indexOf(a.todoId) - activeOrder.indexOf(b.todoId)
+              })
+            }
+            sortArray(activeOrder, todoListActive)
+
+            // TODO: add this with sorting function based on when last updated, then import it to frontend
+            // const todoListCompleted = Object.values(docSnapshot.data()).filter((el) => {
+            //   return el.completed
+            // })
+
+            connectionSocket.emit('todos', todoListActive)
+          },
+          (err) => {
+            // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
+            res.status(401).send(err.message)
+          },
+        )
 
       res.sendStatus(200)
     } catch (err) {
       // Error happens either when the corresponding user is disabled or the session corresponding to the ID token was revoked
       res.status(401).send(err.message)
+    }
+  })()
+})
+
+// update order of todos
+app.post('/updateOrder', (req, res) => {
+  ;(async () => {
+    try {
+      await db
+        .collection('UID')
+        .doc('order')
+        .update({
+          active: FieldValue.arrayRemove(...req.body.order),
+        })
+      await db
+        .collection('UID')
+        .doc('order')
+        .update({
+          active: FieldValue.arrayUnion(...req.body.order),
+        })
+
+      res.sendStatus(200)
+    } catch (err) {
+      // The write fails if the document already exists
+      res.status(400).send(err.details)
     }
   })()
 })
