@@ -1,8 +1,8 @@
 'use client'
 
-import { Todo, useAppContext } from 'app/appContext'
+import { useAppContext } from 'app/appContext'
 import { useEffect, useRef, useState } from 'react'
-import { updateOrder } from 'app/actions'
+import { Todo, updateOrder } from 'app/actions'
 
 export default function TodoList() {
   const { todos, socketError } = useAppContext()
@@ -70,12 +70,11 @@ export default function TodoList() {
           >
             <div className="pointer-events-none">ID: {todo.todoId}</div>
             <div className="pointer-events-none">Title: {todo.title}</div>
+            <div className="pointer-events-none">Body: {todo.body && todo.body}</div>
             <div className="pointer-events-none">Created at:{todo.createdAt}</div>
             <div className="pointer-events-none">
               Labels:
-              {todo.labels.map((el) => (
-                <div key={el}>{el}</div>
-              ))}
+              {todo.labels && todo.labels.map((el) => <div key={el}>{el}</div>)}
             </div>
             <div className="pointer-events-none">done: {todo.completed.toString()} </div>
           </div>

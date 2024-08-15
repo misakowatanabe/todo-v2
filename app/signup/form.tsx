@@ -10,7 +10,7 @@ import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 import { create } from 'app/actions'
 import { useRouter } from 'next/navigation'
-import { setCookies } from 'app/actions'
+import { Todo, setCookies } from 'app/actions'
 
 type Data = {
   name: string
@@ -64,11 +64,12 @@ export default function Form() {
       const date = format(new Date(), 'yyyy-MM-dd')
       const id = nanoid(8)
 
-      const todo = {
+      const todo: Todo = {
         todoId: id,
         title: 'Welcome!',
         body: 'Happy todo listing :)',
         createdAt: date,
+        completed: false,
       }
 
       await create(todo)

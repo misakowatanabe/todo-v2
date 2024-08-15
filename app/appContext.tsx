@@ -7,17 +7,8 @@ import io from 'socket.io-client'
 import { ENDPOINT } from './config'
 import { useRouter } from 'next/navigation'
 import { sendIdToken } from 'app/actions'
-import { getCookies, setCookies } from 'app/actions'
+import { Todo, getCookies, setCookies } from 'app/actions'
 import { signOut } from 'firebase/auth'
-
-export type Todo = {
-  body: string
-  createdAt: string
-  title: string
-  todoId: string
-  labels: string[]
-  completed: boolean
-}
 
 type Error = string | null
 

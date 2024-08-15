@@ -3,11 +3,13 @@
 import { ENDPOINT } from 'app/config'
 import { cookies } from 'next/headers'
 
-type Todo = {
+export type Todo = {
   todoId: string
   title: string
-  body: string
+  body?: string
   createdAt: string
+  labels?: string[]
+  completed: boolean
 }
 
 /** Data passed from server component to client one must be serializable.

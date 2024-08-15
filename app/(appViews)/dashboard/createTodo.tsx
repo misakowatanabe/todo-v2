@@ -4,8 +4,7 @@ import React, { useId, useState } from 'react'
 import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 import { Button } from 'components/Button'
-import { create } from 'app/actions'
-import { Todo } from 'app/appContext'
+import { Todo, create } from 'app/actions'
 
 export default function CreateTodo() {
   const [error, setError] = useState(false)
@@ -18,10 +17,11 @@ export default function CreateTodo() {
     const id = nanoid(8)
 
     // TODO: label adding feature
+    // TODO: add validation for mandatory inputs
     const todo: Todo = {
       todoId: id,
       title: (formData.get('title') ?? '<No title>') as string,
-      body: (formData.get('body') ?? '<No body>') as string,
+      body: !formData.get('body') ? undefined : (formData.get('body') as string),
       createdAt: date,
       labels: ['Personal', 'Kids'],
       completed: false,

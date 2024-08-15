@@ -95,12 +95,9 @@ app.post('/sendIdToken', (req, res) => {
               return !el.completed
             })
 
-            const sortArray = (activeOrder, todoListActive) => {
-              todoListActive.sort((a, b) => {
-                return activeOrder.indexOf(a.todoId) - activeOrder.indexOf(b.todoId)
-              })
-            }
-            sortArray(activeOrder, todoListActive)
+            todoListActive.sort((a, b) => {
+              return activeOrder.indexOf(a.todoId) - activeOrder.indexOf(b.todoId)
+            })
 
             // TODO: add this with sorting function based on when last updated, then import it to frontend
             // const todoListCompleted = Object.values(docSnapshot.data()).filter((el) => {
@@ -204,17 +201,22 @@ app.post('/create', (req, res) => {
       const labels = `${id}.labels`
       const completed = `${id}.completed`
 
-      await db
-        .collection('UID')
-        .doc('todos')
-        .update({
-          [todoId]: req.body.todoId,
-          [title]: req.body.title,
-          [body]: req.body.body,
-          [createdAt]: req.body.createdAt,
-          [labels]: req.body.labels,
-          [completed]: req.body.completed,
-        })
+      const todoObject = {
+        [todoId]: req.body.todoId,
+        [title]: req.body.title,
+        [createdAt]: req.body.createdAt,
+        [completed]: req.body.completed,
+      }
+
+      if (req.body.body) {
+        todoObject[body] = req.body.body
+      }
+
+      if (req.body.labels) {
+        todoObject[labels] = req.body.labels
+      }
+
+      await db.collection('UID').doc('todos').update(todoObject)
 
       res.sendStatus(200)
     } catch (err) {
