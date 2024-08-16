@@ -12,7 +12,7 @@ interface ButtonProps {
   form?: string
 }
 
-export const Button = ({
+export const Chip = ({
   style = 'primary',
   size = 'medium',
   backgroundColor,
@@ -28,17 +28,11 @@ export const Button = ({
       type={type}
       className={clsx(
         'font-sans font-bold rounded-full cursor-pointer inline-block leading-none',
-        !disabled && {
+        {
           'text-white bg-[#222222]': style === 'primary',
           'text-[#222222] outline outline-offset-0 outline-[#222222] bg-transparent':
             style === 'secondary',
           'text-[#222222]': style === 'text',
-        },
-        disabled && {
-          'text-white bg-[#b3b3b3]': style === 'primary',
-          'text-[#b3b3b3] outline outline-offset-0 outline-[#c8c8c8] bg-transparent':
-            style === 'secondary',
-          'text-[#b3b3b3]': style === 'text',
         },
         {
           'text-xs py-2.5 px-4': size === 'small',
