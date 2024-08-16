@@ -11,13 +11,7 @@ export default function TodoList() {
   const dragOverItem = useRef('')
 
   useEffect(() => {
-    if (!socketError) return
-
-    setLocalOrderedTodos([])
-  }, [socketError])
-
-  useEffect(() => {
-    if (todos.length === 0) return
+    if (!todos) return
 
     setLocalOrderedTodos(todos)
   }, [todos])

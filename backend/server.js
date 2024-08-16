@@ -82,22 +82,31 @@ async function getUidFromIdToken(idToken) {
 app.post('/sendIdToken', (req, res) => {
   ;(async () => {
     try {
-      // const uid = await getUidFromIdToken(req.body.idToken)
+      const uid = await getUidFromIdToken(req.body.idToken)
 
-      db.collection('UID')
+      db.collection(uid)
         .doc('todos')
         .onSnapshot(
           async (docSnapshot) => {
-            // TODO: use actual uid
-            const order = await db.collection('UID').doc('order').get()
-            const activeOrder = order.data().active
-            const todoListActive = Object.values(docSnapshot.data()).filter((el) => {
-              return !el.completed
-            })
+            const order = await db.collection(uid).doc('order').get()
+            const orderData = order.data()
+            const todosData = docSnapshot.data()
+            let todoListActive = []
 
-            todoListActive.sort((a, b) => {
-              return activeOrder.indexOf(a.todoId) - activeOrder.indexOf(b.todoId)
-            })
+            // Skip filtering active todos unless there is any todo
+            if (todosData) {
+              todoListActive = Object.values(todosData).filter((el) => {
+                return !el.completed
+              })
+            }
+
+            // Skip ordering active todos unless there is order data
+            if (orderData) {
+              const activeOrder = orderData.active
+              todoListActive.sort((a, b) => {
+                return activeOrder.indexOf(a.todoId) - activeOrder.indexOf(b.todoId)
+              })
+            }
 
             // TODO: add this with sorting function based on when last updated, then import it to frontend
             // const todoListCompleted = Object.values(docSnapshot.data()).filter((el) => {
@@ -125,13 +134,13 @@ app.post('/updateOrder', (req, res) => {
   ;(async () => {
     try {
       await db
-        .collection('UID')
+        .collection(uid)
         .doc('order')
         .update({
           active: FieldValue.arrayRemove(...req.body.order),
         })
       await db
-        .collection('UID')
+        .collection(uid)
         .doc('order')
         .update({
           active: FieldValue.arrayUnion(...req.body.order),
@@ -163,35 +172,83 @@ app.post('/updateUser', (req, res) => {
   })()
 })
 
-// create todo
+// create todo (it creates a todo object in the todos doc and adds its todo ID to index 0 in the order doc)
 app.post('/create', (req, res) => {
   ;(async () => {
-    try {
-      // TODO: use actual uid
-      const order = await db.collection('UID').doc('order').get()
-      const activeOrder = order.data().active
+    createOrder: try {
+      const order = await db.collection(uid).doc('order').get()
+      const orderData = order.data()
 
+      // create a order doc if there is none, then, set an active todo, ex: first todo after signup
+      if (!orderData) {
+        await db
+          .collection(uid)
+          .doc('order')
+          .set({
+            active: [req.body.todoId],
+            completed: [],
+          })
+
+        break createOrder
+      }
+
+      // when there is at least 1 active todo
+      if (orderData.active.length !== 0) {
+        await db
+          .collection(uid)
+          .doc('order')
+          .update({
+            active: FieldValue.arrayRemove(...orderData.active),
+          })
+
+        orderData.active.splice(0, 0, req.body.todoId)
+
+        await db
+          .collection(uid)
+          .doc('order')
+          .update({
+            active: FieldValue.arrayUnion(...orderData.active),
+          })
+
+        break createOrder
+      }
+
+      // when there is no todo, but there is order doc with empty array, ex: after ticking all active todos
       await db
-        .collection('UID')
+        .collection(uid)
         .doc('order')
         .update({
-          active: FieldValue.arrayRemove(...activeOrder),
-        })
-
-      activeOrder.splice(0, 0, req.body.todoId)
-
-      await db
-        .collection('UID')
-        .doc('order')
-        .update({
-          active: FieldValue.arrayUnion(...activeOrder),
+          active: [req.body.todoId],
         })
     } catch (err) {
       // The update will fail if applied to a document that does not exist
       res.status(400).send(err.details)
     }
 
-    try {
+    createTodo: try {
+      const todos = await db.collection(uid).doc('todos').get()
+      const todosData = todos.data()
+
+      // create a todos doc if there is none, ex: when creating the first todo after signup
+      if (!todosData) {
+        await db
+          .collection(uid)
+          .doc('todos')
+          .set({
+            [req.body.todoId]: {
+              todoId: req.body.todoId,
+              title: req.body.title,
+              createdAt: req.body.createdAt,
+              completed: req.body.completed,
+            },
+          })
+
+        res.sendStatus(200)
+
+        break createTodo
+      }
+
+      // create a new todo object in the todos doc if todos doc already exists
       const id = req.body.todoId
 
       const todoId = `${id}.todoId`
@@ -216,7 +273,7 @@ app.post('/create', (req, res) => {
         todoObject[labels] = req.body.labels
       }
 
-      await db.collection('UID').doc('todos').update(todoObject)
+      await db.collection(uid).doc('todos').update(todoObject)
 
       res.sendStatus(200)
     } catch (err) {
