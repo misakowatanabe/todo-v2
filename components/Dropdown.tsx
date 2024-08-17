@@ -104,7 +104,7 @@ export const Dropdown = (
     }
   }
 
-  const handleMouseEvent = (e: React.MouseEvent<HTMLLIElement>) => {
+  const handleMouseEnter = (e: React.MouseEvent<HTMLLIElement>) => {
     e.preventDefault()
 
     const index = e.currentTarget.dataset.index
@@ -140,7 +140,7 @@ export const Dropdown = (
           return (
             <li
               key={index}
-              onMouseEnter={(e) => handleMouseEvent(e)}
+              onMouseEnter={(e) => handleMouseEnter(e)}
               data-index={index}
               className={`${
                 index === currentItem ? 'bg-emerald-50 text-emerald-500' : 'bg-none text-slate-500'

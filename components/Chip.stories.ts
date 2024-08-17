@@ -8,31 +8,21 @@ const meta: Meta<typeof Chip> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 }
 
 export default meta
 type Story = StoryObj<typeof Chip>
 
-export const Primary: Story = {
+export const Filled: Story = {
   args: {
-    style: 'primary',
+    style: 'filled',
     label: 'Chip',
   },
 }
 
-export const Secondary: Story = {
+export const Outline: Story = {
   args: {
-    style: 'secondary',
-    label: 'Chip',
-  },
-}
-
-export const Text: Story = {
-  args: {
-    style: 'text',
+    style: 'outline',
     label: 'Chip',
   },
 }
@@ -55,5 +45,12 @@ export const Small: Story = {
   args: {
     size: 'small',
     label: 'Chip',
+  },
+}
+
+export const OnRemove: Story = {
+  args: {
+    label: 'Chip',
+    onRemove: () => {},
   },
 }

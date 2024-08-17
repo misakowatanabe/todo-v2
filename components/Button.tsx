@@ -29,10 +29,9 @@ export const Button = ({
       className={clsx(
         'font-sans font-bold rounded-full cursor-pointer inline-block leading-none',
         !disabled && {
-          'text-white bg-[#222222]': style === 'primary',
-          'text-[#222222] outline outline-offset-0 outline-[#222222] bg-transparent':
-            style === 'secondary',
-          'text-[#222222]': style === 'text',
+          'text-white bg-black': style === 'primary',
+          'text-black outline outline-offset-0 outline-black bg-transparent': style === 'secondary',
+          'text-black': style === 'text',
         },
         disabled && {
           'text-white bg-[#b3b3b3]': style === 'primary',
