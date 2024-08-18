@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import clsx from 'clsx'
 
-interface ButtonProps {
+type ButtonProps = {
   style?: 'primary' | 'secondary' | 'text'
   size?: 'small' | 'medium' | 'large'
   backgroundColor?: string
@@ -10,19 +10,22 @@ interface ButtonProps {
   onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
   form?: string
-}
+} & React.ButtonHTMLAttributes<HTMLButtonElement>
 
-export const Button = ({
-  style = 'primary',
-  size = 'medium',
-  backgroundColor,
-  label,
-  type = 'button',
-  onClick,
-  disabled,
-  form,
-  ...props
-}: ButtonProps) => {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    style = 'primary',
+    size = 'medium',
+    backgroundColor,
+    label,
+    type = 'button',
+    onClick,
+    disabled,
+    form,
+    ...props
+  }: ButtonProps,
+  ref,
+) {
   return (
     <button
       type={type}
@@ -47,6 +50,7 @@ export const Button = ({
       )}
       onClick={!disabled ? onClick : undefined}
       form={form}
+      ref={ref}
       {...props}
     >
       {label}
@@ -57,4 +61,4 @@ export const Button = ({
       `}</style>
     </button>
   )
-}
+})

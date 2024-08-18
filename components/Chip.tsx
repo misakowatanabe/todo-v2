@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import clsx from 'clsx'
 
-interface ChipProps {
+type ChipProps = {
   style?: 'outline' | 'filled'
   size?: 'small' | 'medium' | 'large'
   color?:
@@ -20,20 +20,24 @@ interface ChipProps {
   label: string
   onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
-  onRemove?: (_event: React.MouseEvent<HTMLButtonElement>) => void
-}
+  onRemove?: (_event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+} & React.ButtonHTMLAttributes<HTMLButtonElement>
 
 type ColorVariants = Record<string, string>
 
-export const Chip = ({
-  style = 'filled',
-  size = 'medium',
-  color = 'default',
-  label,
-  onClick,
-  disabled,
-  onRemove,
-}: ChipProps) => {
+export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
+  {
+    style = 'filled',
+    size = 'medium',
+    color = 'default',
+    label,
+    onClick,
+    disabled = false,
+    onRemove,
+    ...props
+  }: ChipProps,
+  ref,
+) {
   const isBlackText =
     (color === 'default' ||
       color === 'powderPink' ||
@@ -76,7 +80,7 @@ export const Chip = ({
 
   return (
     <button
-      onClick={!disabled ? onClick : undefined}
+      onClick={(e) => (!disabled ? onClick?.(e) : undefined)}
       className={clsx(
         'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded font-medium tracking-wide transition duration-100',
         'focus-visible:outline-none',
@@ -89,19 +93,23 @@ export const Chip = ({
           'text-sm py-1.5 px-4': size === 'medium',
           'text-base py-2 px-6': size === 'large',
         },
+        onClick ? 'hover:bg-opacity-80 focus:bg-opacity-60 cursor-pointer' : 'cursor-default',
       )}
+      ref={ref}
+      {...props}
     >
       {label}
       {onRemove && (
-        <button
+        <div
           onClick={onRemove}
           className={clsx(
-            'inline-flex h-5 w-5 items-center justify-center whitespace-nowrap rounded-full text-sm font-medium tracking-wide transition duration-100 focus-visible:outline-none disabled:cursor-not-allowed',
+            'inline-flex h-5 w-5 items-center justify-center whitespace-nowrap rounded-full text-sm font-medium tracking-wide transition duration-100',
+            'focus-visible:outline-none disabled:cursor-not-allowed cursor-pointer',
             isBlackText
               ? 'hover:bg-gray-500 hover:bg-opacity-20'
               : 'hover:bg-white hover:bg-opacity-20',
           )}
-          aria-label="close dialog"
+          aria-label="remove chip"
         >
           <span className="relative only:-mx-5">
             <svg
@@ -117,8 +125,8 @@ export const Chip = ({
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </span>
-        </button>
+        </div>
       )}
     </button>
   )
-}
+})

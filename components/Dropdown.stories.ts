@@ -8,17 +8,16 @@ const meta: Meta<typeof Dropdown> = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 }
 
 export default meta
 type Story = StoryObj<typeof Dropdown>
 
-export const Primary: Story = {
+const items = ['Work', 'Personal', 'Kids']
+
+export const Default: Story = {
   args: {
-    // style: 'primary',
     label: 'Dropdown',
+    items: items,
   },
 }

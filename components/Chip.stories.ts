@@ -48,9 +48,24 @@ export const Small: Story = {
   },
 }
 
+export const OnClick: Story = {
+  args: {
+    label: 'Chip',
+    onClick: () => {},
+  },
+}
+
 export const OnRemove: Story = {
   args: {
     label: 'Chip',
+    onRemove: () => {},
+  },
+}
+
+export const Colored: Story = {
+  args: {
+    label: 'Chip',
+    color: 'raspberry',
     onRemove: () => {},
   },
 }

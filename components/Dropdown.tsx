@@ -1,51 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
-// import clsx from 'clsx'
+import { Chip } from './Chip'
 
-interface ButtonProps {
-  // style?: 'primary' | 'secondary' | 'text'
-  // size?: 'small' | 'medium' | 'large'
-  // backgroundColor?: string
-  // label: string
-  // type?: 'button' | 'submit' | 'reset'
-  // onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
-  // disabled?: boolean
-  // form?: string
+type DropdownProps = {
+  label: string
+  items: string[]
+  setItems: React.Dispatch<React.SetStateAction<string[]>>
 }
 
-export const Dropdown = (
-  {
-    // style = 'primary',
-    // size = 'medium',
-    // backgroundColor,
-    // label,
-    // type = 'button',
-    // onClick,
-    // disabled,
-    // form,
-    // ...props
-  }: ButtonProps,
-) => {
+export const Dropdown = ({ label, items, setItems }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [currentItem, setCurrentItem] = useState<number>(0)
   const wrapperRef = useRef<HTMLButtonElement>(null)
-
-  const navigationItems = [
-    {
-      linkName: 'Dashboard',
-    },
-    {
-      linkName: 'Metrics and analytics',
-    },
-    {
-      linkName: 'Multi-Channel Funnels overview',
-    },
-    {
-      linkName: 'User settings',
-    },
-    {
-      linkName: 'User Profile',
-    },
-  ]
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
@@ -54,18 +19,13 @@ export const Dropdown = (
     }
   })
 
-  useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        setIsOpen(false)
-        setCurrentItem(0)
-      }
+  const handleClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.currentTarget)) {
+      setItems((prev) => [...prev, items[currentItem]])
+      setIsOpen(false)
+      setCurrentItem(0)
     }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [wrapperRef])
+  }
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (isOpen) {
@@ -73,7 +33,7 @@ export const Dropdown = (
 
       switch (e.key) {
         case 'ArrowDown':
-          if (currentItem === navigationItems.length - 1) {
+          if (currentItem === items.length - 1) {
             setCurrentItem(0)
           } else {
             setCurrentItem(currentItem + 1)
@@ -81,7 +41,7 @@ export const Dropdown = (
           break
         case 'ArrowUp':
           if (currentItem === 0) {
-            setCurrentItem(navigationItems.length - 1)
+            setCurrentItem(items.length - 1)
           } else {
             setCurrentItem(currentItem - 1)
           }
@@ -91,8 +51,9 @@ export const Dropdown = (
           setIsOpen(false)
           break
         case 'Enter':
-          // pick item
+          setItems((prev) => [...prev, items[currentItem]])
           setIsOpen(false)
+          setCurrentItem(0)
 
           if (wrapperRef.current == null) return
 
@@ -122,32 +83,31 @@ export const Dropdown = (
 
   return (
     <div className="relative inline-flex" id="dropdown">
-      <button
-        className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded bg-emerald-500 px-5 text-sm font-medium tracking-wide text-white transition duration-100 hover:bg-emerald-600 focus:bg-emerald-700 focus-visible:outline-none disabled:cursor-not-allowed disabled:border-emerald-300 disabled:bg-emerald-300 disabled:shadow-none"
+      <Chip
+        label={label}
         onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen ? true : false}
-        ref={wrapperRef}
         onMouseLeave={handleMouseLeave}
-      >
-        Choose one
-      </button>
+        ref={wrapperRef}
+        aria-expanded={isOpen ? true : false}
+      />
       <ul
         className={`${
           isOpen ? 'flex' : 'hidden'
-        } absolute top-full z-10 mt-1 flex w-72 list-none flex-col rounded bg-white py-2 shadow-md shadow-slate-500/10 `}
+        } absolute top-full z-10 mt-1 flex w-72 list-none flex-col rounded bg-white py-2 shadow-md shadow-gray-500/10 outline outline-offset-0 outline-gray-100`}
       >
-        {navigationItems.map((item, index) => {
+        {items.map((item, index) => {
           return (
             <li
               key={index}
+              onClick={(e) => handleClick(e)}
               onMouseEnter={(e) => handleMouseEnter(e)}
               data-index={index}
               className={`${
-                index === currentItem ? 'bg-emerald-50 text-emerald-500' : 'bg-none text-slate-500'
-              } flex items-start justify-start gap-2 p-2 px-5 transition-colors`}
+                index === currentItem ? 'bg-gray-100' : 'bg-none text-slate-500'
+              } flex items-start justify-start gap-2 p-2 px-5 transition-colors cursor-pointer`}
             >
               <span className="flex flex-col gap-1 overflow-hidden whitespace-nowrap">
-                <span className="truncate leading-5">{item.linkName}</span>
+                <span className="truncate leading-5">{item}</span>
               </span>
             </li>
           )
