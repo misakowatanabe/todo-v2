@@ -1,22 +1,24 @@
 import React, { ReactNode, forwardRef } from 'react'
 import clsx from 'clsx'
 
+export type ChipColor =
+  | 'default'
+  | 'raspberry'
+  | 'honey'
+  | 'blueberry'
+  | 'greenApple'
+  | 'orange'
+  | 'midnight'
+  | 'powderPink'
+  | 'sky'
+  | 'lemon'
+  | 'lime'
+  | 'dreamyPurple'
+
 type ChipProps = {
   style?: 'outline' | 'filled'
   size?: 'small' | 'medium' | 'large'
-  color?:
-    | 'default'
-    | 'raspberry'
-    | 'honey'
-    | 'blueberry'
-    | 'greenApple'
-    | 'orange'
-    | 'midnight'
-    | 'powderPink'
-    | 'sky'
-    | 'lemon'
-    | 'lime'
-    | 'dreamyPurple'
+  color?: ChipColor
   label: string
   icon?: ReactNode
   onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void

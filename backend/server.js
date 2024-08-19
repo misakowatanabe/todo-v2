@@ -121,6 +121,24 @@ app.post('/sendIdToken', (req, res) => {
           },
         )
 
+      db.collection(uid)
+        .doc('labels')
+        .onSnapshot(
+          async (docSnapshot) => {
+            const labelsData = docSnapshot.data()
+            let labelsArray = []
+            if (labelsData) {
+              labelsArray = Object.values(labelsData)
+            }
+
+            connectionSocket.emit('labels', labelsArray)
+          },
+          (err) => {
+            // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
+            res.status(401).send(err.message)
+          },
+        )
+
       res.sendStatus(200)
     } catch (err) {
       // Error happens either when the corresponding user is disabled or the session corresponding to the ID token was revoked

@@ -95,23 +95,33 @@ export const Dropdown = ({ label, items, setItems }: DropdownProps) => {
           isOpen ? 'flex' : 'hidden'
         } absolute top-full z-10 mt-1 flex w-72 list-none flex-col rounded bg-white py-2 shadow-md shadow-gray-500/10 outline outline-offset-0 outline-gray-100`}
       >
-        {items.map((item, index) => {
-          return (
-            <li
-              key={index}
-              onClick={(e) => handleClick(e)}
-              onMouseEnter={(e) => handleMouseEnter(e)}
-              data-index={index}
-              className={`${
-                index === currentItem ? 'bg-gray-100' : 'bg-none text-slate-500'
-              } flex items-start justify-start gap-2 p-2 px-5 transition-colors cursor-pointer`}
-            >
-              <span className="flex flex-col gap-1 overflow-hidden whitespace-nowrap">
-                <span className="truncate leading-5">{item}</span>
-              </span>
-            </li>
-          )
-        })}
+        {items.length === 0 ? (
+          <li className="flex items-start justify-start gap-2 p-2 px-5 transition-colors">
+            <span className="flex flex-col gap-1 overflow-hidden whitespace-nowrap">
+              <span className="truncate leading-5 text-gray-400">No item</span>
+            </span>
+          </li>
+        ) : (
+          <>
+            {items.map((item, index) => {
+              return (
+                <li
+                  key={index}
+                  onClick={(e) => handleClick(e)}
+                  onMouseEnter={(e) => handleMouseEnter(e)}
+                  data-index={index}
+                  className={`${
+                    index === currentItem ? 'bg-gray-100' : 'bg-none text-slate-500'
+                  } flex items-start justify-start gap-2 p-2 px-5 transition-colors cursor-pointer`}
+                >
+                  <span className="flex flex-col gap-1 overflow-hidden whitespace-nowrap">
+                    <span className="truncate leading-5">{item}</span>
+                  </span>
+                </li>
+              )
+            })}
+          </>
+        )}
       </ul>
     </div>
   )

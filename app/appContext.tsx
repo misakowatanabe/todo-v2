@@ -10,11 +10,14 @@ import { sendIdToken } from 'app/actions'
 import { Todo, getCookies, setCookies } from 'app/actions'
 import { signOut } from 'firebase/auth'
 
+type Label = { label: string; color: string }
+
 type Error = string | null
 
 type AppContextType = {
   user: User | null
   todos: Todo[]
+  labels: Label[]
   socketError: Error
   globalError: Error
 }
@@ -31,6 +34,7 @@ type AppContextProps = { children: React.ReactNode }
 export const AppContextProvider = ({ children }: AppContextProps) => {
   const [todos, setTodos] = useState<Todo[]>([])
   const [user, setUser] = useState<User | null>(null)
+  const [labels, setLabels] = useState<Label[]>([])
   const [socketError, setSocketError] = useState<Error>(null)
   const [globalError, setGlobalErrorError] = useState<Error>(null)
 
@@ -44,6 +48,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     socket.on('connect_error', () => {
       setSocketError('Server is currently not available')
       socket.removeAllListeners('todos')
+      socket.removeAllListeners('labels')
       setTodos((prev) => {
         if (prev.length === 0) return prev
         return []
@@ -67,6 +72,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         socket.on('todos', (todoList: Todo[]) => {
           setTodos(todoList)
         })
+        socket.on('labels', (labelList: Label[]) => {
+          setLabels(labelList)
+        })
       }
     })
 
@@ -77,6 +85,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       } else {
         socket.disconnect()
         socket.removeAllListeners('todos')
+        socket.removeAllListeners('labels')
         setTodos([])
         setUser(null)
       }
@@ -108,7 +117,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     return () => clearInterval(interval)
   }, [user, router])
 
-  const value = { user, todos, socketError, globalError }
+  const value = { user, todos, labels, socketError, globalError }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
