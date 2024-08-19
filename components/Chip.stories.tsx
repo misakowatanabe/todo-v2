@@ -58,14 +58,27 @@ export const OnClick: Story = {
 export const OnRemove: Story = {
   args: {
     label: 'Chip',
+    color: 'raspberry',
     onRemove: () => {},
   },
 }
 
-export const Colored: Story = {
+export const WithIcon: Story = {
   args: {
     label: 'Chip',
-    color: 'raspberry',
-    onRemove: () => {},
+    onClick: () => {},
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        aria-labelledby="title-ac02 desc-ac02"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+      </svg>
+    ),
   },
 }

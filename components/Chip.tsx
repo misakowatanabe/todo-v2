@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { ReactNode, forwardRef } from 'react'
 import clsx from 'clsx'
 
 type ChipProps = {
@@ -18,6 +18,7 @@ type ChipProps = {
     | 'lime'
     | 'dreamyPurple'
   label: string
+  icon?: ReactNode
   onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
   onRemove?: (_event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
@@ -31,6 +32,7 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
     size = 'medium',
     color = 'default',
     label,
+    icon,
     onClick,
     disabled = false,
     onRemove,
@@ -98,6 +100,17 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
       ref={ref}
       {...props}
     >
+      {icon && (
+        <div
+          className={clsx(
+            'inline-flex h-5 w-5 items-center justify-center whitespace-nowrap rounded-full text-sm font-medium tracking-wide transition duration-100',
+            'focus-visible:outline-none disabled:cursor-not-allowed cursor-pointer',
+          )}
+          aria-label="icon"
+        >
+          <span className="relative only:-mx-5">{icon}</span>
+        </div>
+      )}
       {label}
       {onRemove && (
         <div
