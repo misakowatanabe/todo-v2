@@ -11,6 +11,7 @@ export const Dropdown = ({ label, items, setItems }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [currentItem, setCurrentItem] = useState<number>(0)
   const wrapperRef = useRef<HTMLButtonElement>(null)
+  const testRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
@@ -19,13 +20,38 @@ export const Dropdown = ({ label, items, setItems }: DropdownProps) => {
     }
   })
 
-  const handleClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-    if (wrapperRef.current && !wrapperRef.current.contains(e.currentTarget)) {
-      setItems((prev) => [...prev, items[currentItem]])
-      setIsOpen(false)
-      setCurrentItem(0)
+  useEffect(() => {
+    const handleClickOutside = (e: any) => {
+      // Open/close the dropdown when clicking chip button
+      if (wrapperRef.current && wrapperRef.current.contains(e.target)) {
+        setIsOpen((prev) => !prev)
+        setCurrentItem(0)
+      }
+
+      // Close the dropdown when clicking outside
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setIsOpen((prev) => {
+          if (!prev) return prev
+          else return false
+        })
+        setCurrentItem((prev) => {
+          if (prev === 0) return prev
+          else return 0
+        })
+      }
+
+      // Add an item at the end when clicking one of the dropdown items
+      if (testRef.current && testRef.current.contains(e.target)) {
+        setItems((prev) => [...prev, items[currentItem]])
+        setIsOpen(false)
+        setCurrentItem(0)
+      }
     }
-  }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [wrapperRef, currentItem, items, setItems])
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (isOpen) {
@@ -85,12 +111,14 @@ export const Dropdown = ({ label, items, setItems }: DropdownProps) => {
     <div className="relative inline-flex" id="dropdown">
       <Chip
         label={label}
-        onClick={() => setIsOpen(!isOpen)}
+        // only to satisfy visual effect as a clickable button
+        onClick={() => {}}
         onMouseLeave={handleMouseLeave}
         ref={wrapperRef}
         aria-expanded={isOpen ? true : false}
       />
       <ul
+        ref={testRef}
         className={`${
           isOpen ? 'flex' : 'hidden'
         } absolute top-full z-10 mt-1 flex w-72 list-none flex-col rounded bg-white py-2 shadow-md shadow-gray-500/10 outline outline-offset-0 outline-gray-100`}
@@ -107,7 +135,6 @@ export const Dropdown = ({ label, items, setItems }: DropdownProps) => {
               return (
                 <li
                   key={index}
-                  onClick={(e) => handleClick(e)}
                   onMouseEnter={(e) => handleMouseEnter(e)}
                   data-index={index}
                   className={`${
