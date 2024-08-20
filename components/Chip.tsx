@@ -93,9 +93,9 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
           ? `${colorFilled[color]}`
           : `outline outline-offset-0 text-black ${colorOutline[color]}`,
         {
-          'text-xs py-1 px-2': size === 'small',
-          'text-sm py-1.5 px-4': size === 'medium',
-          'text-base py-2 px-6': size === 'large',
+          'text-xs py-1 px-2 h-6': size === 'small',
+          'text-sm py-1.5 px-4 h-8': size === 'medium',
+          'text-base py-2 px-6 h-10': size === 'large',
         },
         onClick ? 'hover:bg-opacity-80 focus:bg-opacity-60 cursor-pointer' : 'cursor-default',
       )}
