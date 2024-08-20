@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { ReactNode, forwardRef } from 'react'
 import clsx from 'clsx'
 
 type ButtonProps = {
@@ -6,6 +6,7 @@ type ButtonProps = {
   size?: 'small' | 'medium' | 'large'
   backgroundColor?: string
   label: string
+  icon?: ReactNode
   type?: 'button' | 'submit' | 'reset'
   onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
@@ -18,6 +19,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     size = 'medium',
     backgroundColor,
     label,
+    icon,
     type = 'button',
     onClick,
     disabled,
@@ -30,7 +32,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <button
       type={type}
       className={clsx(
-        'font-sans font-bold rounded-full cursor-pointer inline-block leading-none',
+        'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium rounded-full cursor-pointer leading-none',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-300',
         !disabled && {
           'text-white bg-black': style === 'primary',
           'text-black outline outline-offset-0 outline-black bg-transparent': style === 'secondary',
@@ -43,9 +46,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
           'text-[#b3b3b3]': style === 'text',
         },
         {
-          'text-xs py-2.5 px-4': size === 'small',
-          'text-sm py-3 px-5': size === 'medium',
-          'text-base py-3 px-6': size === 'large',
+          'text-xs px-4 h-8': size === 'small',
+          'text-sm px-5 h-10': size === 'medium',
+          'text-base px-6 h-12': size === 'large',
         },
       )}
       onClick={!disabled ? onClick : undefined}
@@ -53,6 +56,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       {...props}
     >
+      {icon && (
+        <div
+          className={clsx(
+            'inline-flex h-5 w-5 items-center justify-center whitespace-nowrap rounded-full text-sm font-medium tracking-wide transition duration-100',
+            'focus-visible:outline-none disabled:cursor-not-allowed cursor-pointer',
+          )}
+          aria-label="icon"
+        >
+          <span className="relative only:-mx-5">{icon}</span>
+        </div>
+      )}
       {label}
       <style jsx>{`
         button {

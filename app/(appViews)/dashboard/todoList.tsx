@@ -78,7 +78,7 @@ export default function TodoList() {
               </div>
             </div>
             <div className="pointer-events-none text-gray-500">{todo.body && todo.body}</div>
-            <div className="pointer-events-none">Created at:{todo.createdAt}</div>
+            <div className="pointer-events-none">{todo.createdAt}</div>
             <div className="pointer-events-none">done: {todo.completed.toString()} </div>
           </div>
         )

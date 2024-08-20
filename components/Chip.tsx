@@ -87,17 +87,18 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
       onClick={(e) => (!disabled ? onClick?.(e) : undefined)}
       className={clsx(
         'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded font-medium tracking-wide transition duration-100',
-        'focus-visible:outline-none',
         'disabled:cursor-not-allowed disabled:bg-opacity-50',
         filled
           ? `${colorFilled[color]}`
           : `outline outline-offset-0 text-black ${colorOutline[color]}`,
         {
-          'text-xs py-1 px-2 h-6': size === 'small',
-          'text-sm py-1.5 px-4 h-8': size === 'medium',
-          'text-base py-2 px-6 h-10': size === 'large',
+          'text-xs px-2 h-6': size === 'small',
+          'text-sm px-4 h-8': size === 'medium',
+          'text-base px-6 h-10': size === 'large',
         },
-        onClick ? 'hover:bg-opacity-80 focus:bg-opacity-60 cursor-pointer' : 'cursor-default',
+        onClick
+          ? 'hover:bg-opacity-80 focus:bg-opacity-60 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-300'
+          : 'cursor-default focus-visible:outline-none',
       )}
       ref={ref}
       {...props}
