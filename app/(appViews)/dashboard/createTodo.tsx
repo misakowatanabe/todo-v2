@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useId, useMemo, useState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { useAppContext } from 'app/appContext'
 import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
@@ -8,6 +9,11 @@ import { Button } from 'components/Button'
 import { Chip, ChipColor } from 'components/Chip'
 import { Dropdown } from 'components/Dropdown'
 import { Todo, create } from 'app/actions'
+
+function Submit() {
+  const { pending } = useFormStatus()
+  return <Button type="submit" label={pending ? 'Creating...' : 'Create Todo'} disabled={pending} />
+}
 
 export default function CreateTodo() {
   const { labels: availableLabels } = useAppContext()
@@ -95,7 +101,7 @@ export default function CreateTodo() {
         <label htmlFor={bodyInputId}>Body:</label>
         <input id={bodyInputId} name="body" type="text" />
         <Button type="reset" label="Reset form" style="text" />
-        <Button type="submit" label="Create Todo" />
+        <Submit />
       </form>
       {error && (
         <div className="flex labels-center text-red-700">
