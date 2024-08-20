@@ -61,18 +61,34 @@ export default function CreateTodo() {
     return selected
   }, [availableLabels, labels])
 
+  const icon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      aria-labelledby="title-ac01 desc-ac01"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+    </svg>
+  )
+
   return (
     <div>
       Label:
-      {selectedLabels.map((el, idx) => (
-        <Chip
-          key={idx}
-          label={el.label}
-          onRemove={() => onRemove(el.label)}
-          color={el.color as ChipColor}
-        />
-      ))}
-      <Dropdown label="Add label" items={nonSelectedLabels} setItems={setLabels} />
+      <div className="flex gap-2">
+        {selectedLabels.map((el, idx) => (
+          <Chip
+            key={idx}
+            label={el.label}
+            onRemove={() => onRemove(el.label)}
+            color={el.color as ChipColor}
+          />
+        ))}
+        <Dropdown label="Add label" items={nonSelectedLabels} setItems={setLabels} icon={icon} />
+      </div>
       <form autoComplete="off" action={onSubmitTodo}>
         <label htmlFor={titleInputId}>Title:</label>
         <input id={titleInputId} name="title" type="text" />

@@ -1,17 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Chip } from './Chip'
 
 type DropdownProps = {
   label: string
   items: string[]
   setItems: React.Dispatch<React.SetStateAction<string[]>>
+  icon?: ReactNode
 }
 
-export const Dropdown = ({ label, items, setItems }: DropdownProps) => {
+export const Dropdown = ({ label, items, setItems, icon }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [currentItem, setCurrentItem] = useState<number>(0)
   const wrapperRef = useRef<HTMLButtonElement>(null)
-  const testRef = useRef<HTMLUListElement>(null)
+  const dropdownRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
@@ -41,7 +42,7 @@ export const Dropdown = ({ label, items, setItems }: DropdownProps) => {
       }
 
       // Add an item at the end when clicking one of the dropdown items
-      if (testRef.current && testRef.current.contains(e.target)) {
+      if (dropdownRef.current && dropdownRef.current.contains(e.target)) {
         setItems((prev) => [...prev, items[currentItem]])
         setIsOpen(false)
         setCurrentItem(0)
@@ -111,6 +112,7 @@ export const Dropdown = ({ label, items, setItems }: DropdownProps) => {
     <div className="relative inline-flex" id="dropdown">
       <Chip
         label={label}
+        icon={icon}
         // only to satisfy visual effect as a clickable button
         onClick={() => {}}
         onMouseLeave={handleMouseLeave}
@@ -118,7 +120,7 @@ export const Dropdown = ({ label, items, setItems }: DropdownProps) => {
         aria-expanded={isOpen ? true : false}
       />
       <ul
-        ref={testRef}
+        ref={dropdownRef}
         className={`${
           isOpen ? 'flex' : 'hidden'
         } absolute top-full z-10 mt-1 flex w-72 list-none flex-col rounded bg-white py-2 shadow-md shadow-gray-500/10 outline outline-offset-0 outline-gray-100`}
