@@ -73,7 +73,6 @@ const contents = (
 export const Primary: Story = {
   args: {
     title: 'Title',
-    contents: contents,
   },
   render: function Render(args) {
     const [isShowing, setIsShowing] = useState(false)
@@ -88,7 +87,9 @@ export const Primary: Story = {
         isShowing={isShowing}
         openButton={openButton}
         okButton={okButton}
-      />
+      >
+        {contents}
+      </Modal>
     )
   },
 }

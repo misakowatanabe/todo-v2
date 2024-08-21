@@ -97,7 +97,7 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
           'text-base px-6 h-10': size === 'large',
         },
         onClick
-          ? 'hover:bg-opacity-80 focus:bg-opacity-60 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-300'
+          ? 'hover:bg-opacity-80 focus:bg-opacity-60 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500'
           : 'cursor-default focus-visible:outline-none',
       )}
       ref={ref}

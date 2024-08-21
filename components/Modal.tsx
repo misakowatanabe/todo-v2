@@ -15,7 +15,7 @@ type ModalProps = {
   setIsShowing: React.Dispatch<React.SetStateAction<boolean>>
   isShowing: boolean
   title: string
-  contents: ReactNode
+  children: ReactNode
 }
 
 function Header({ setIsShowing, title }: HeaderProps) {
@@ -71,7 +71,7 @@ export default function Modal({
   setIsShowing,
   isShowing,
   title,
-  contents,
+  children,
 }: ModalProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
 
@@ -157,13 +157,13 @@ export default function Modal({
             >
               <div
                 ref={wrapperRef}
-                className="flex max-h-[90vh] max-w-sm flex-col gap-4 overflow-hidden rounded bg-white p-6 text-gray-500 shadow-xl shadow-gray-700/10"
+                className="flex max-h-[90vh] w-3/4 lg:w-2/4 flex-col gap-4 overflow-hidden rounded bg-white p-6 text-gray-500 shadow-xl shadow-gray-700/10"
                 id="modal"
                 role="document"
               >
                 <Header setIsShowing={setIsShowing} title={title} />
                 <div id="content-4a" className="flex-1">
-                  {contents}
+                  {children}
                 </div>
                 <Footer setIsShowing={setIsShowing} okButton={okButton} />
               </div>

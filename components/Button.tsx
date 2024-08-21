@@ -33,7 +33,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       type={type}
       className={clsx(
         'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium rounded-full cursor-pointer leading-none',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-300',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500',
         !disabled && {
           'text-white bg-black': style === 'primary',
           'text-black outline outline-offset-0 outline-black bg-transparent': style === 'secondary',
