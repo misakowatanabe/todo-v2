@@ -10,6 +10,7 @@ const config: Config = {
       white: '#ffffff',
       black: '#222222',
       gray: colors.gray,
+      red: colors.red,
       raspberry: '#EC4899',
       honey: '#E29C15',
       blueberry: '#4D89DD',

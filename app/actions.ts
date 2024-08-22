@@ -2,6 +2,7 @@
 
 import { ENDPOINT } from 'app/config'
 import { cookies } from 'next/headers'
+import { ChipColor } from 'components/Chip'
 
 export type Todo = {
   todoId: string
@@ -10,6 +11,11 @@ export type Todo = {
   createdAt: string
   labels?: string[]
   completed: boolean
+}
+
+export type Label = {
+  label: string
+  color: ChipColor
 }
 
 /** Data passed from server component to client one must be serializable.
@@ -99,4 +105,25 @@ export async function updateOrder(order: string[]) {
   })
 
   return res.ok
+}
+
+export async function createLabel(label: Label): Promise<{
+  ok: boolean
+  error: string
+}> {
+  const res = await fetch(`${ENDPOINT}/createLabel`, {
+    method: 'POST',
+    body: JSON.stringify(label),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+  })
+
+  if (!res.ok) {
+    const error = await res.text()
+    return { ok: false, error: error }
+  }
+
+  return { ok: true, error: '' }
 }

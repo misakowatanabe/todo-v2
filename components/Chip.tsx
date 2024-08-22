@@ -1,19 +1,22 @@
 import React, { ReactNode, forwardRef } from 'react'
 import clsx from 'clsx'
 
-export type ChipColor =
-  | 'default'
-  | 'raspberry'
-  | 'honey'
-  | 'blueberry'
-  | 'greenApple'
-  | 'orange'
-  | 'midnight'
-  | 'powderPink'
-  | 'sky'
-  | 'lemon'
-  | 'lime'
-  | 'dreamyPurple'
+export const colorOptions = [
+  'default',
+  'raspberry',
+  'honey',
+  'blueberry',
+  'greenApple',
+  'orange',
+  'midnight',
+  'powderPink',
+  'sky',
+  'lemon',
+  'lime',
+  'dreamyPurple',
+] as const
+
+export type ChipColor = (typeof colorOptions)[number]
 
 type ChipProps = {
   style?: 'outline' | 'filled'
@@ -38,7 +41,6 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
     onClick,
     disabled = false,
     onRemove,
-    ...props
   }: ChipProps,
   ref,
 ) {
@@ -86,7 +88,7 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
     <button
       onClick={(e) => (!disabled ? onClick?.(e) : undefined)}
       className={clsx(
-        'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded font-medium tracking-wide transition duration-100',
+        'inline-flex items-center justify-center gap-2 w-fit whitespace-nowrap rounded font-medium tracking-wide transition duration-100',
         'disabled:cursor-not-allowed disabled:bg-opacity-50',
         filled
           ? `${colorFilled[color]}`
@@ -97,11 +99,10 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
           'text-base px-6 h-10': size === 'large',
         },
         onClick
-          ? 'hover:bg-opacity-80 focus:bg-opacity-60 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500'
+          ? 'hover:bg-opacity-80 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500'
           : 'cursor-default focus-visible:outline-none',
       )}
       ref={ref}
-      {...props}
     >
       {icon && (
         <div

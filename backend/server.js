@@ -172,6 +172,55 @@ app.post('/updateOrder', (req, res) => {
   })()
 })
 
+// create a new label
+app.post('/createLabel', (req, res) => {
+  ;(async () => {
+    createLabels: try {
+      const labels = await db.collection(uid).doc('labels').get()
+      const labelsData = labels.data()
+      const objectName = req.body.label.replace(/ /g, '_').toLowerCase()
+
+      // create a labels doc if there is none, ex: when creating the first label after signup
+      if (!labelsData) {
+        await db
+          .collection(uid)
+          .doc('labels')
+          .set({
+            [objectName]: {
+              label: req.body.label,
+              color: req.body.color,
+            },
+          })
+
+        res.sendStatus(200)
+
+        break createLabels
+      }
+
+      const isNotDuplicated = Object.keys(labelsData).every((el) => el !== objectName)
+
+      if (isNotDuplicated) {
+        await db
+          .collection(uid)
+          .doc('labels')
+          .update({
+            [objectName]: {
+              label: req.body.label,
+              color: req.body.color,
+            },
+          })
+
+        res.sendStatus(200)
+      } else {
+        res.status(400).send('This label name already exists.')
+      }
+    } catch (err) {
+      // TODO: report and monitor this error
+      res.status(400).send('Something went wrong. Could not create a label.')
+    }
+  })()
+})
+
 // update auth user profile
 app.post('/updateUser', (req, res) => {
   ;(async () => {
