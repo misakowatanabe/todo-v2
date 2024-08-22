@@ -35,16 +35,23 @@ export default function CreateLabel() {
 
   const onSubmitTodo = async (formData: FormData) => {
     setError(null)
+    const labelName = formData.get('label') as string
 
-    if (!color || !formData.get('label')) {
+    if (!color || !labelName) {
       setError('Please select both label name and color.')
 
       return
     }
 
-    // TODO: add validation for name input
+    const isNotAllowed = /[!*'();:[\]@&=+$,/?%#_]/.test(labelName)
+    if (isNotAllowed) {
+      setError("Please do not include these characters: ! * ' ( ) ; : @ & = + $ , / ? % # _ [ ]")
+
+      return
+    }
+
     const label: Label = {
-      label: formData.get('label') as string,
+      label: labelName,
       color: color,
     }
 

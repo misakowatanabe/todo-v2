@@ -7,7 +7,8 @@ export function middleware(request: NextRequest) {
   if (
     userLoggedIn &&
     !request.nextUrl.pathname.startsWith('/dashboard') &&
-    !request.nextUrl.pathname.startsWith('/account')
+    !request.nextUrl.pathname.startsWith('/account') &&
+    !request.nextUrl.pathname.startsWith('/label/:path')
   ) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
@@ -15,7 +16,8 @@ export function middleware(request: NextRequest) {
   if (
     !userLoggedIn &&
     !request.nextUrl.pathname.startsWith('/signin') &&
-    !request.nextUrl.pathname.startsWith('/signup')
+    !request.nextUrl.pathname.startsWith('/signup') &&
+    !request.nextUrl.pathname.startsWith('/label/:path')
   ) {
     return NextResponse.redirect(new URL('/signin', request.url))
   }
@@ -24,5 +26,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard', '/account', '/signin', '/signup'],
+  matcher: ['/dashboard', '/label/:path', '/account', '/signin', '/signup'],
 }
