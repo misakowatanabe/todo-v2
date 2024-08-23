@@ -5,7 +5,7 @@ type ButtonProps = {
   style?: 'primary' | 'secondary' | 'text'
   size?: 'small' | 'medium' | 'large'
   backgroundColor?: string
-  label: string
+  label?: string
   icon?: ReactNode
   type?: 'button' | 'submit' | 'reset'
   onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
@@ -49,6 +49,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
           'text-xs px-4 h-8': size === 'small',
           'text-sm px-5 h-10': size === 'medium',
           'text-base px-6 h-12': size === 'large',
+        },
+        {
+          'w-8': size === 'small' && !label,
+          'w-10': size === 'medium' && !label,
+          'w-12': size === 'large' && !label,
         },
       )}
       onClick={!disabled ? onClick : undefined}
