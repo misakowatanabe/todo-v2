@@ -46,10 +46,10 @@ export default function LabelList() {
 
   return (
     <>
-      {labels.map((el) => (
-        <div key={el.label} className="flex justify-between items-center">
+      {labels.map((el, idx) => (
+        <div key={idx} className="flex justify-between items-center">
           <Link
-            href={`/label/${el.label.replace(/ /g, '_').toLowerCase()}`}
+            href={`/label/${el.label.replace(/ /g, '_')}`}
             className="flex justify-start gap-3 w-full items-center"
           >
             <LabelIcon labelColor={el.color} />

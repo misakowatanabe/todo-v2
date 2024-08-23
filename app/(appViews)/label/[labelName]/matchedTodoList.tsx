@@ -1,32 +1,24 @@
 'use client'
 
 import { useAppContext } from 'app/appContext'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Chip, ChipColor } from 'components/Chip'
 
 type MatchedTodoListProps = { labelParam: string }
 
 export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
   const { todos, labels, socketError } = useAppContext()
-  const [title, setTitle] = useState<string | null>(null)
 
   const matchedTodos = useMemo(
     () =>
       todos.filter((el) => {
         if (!el.labels) return false
 
-        const labels = el.labels.map((el) => el.replace(/ /g, '_').toLowerCase())
+        const labels = el.labels.map((el) => el.replace(/ /g, '_'))
         return labels.includes(labelParam)
       }),
     [todos, labelParam],
   )
-
-  useEffect(() => {
-    const matched = labels.find((el) => el.label.toLowerCase() === labelParam.replace(/_/g, ' '))
-    if (matched) {
-      setTitle(matched.label)
-    }
-  }, [labelParam, labels])
 
   const getLabelColor = (label: string) => {
     return (labels.find((el) => el.label === label)?.color ?? 'default') as ChipColor
@@ -34,7 +26,7 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
 
   return (
     <div>
-      <div>{title}</div>
+      <div>{labelParam.replace(/_/g, ' ')}</div>
       <div className="text-red-700">{socketError}</div>
       {matchedTodos.length === 0 ? (
         <div>There are no tasks with this label.</div>
