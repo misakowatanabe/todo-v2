@@ -1,70 +1,54 @@
 'use client'
 
-import React, { useEffect, useId, useMemo, useState, useTransition } from 'react'
 import { useAppContext } from 'app/appContext'
-import { format } from 'date-fns'
-import { nanoid } from 'nanoid'
-import { Button } from 'components/Button'
+import { useMemo, useState, useTransition } from 'react'
+import { Todo, update } from 'app/actions'
 import { Chip, ChipColor } from 'components/Chip'
+import Drawer from 'components/Drawer'
+import { Button } from 'components/Button'
 import { Dropdown } from 'components/Dropdown'
-import Modal from 'components/Modal'
-import { Todo, create } from 'app/actions'
 
-type SubmitProps = { isPending: boolean }
-
-function Submit({ isPending }: SubmitProps) {
-  return (
-    <Button
-      type="submit"
-      label={isPending ? 'Creating...' : 'Create'}
-      disabled={isPending}
-      form="form-new-task"
-    />
-  )
+type TodoDetailProps = {
+  isOpen: boolean
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  selectedTodo: Todo
+  labels: string[]
+  setLabels: React.Dispatch<React.SetStateAction<string[]>>
 }
 
-export default function CreateTodo() {
+export default function TodoDetail({
+  isOpen,
+  setIsOpen,
+  selectedTodo,
+  labels,
+  setLabels,
+}: TodoDetailProps) {
   const { labels: availableLabels } = useAppContext()
-  const [error, setError] = useState(false)
-  const titleInputId = useId()
-  const bodyInputId = useId()
-  const [labels, setLabels] = useState<string[]>([])
-  const [isShowing, setIsShowing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  useEffect(() => {
-    if (!isShowing) setLabels([])
-  }, [isShowing])
-
   const onSubmitTodo = async (formData: FormData) => {
-    setError(false)
-    const date = format(new Date(), 'yyyy-MM-dd')
-    const id = nanoid(8)
+    setError(null)
+    if (!selectedTodo) return
 
     // TODO: add validation for mandatory inputs
-    const todo: Todo = {
-      todoId: id,
+    const todo: Omit<Todo, 'createdAt'> = {
+      todoId: selectedTodo.todoId,
       title: (formData.get('title') ?? '<No title>') as string,
       body: !formData.get('body') ? undefined : (formData.get('body') as string),
-      createdAt: date,
       labels: labels,
       completed: false,
     }
 
     startTransition(async () => {
-      const resOk = await create(todo)
+      const res = await update(todo)
 
-      if (!resOk) {
-        setError(true)
+      if (!res.ok) {
+        setError(res.error)
       } else {
-        setIsShowing(false)
-        setLabels([])
+        setIsOpen(false)
       }
     })
-  }
-
-  const onRemove = (item: string) => {
-    setLabels((prev) => prev.filter((el) => el !== item))
   }
 
   const nonSelectedLabels = useMemo(() => {
@@ -82,6 +66,10 @@ export default function CreateTodo() {
     return selected
   }, [availableLabels, labels])
 
+  const onRemove = (item: string) => {
+    setLabels((prev) => prev.filter((el) => el !== item))
+  }
+
   const plusIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -96,33 +84,17 @@ export default function CreateTodo() {
     </svg>
   )
 
-  const openButton = (
-    <Button
-      onClick={() => setIsShowing(true)}
-      label="New task"
-      icon={plusIcon}
-      style="secondary"
-      size="large"
-    />
-  )
-
   return (
-    <Modal
-      title="New task"
-      setIsShowing={setIsShowing}
-      isShowing={isShowing}
-      openButton={openButton}
-      okButton={<Submit isPending={isPending} />}
-    >
+    <Drawer isOpen={isOpen} setIsOpen={setIsOpen}>
       {error && (
         <div className="flex labels-center text-red-700">
-          <div>Failed to create a todo</div>
+          <div>{error}</div>
           <Button
             type="button"
             style="text"
             size="small"
             label="OK"
-            onClick={() => setError(false)}
+            onClick={() => setError(null)}
           />
         </div>
       )}
@@ -131,20 +103,20 @@ export default function CreateTodo() {
           autoComplete="off"
           action={onSubmitTodo}
           className="flex flex-col gap-2"
-          id="form-new-task"
+          id="form-task"
         >
           <input
-            id={titleInputId}
             name="title"
             type="text"
             placeholder="Task title"
+            defaultValue={selectedTodo.title}
             disabled={isPending}
           />
           <input
-            id={bodyInputId}
             name="body"
             type="text"
             placeholder="Add description..."
+            defaultValue={selectedTodo.body}
             disabled={isPending}
           />
         </form>
@@ -167,7 +139,22 @@ export default function CreateTodo() {
             />
           </div>
         </div>
+        <div className="flex gap-4">
+          <Button
+            type="submit"
+            label={isPending ? 'Saving...' : 'Save'}
+            disabled={isPending}
+            form="form-task"
+          />
+          <Button
+            onClick={() => setIsOpen(false)}
+            style="text"
+            label="Cancel"
+            aria-label="Side drawer"
+            aria-controls="basic-drawer"
+          />
+        </div>
       </div>
-    </Modal>
+    </Drawer>
   )
 }

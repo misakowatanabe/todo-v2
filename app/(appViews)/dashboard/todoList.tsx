@@ -4,10 +4,14 @@ import { useAppContext } from 'app/appContext'
 import { useEffect, useRef, useState } from 'react'
 import { Todo, updateOrder } from 'app/actions'
 import { Chip, ChipColor } from 'components/Chip'
+import TodoDetail from './todoDetail'
 
 export default function TodoList() {
-  const { todos, labels, socketError } = useAppContext()
+  const { todos, labels: availableLabels, socketError } = useAppContext()
   const [localOrderedTodos, setLocalOrderedTodos] = useState<Todo[]>([])
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
+  const [labels, setLabels] = useState<string[]>([])
+  const [isOpen, setIsOpen] = useState(false)
   const dragItem = useRef('')
   const dragOverItem = useRef('')
 
@@ -16,6 +20,13 @@ export default function TodoList() {
 
     setLocalOrderedTodos(todos)
   }, [todos])
+
+  useEffect(() => {
+    if (isOpen) return
+
+    setLabels([])
+    setSelectedTodo(null)
+  }, [isOpen])
 
   const dragStart = (e: React.DragEvent<HTMLDivElement>) => {
     dragItem.current = (e.target as HTMLTableRowElement).id
@@ -48,7 +59,14 @@ export default function TodoList() {
   }
 
   const getLabelColor = (label: string) => {
-    return (labels.find((el) => el.label === label)?.color ?? 'default') as ChipColor
+    return (availableLabels.find((el) => el.label === label)?.color ?? 'default') as ChipColor
+  }
+
+  const openTodo = (todo: Todo) => {
+    setIsOpen(true)
+    setSelectedTodo(todo)
+
+    if (todo.labels) setLabels(todo.labels)
   }
 
   return (
@@ -66,6 +84,7 @@ export default function TodoList() {
             onDragEnter={(e) => dragEnter(e)}
             onDragEnd={(e) => e.preventDefault()}
             onDrop={drop}
+            onClick={() => openTodo(todo)}
           >
             <div className="flex gap-2">
               <div className="pointer-events-none text-gray-400">{todo.todoId}</div>
@@ -83,6 +102,15 @@ export default function TodoList() {
           </div>
         )
       })}
+      {selectedTodo && (
+        <TodoDetail
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          selectedTodo={selectedTodo}
+          labels={labels}
+          setLabels={setLabels}
+        />
+      )}
     </div>
   )
 }

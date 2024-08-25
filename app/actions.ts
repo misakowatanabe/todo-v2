@@ -40,6 +40,24 @@ export async function create(todo: Todo) {
   return res.ok
 }
 
+export async function update(todo: Omit<Todo, 'createdAt'>) {
+  const res = await fetch(`${ENDPOINT}/update`, {
+    method: 'PUT',
+    body: JSON.stringify(todo),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+  })
+
+  if (!res.ok) {
+    const error = await res.text()
+    return { ok: false, error: error }
+  }
+
+  return { ok: true, error: '' }
+}
+
 export async function sendIdToken(idToken: string) {
   const res = await fetch(`${ENDPOINT}/sendIdToken`, {
     method: 'POST',

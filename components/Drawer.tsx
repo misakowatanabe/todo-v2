@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 import clsx from 'clsx'
 
 type DrawerProps = {
-  openButton: ReactNode
+  openButton?: ReactNode
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   isOpen: boolean
   children: ReactNode

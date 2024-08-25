@@ -397,22 +397,48 @@ app.post('/create', (req, res) => {
 })
 
 // update todo
-app.put('/update/:todoId', (req, res) => {
+app.put('/update', (req, res) => {
   ;(async () => {
-    try {
-      const document = db
-        .collection(req.body.userUid)
-        .doc('todos')
-        .collection('active')
-        .doc(req.params.todoId)
-      await document.update({
-        title: req.body.title,
-        body: req.body.body,
-        updatedAt: req.body.updatedAt,
-      })
-      return res.status(200).json({ message: 200 })
-    } catch (error) {
-      return res.status(500).json({ message: 500 })
+    updateTodo: try {
+      const todos = await db.collection(uid).doc('todos').get()
+      const todosData = todos.data()
+
+      if (!todosData) {
+        res.status(400).send('Oops! This todo was already removed.')
+
+        break updateTodo
+      }
+
+      const id = req.body.todoId
+
+      const title = `${id}.title`
+      const body = `${id}.body`
+      const labels = `${id}.labels`
+      const completed = `${id}.completed`
+
+      const todoObject = {}
+
+      if (req.body.title) {
+        todoObject[title] = req.body.title
+      }
+
+      if (req.body.body) {
+        todoObject[body] = req.body.body
+      }
+
+      if (req.body.labels) {
+        todoObject[labels] = req.body.labels
+      }
+
+      if (req.body.completed) {
+        todoObject[completed] = req.body.completed
+      }
+
+      await db.collection(uid).doc('todos').update(todoObject)
+
+      res.sendStatus(200)
+    } catch (err) {
+      res.status(400).send(err.details)
     }
   })()
 })
