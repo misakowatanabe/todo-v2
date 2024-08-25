@@ -7,6 +7,7 @@ import { Chip, ChipColor } from 'components/Chip'
 import Drawer from 'components/Drawer'
 import { Button } from 'components/Button'
 import { Dropdown } from 'components/Dropdown'
+import { Textarea } from 'components/Textarea'
 
 type TodoDetailProps = {
   isOpen: boolean
@@ -112,17 +113,17 @@ export default function TodoDetail({
             defaultValue={selectedTodo.title}
             disabled={isPending}
           />
-          <input
+          <Textarea
             name="body"
-            type="text"
             placeholder="Add description..."
             defaultValue={selectedTodo.body}
             disabled={isPending}
+            rows={6}
           />
         </form>
         <div className="flex flex-col gap-4">
           <div className="text-sm text-gray-500">Labels</div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {selectedLabels.map((el, idx) => (
               <Chip
                 key={idx}
