@@ -444,18 +444,45 @@ app.put('/update', (req, res) => {
 })
 
 // delete todo
-app.delete('/delete/:userUid/:todoId', (req, res) => {
+app.delete('/delete', (req, res) => {
   ;(async () => {
     try {
-      const document = db
-        .collection(req.params.userUid)
+      // Remove the selected todo (ID) field from the todos doc
+      await db
+        .collection(uid)
         .doc('todos')
-        .collection('active')
-        .doc(req.params.todoId)
-      await document.delete()
-      return res.status(200).json({ message: 200 })
-    } catch (error) {
-      return res.status(500).json({ message: 500 })
+        .update({
+          [req.body.todoId]: FieldValue.delete(),
+        })
+    } catch (err) {
+      res.status(400).send(err.details)
+    }
+
+    try {
+      const order = await db.collection(uid).doc('order').get()
+      const orderData = order.data()
+      const indexOfTodoId = orderData.active.indexOf(req.body.todoId)
+
+      // Remove the todo ID from the order doc
+      await db
+        .collection(uid)
+        .doc('order')
+        .update({
+          active: FieldValue.arrayRemove(...orderData.active),
+        })
+
+      orderData.active.splice(indexOfTodoId, 1)
+
+      await db
+        .collection(uid)
+        .doc('order')
+        .update({
+          active: FieldValue.arrayUnion(...orderData.active),
+        })
+
+      res.sendStatus(200)
+    } catch (err) {
+      res.status(400).send(err.details)
     }
   })()
 })

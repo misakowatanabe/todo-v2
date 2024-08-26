@@ -10,7 +10,7 @@ type FooterProps = {
 }
 
 type ModalProps = {
-  openButton: ReactNode
+  openButton?: ReactNode
   okButton: ReactNode
   setIsShowing: React.Dispatch<React.SetStateAction<boolean>>
   isShowing: boolean

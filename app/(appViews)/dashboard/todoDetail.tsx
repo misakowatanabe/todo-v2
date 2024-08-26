@@ -29,7 +29,6 @@ export default function TodoDetail({
   const [isPending, startTransition] = useTransition()
 
   const onSubmitTodo = async (formData: FormData) => {
-    setError(null)
     if (!selectedTodo) return
 
     // TODO: add validation for mandatory inputs
