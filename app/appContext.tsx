@@ -17,6 +17,7 @@ type Error = string | null
 type AppContextType = {
   user: User | null
   todos: Todo[]
+  completedTodos: Todo[]
   labels: Label[]
   socketError: Error
   globalError: Error
@@ -33,6 +34,7 @@ type AppContextProps = { children: React.ReactNode }
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
   const [todos, setTodos] = useState<Todo[]>([])
+  const [completedTodos, setCompletedTodos] = useState<Todo[]>([])
   const [user, setUser] = useState<User | null>(null)
   const [labels, setLabels] = useState<Label[]>([])
   const [socketError, setSocketError] = useState<Error>(null)
@@ -69,8 +71,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         setSocketError('Todo data is not found')
       } else {
         setSocketError(null)
-        socket.on('todos', (todoList: Todo[]) => {
-          setTodos(todoList)
+        socket.on('todos', (todoList: { todoListActive: Todo[]; todoListCompleted: Todo[] }) => {
+          setTodos(todoList.todoListActive)
+          setCompletedTodos(todoList.todoListCompleted)
         })
         socket.on('labels', (labelList: Label[]) => {
           setLabels(labelList)
@@ -117,7 +120,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     return () => clearInterval(interval)
   }, [user, router])
 
-  const value = { user, todos, labels, socketError, globalError }
+  const value = { user, todos, completedTodos, labels, socketError, globalError }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

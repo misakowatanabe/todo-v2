@@ -92,11 +92,16 @@ app.post('/sendIdToken', (req, res) => {
             const orderData = order.data()
             const todosData = docSnapshot.data()
             let todoListActive = []
+            let todoListCompleted = []
 
             // Skip filtering active todos unless there is any todo
             if (todosData) {
               todoListActive = Object.values(todosData).filter((el) => {
                 return !el.completed
+              })
+
+              todoListCompleted = Object.values(todosData).filter((el) => {
+                return el.completed
               })
             }
 
@@ -106,6 +111,11 @@ app.post('/sendIdToken', (req, res) => {
               todoListActive.sort((a, b) => {
                 return activeOrder.indexOf(a.todoId) - activeOrder.indexOf(b.todoId)
               })
+
+              const completedOrder = orderData.completed
+              todoListCompleted.sort((a, b) => {
+                return completedOrder.indexOf(a.todoId) - completedOrder.indexOf(b.todoId)
+              })
             }
 
             // TODO: add this with sorting function based on when last updated, then import it to frontend
@@ -113,7 +123,7 @@ app.post('/sendIdToken', (req, res) => {
             //   return el.completed
             // })
 
-            connectionSocket.emit('todos', todoListActive)
+            connectionSocket.emit('todos', { todoListActive, todoListCompleted })
           },
           (err) => {
             // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
@@ -482,6 +492,91 @@ app.delete('/delete', (req, res) => {
 
       res.sendStatus(200)
     } catch (err) {
+      res.status(400).send(err.details)
+    }
+  })()
+})
+
+app.put('/tick', (req, res) => {
+  ;(async () => {
+    tickTodo: try {
+      const todos = await db.collection(uid).doc('todos').get()
+      const todosData = todos.data()
+
+      if (!todosData) {
+        res.status(400).send('Oops! This todo was already removed.')
+
+        break tickTodo
+      }
+
+      const id = req.body.todoId
+      const completed = `${id}.completed`
+
+      await db
+        .collection(uid)
+        .doc('todos')
+        .update({
+          [completed]: true,
+        })
+
+      res.sendStatus(200)
+    } catch (err) {
+      res.status(400).send(err.details)
+    }
+
+    modifyOrder: try {
+      const order = await db.collection(uid).doc('order').get()
+      const orderData = order.data()
+      const indexOfTodoId = orderData.active.indexOf(req.body.todoId)
+
+      // Remove the completed todo ID from active todo's order array
+      await db
+        .collection(uid)
+        .doc('order')
+        .update({
+          active: FieldValue.arrayRemove(...orderData.active),
+        })
+
+      orderData.active.splice(indexOfTodoId, 1)
+
+      await db
+        .collection(uid)
+        .doc('order')
+        .update({
+          active: FieldValue.arrayUnion(...orderData.active),
+        })
+
+      // when there is at least 1 completed todo
+      if (orderData.completed.length !== 0) {
+        await db
+          .collection(uid)
+          .doc('order')
+          .update({
+            completed: FieldValue.arrayRemove(...orderData.completed),
+          })
+
+        // Add the todo ID to index 0 in completed todos array in the order doc
+        orderData.completed.splice(0, 0, req.body.todoId)
+
+        await db
+          .collection(uid)
+          .doc('order')
+          .update({
+            completed: FieldValue.arrayUnion(...orderData.completed),
+          })
+
+        break modifyOrder
+      }
+
+      // when there is no completed todo, but there is order doc with empty array, ex: first time to tick, or after deleting all completed todos
+      await db
+        .collection(uid)
+        .doc('order')
+        .update({
+          completed: [req.body.todoId],
+        })
+    } catch (err) {
+      // The update will fail if applied to a document that does not exist
       res.status(400).send(err.details)
     }
   })()

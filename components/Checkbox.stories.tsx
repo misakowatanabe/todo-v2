@@ -25,7 +25,7 @@ export const Controlled: Story = {
       setChecked((prev) => !prev)
     }
 
-    return <Checkbox checked={checked} onchange={handleChange} id="test-id" />
+    return <Checkbox checked={checked} onChange={handleChange} id="test-id" />
   },
 }
 
