@@ -1,10 +1,10 @@
 'use client'
 
-import Link from 'next/link'
 import { useAppContext } from 'app/appContext'
 import clsx from 'clsx'
 import CreateLabel from './createLabel'
 import RemoveLabel from './removeLabel'
+import { ListItem } from './listItem'
 
 type ColorVariants = Record<string, string>
 
@@ -48,19 +48,13 @@ export default function LabelList() {
     <div className="grow">
       <div className="text-sm text-gray-500 mt-6 mx-3">Labels</div>
       {labels.map((el, idx) => (
-        <div
+        <ListItem
           key={idx}
-          className="flex justify-between items-center group h-12 px-3 hover:bg-gray-100 rounded gap-1"
-        >
-          <Link
-            href={`/label/${el.label.replace(/ /g, '_')}`}
-            className="flex justify-start gap-3 w-full items-center"
-          >
-            <LabelIcon labelColor={el.color} />
-            <div>{el.label}</div>
-          </Link>
-          <RemoveLabel label={el.label} />
-        </div>
+          label={el.label}
+          icon={<LabelIcon labelColor={el.color} />}
+          href={`/label/${el.label.replace(/ /g, '_')}`}
+          action={<RemoveLabel label={el.label} />}
+        />
       ))}
       <CreateLabel />
     </div>

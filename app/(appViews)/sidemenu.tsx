@@ -1,10 +1,10 @@
-import Link from 'next/link'
 import CreateTodo from './createTodo'
 import LabelList from './labelList'
-import Header from './header'
+import Logout from './logout'
+import { ListItem } from './listItem'
 
 export default function Sidemenu() {
-  const LabelIcon = () => (
+  const LabelIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -43,23 +43,15 @@ export default function Sidemenu() {
         {clipIcon}
         <CreateTodo />
       </div>
-      <div className="flex justify-between items-center group h-12 px-3 hover:bg-gray-100 rounded gap-1 my-3">
-        <Link href="/dashboard" className="flex justify-start gap-3 w-full items-center">
-          <LabelIcon />
-          <div>All</div>
-        </Link>
+      <div className="my-3">
+        <ListItem label="All" icon={LabelIcon} href="/dashboard" />
       </div>
       <hr />
       <LabelList />
       <hr />
       <div className="my-3">
-        <div className="flex justify-between items-center group h-12 px-3 hover:bg-gray-100 rounded gap-1">
-          <Link href="/account" className="flex justify-start gap-3 w-full items-center">
-            <LabelIcon />
-            <div>Account</div>
-          </Link>
-        </div>
-        <Header />
+        <ListItem label="Account" icon={LabelIcon} href="/account" />
+        <Logout />
       </div>
     </div>
   )
