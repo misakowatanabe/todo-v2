@@ -45,9 +45,13 @@ export default function LabelList() {
   )
 
   return (
-    <>
+    <div className="grow">
+      <div className="text-sm text-gray-500 mt-6 mx-3">Labels</div>
       {labels.map((el, idx) => (
-        <div key={idx} className="flex justify-between items-center">
+        <div
+          key={idx}
+          className="flex justify-between items-center group h-12 px-3 hover:bg-gray-100 rounded gap-1"
+        >
           <Link
             href={`/label/${el.label.replace(/ /g, '_')}`}
             className="flex justify-start gap-3 w-full items-center"
@@ -59,6 +63,6 @@ export default function LabelList() {
         </div>
       ))}
       <CreateLabel />
-    </>
+    </div>
   )
 }

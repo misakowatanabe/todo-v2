@@ -61,7 +61,13 @@ export default function RemoveLabel({ label }: RemoveLabelProps) {
   )
 
   const openButton = (
-    <Button icon={crossIcon} size="small" style="text" onClick={() => setIsShowing(true)} />
+    <Button
+      className="hidden group-hover:flex justify-center hover:bg-gray-200 rounded-full"
+      icon={crossIcon}
+      size="small"
+      style="text"
+      onClick={() => setIsShowing(true)}
+    />
   )
 
   return (

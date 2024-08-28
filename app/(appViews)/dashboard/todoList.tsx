@@ -135,7 +135,7 @@ export default function TodoList() {
       )}
       {localOrderedTodos.map((todo) => {
         return (
-          <div key={todo.todoId} className="group flex border-t items-start">
+          <div key={todo.todoId} className="group flex border-t items-start gap-2">
             <div className="py-2">
               <Checkbox
                 onChange={() => handleTick(todo.todoId as unknown as Pick<Todo, 'todoId'>)}
@@ -145,7 +145,7 @@ export default function TodoList() {
             </div>
             <div
               id={todo.todoId}
-              className="cursor-move py-4"
+              className="cursor-pointer py-4 grow"
               onDragStart={(e) => dragStart(e)}
               onDragOver={(e) => e.preventDefault()}
               draggable={true}
@@ -156,8 +156,8 @@ export default function TodoList() {
             >
               <div className="flex justify-between items-center">
                 <div className="flex gap-2">
-                  <div className="pointer-events-none text-gray-400">{todo.todoId}</div>
                   <div className="pointer-events-none">{todo.title}</div>
+                  <div className="pointer-events-none text-gray-400">{todo.todoId}</div>
                   <div className="pointer-events-none flex gap-2">
                     {todo.labels &&
                       todo.labels.map((el) => (
@@ -172,8 +172,11 @@ export default function TodoList() {
                   {removeIcon}
                 </div>
               </div>
-              <div className="pointer-events-none text-gray-500">{todo.body && todo.body}</div>
-              <div className="pointer-events-none">{todo.createdAt}</div>
+              {todo.body && (
+                <p className="pointer-events-none text-gray-500 text-sm line-clamp-1 mt-1">
+                  {todo.body}
+                </p>
+              )}
             </div>
           </div>
         )

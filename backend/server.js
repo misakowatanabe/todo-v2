@@ -118,11 +118,6 @@ app.post('/sendIdToken', (req, res) => {
               })
             }
 
-            // TODO: add this with sorting function based on when last updated, then import it to frontend
-            // const todoListCompleted = Object.values(docSnapshot.data()).filter((el) => {
-            //   return el.completed
-            // })
-
             connectionSocket.emit('todos', { todoListActive, todoListCompleted })
           },
           (err) => {

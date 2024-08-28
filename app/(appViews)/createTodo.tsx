@@ -103,6 +103,7 @@ export default function CreateTodo() {
       icon={plusIcon}
       style="secondary"
       size="large"
+      className="w-full"
     />
   )
 

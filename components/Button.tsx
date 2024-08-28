@@ -11,6 +11,7 @@ type ButtonProps = {
   onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
   form?: string
+  className?: string
 } & React.ButtonHTMLAttributes<HTMLButtonElement>
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -24,6 +25,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     onClick,
     disabled,
     form,
+    className,
     ...props
   }: ButtonProps,
   ref,
@@ -55,6 +57,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
           'w-10': size === 'medium' && !label,
           'w-12': size === 'large' && !label,
         },
+        className,
       )}
       onClick={!disabled ? onClick : undefined}
       form={form}
