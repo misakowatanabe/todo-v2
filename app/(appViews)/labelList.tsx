@@ -10,7 +10,9 @@ type ColorVariants = Record<string, string>
 
 type LabelColor = { labelColor: string }
 
-export default function LabelList() {
+type LabelListProps = { pathname: string }
+
+export default function LabelList({ pathname }: LabelListProps) {
   const { labels } = useAppContext()
 
   // TODO: use single source of truth
@@ -54,6 +56,7 @@ export default function LabelList() {
           icon={<LabelIcon labelColor={el.color} />}
           href={`/label/${el.label.replace(/ /g, '_')}`}
           action={<RemoveLabel label={el.label} />}
+          pathname={pathname}
         />
       ))}
       <CreateLabel />

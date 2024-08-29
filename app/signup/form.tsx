@@ -58,7 +58,7 @@ export default function Form() {
       await updateUser(userData)
       await userCredential.user.reload()
       await setCookies('user_logged_in')
-      router.push('/dashboard')
+      router.push('/all')
 
       // create a welcome todo
       const date = format(new Date(), 'yyyy-MM-dd')
@@ -73,7 +73,7 @@ export default function Form() {
       }
 
       await create(todo)
-      router.push('/dashboard')
+      router.push('/all')
     } catch (error) {
       setError(true)
       console.error('Error signing up: ', error instanceof Error ? error.message : String(error))

@@ -1,9 +1,14 @@
+'use client'
+
 import CreateTodo from './createTodo'
 import LabelList from './labelList'
 import Logout from './logout'
 import { ListItem } from './listItem'
+import { usePathname } from 'next/navigation'
 
 export default function Sidemenu() {
+  const pathname = usePathname()
+
   const LabelIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -44,13 +49,13 @@ export default function Sidemenu() {
         <CreateTodo />
       </div>
       <div className="my-3">
-        <ListItem label="All" icon={LabelIcon} href="/dashboard" />
+        <ListItem label="All" icon={LabelIcon} href="/all" pathname={pathname} />
       </div>
       <hr />
-      <LabelList />
+      <LabelList pathname={pathname} />
       <hr />
       <div className="my-3">
-        <ListItem label="Account" icon={LabelIcon} href="/account" />
+        <ListItem label="Account" icon={LabelIcon} href="/account" pathname={pathname} />
         <Logout />
       </div>
     </div>

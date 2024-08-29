@@ -24,7 +24,7 @@ export default function Form() {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password)
       await setCookies('user_logged_in')
-      router.push('/dashboard')
+      router.push('/all')
     } catch (error) {
       setError(true)
       console.error('Error signing in: ', error instanceof Error ? error.message : String(error))
