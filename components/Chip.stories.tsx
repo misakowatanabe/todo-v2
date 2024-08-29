@@ -74,7 +74,7 @@ export const WithIcon: Story = {
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth={2}
         aria-labelledby="title-ac02 desc-ac02"
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

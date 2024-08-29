@@ -16,11 +16,17 @@ type ListItemProps = (
 ) & { label: string; icon: ReactNode; action?: ReactNode }
 
 export function ListItem({ href, label, icon, action, onClick, pathname }: ListItemProps) {
+  const currentPath = pathname?.toLowerCase().replace(/_/g, ' ').endsWith(label.toLowerCase())
   const className = 'flex justify-start gap-3 w-full items-center'
+
   const contents = (
     <>
-      <div>{icon}</div>
-      <div>{label}</div>
+      <div
+        className={clsx({ 'text-gray-600': pathname === undefined || !/(label)/.test(pathname) })}
+      >
+        {icon}
+      </div>
+      <div className={clsx('text-gray-700', { 'font-semibold': currentPath })}>{label}</div>
     </>
   )
 
@@ -34,8 +40,6 @@ export function ListItem({ href, label, icon, action, onClick, pathname }: ListI
       {contents}
     </div>
   )
-
-  const currentPath = pathname?.toLowerCase().replace(/_/g, ' ').endsWith(label.toLowerCase())
 
   return (
     <div

@@ -6,6 +6,7 @@ import { Chip, ChipColor, colorOptions } from 'components/Chip'
 import Modal from 'components/Modal'
 import { Label, createLabel } from 'app/actions'
 import clsx from 'clsx'
+import { ListItem } from './listItem'
 
 type SubmitProps = { isPending: boolean }
 
@@ -69,11 +70,12 @@ export default function CreateLabel() {
   const plusIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
+      width="18"
+      height="18"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth={2}
       aria-labelledby="title-ac01 desc-ac01"
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -81,13 +83,7 @@ export default function CreateLabel() {
   )
 
   const openButton = (
-    <Button
-      onClick={() => setIsShowing(true)}
-      label="New label"
-      icon={plusIcon}
-      style="text"
-      size="medium"
-    />
+    <ListItem label="New label" icon={plusIcon} onClick={() => setIsShowing(true)} />
   )
 
   return (

@@ -37,7 +37,7 @@ function Header({ setIsShowing, title }: HeaderProps) {
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth={2}
             role="graphics-symbol"
             aria-labelledby="title-79 desc-79"
           >

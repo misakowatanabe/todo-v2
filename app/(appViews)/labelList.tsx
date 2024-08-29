@@ -34,15 +34,19 @@ export default function LabelList({ pathname }: LabelListProps) {
   const LabelIcon = ({ labelColor }: LabelColor) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 24 24"
       fill="currentColor"
-      className={clsx('h-5 w-5', `${color[labelColor]}`)}
+      rotate={180}
+      stroke={color[labelColor]}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={clsx('h-5 w-5 rotate-[135deg]', `${color[labelColor]}`)}
     >
-      <path
-        fillRule="evenodd"
-        d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-        clipRule="evenodd"
-      />
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+      <line x1="7" y1="7" x2="7.01" y2="7"></line>
     </svg>
   )
 

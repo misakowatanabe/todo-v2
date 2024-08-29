@@ -57,7 +57,7 @@ export default function TodoList() {
     const todosCopy = [...localOrderedTodos]
     const dragItemContent = todosCopy.find((el) => el.todoId === dragItem.current)
     const dragOverItemContent = todosCopy.find((el) => el.todoId === dragOverItem.current)
-
+    // console.log(dragItemContent, dragOverItemContent, dragOverItem.current)
     if (!dragItemContent || !dragOverItemContent) return
 
     const dragItemContentIndex = todosCopy.indexOf(dragItemContent)
@@ -98,7 +98,7 @@ export default function TodoList() {
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth={2}
       role="graphics-symbol"
       aria-labelledby="title-79 desc-79"
     >
@@ -145,7 +145,7 @@ export default function TodoList() {
             </div>
             <div
               id={todo.todoId}
-              className="cursor-pointer py-4 grow"
+              className="py-4 grow"
               onDragStart={(e) => dragStart(e)}
               onDragOver={(e) => e.preventDefault()}
               draggable={true}
@@ -154,8 +154,8 @@ export default function TodoList() {
               onDrop={drop}
               onClick={() => openTodo(todo)}
             >
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2">
+              <div className="pointer-events-none flex justify-between items-center">
+                <div className="pointer-events-none flex gap-2">
                   <div className="pointer-events-none">{todo.title}</div>
                   <div className="pointer-events-none text-gray-400">{todo.todoId}</div>
                   <div className="pointer-events-none flex gap-2">
@@ -166,7 +166,7 @@ export default function TodoList() {
                   </div>
                 </div>
                 <div
-                  className="group-hover:flex hidden h-6 w-6 justify-center items-center"
+                  className="pointer-events-none group-hover:flex hidden h-6 w-6 justify-center items-center"
                   onClick={(e) => openDeleteTodoModal(e, todo)}
                 >
                   {removeIcon}

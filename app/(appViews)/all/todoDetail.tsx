@@ -77,7 +77,7 @@ export default function TodoDetail({
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth={2}
       aria-labelledby="title-ac01 desc-ac01"
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
