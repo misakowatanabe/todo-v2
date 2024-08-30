@@ -17,7 +17,10 @@ type ListItemProps = (
 
 export function ListItem({ href, label, icon, action, onClick, pathname }: ListItemProps) {
   const currentPath = pathname?.toLowerCase().replace(/_/g, ' ').endsWith(label.toLowerCase())
-  const className = 'flex justify-start gap-3 w-full items-center'
+  const className = `${clsx(
+    'flex justify-between items-center group h-12 px-3 rounded gap-1 cursor-pointer',
+    currentPath ? 'bg-gray-200 hover:bg-gray-300' : 'hover:bg-gray-100',
+  )}`
 
   const contents = (
     <>
@@ -30,26 +33,23 @@ export function ListItem({ href, label, icon, action, onClick, pathname }: ListI
     </>
   )
 
-  const itemAsLink = (
+  const ItemAsLink = ({ children }: { children: ReactNode }) => (
     <Link href={href ?? '/'} className={className}>
-      {contents}
+      {children}
     </Link>
   )
-  const itemAsDiv = (
+  const ItemAsDiv = ({ children }: { children: ReactNode }) => (
     <div className={className} onClick={onClick}>
-      {contents}
+      {children}
     </div>
   )
 
+  const Component = onClick ? ItemAsDiv : ItemAsLink
+
   return (
-    <div
-      className={clsx(
-        'flex justify-between items-center group h-12 px-3 rounded gap-1 cursor-pointer',
-        currentPath ? 'bg-gray-200 hover:bg-gray-300' : 'hover:bg-gray-100',
-      )}
-    >
-      {onClick ? itemAsDiv : itemAsLink}
+    <Component>
+      <div className="flex justify-start gap-3 w-full items-center">{contents}</div>
       {action && action}
-    </div>
+    </Component>
   )
 }

@@ -60,13 +60,20 @@ export default function RemoveLabel({ label }: RemoveLabelProps) {
     </svg>
   )
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    setIsShowing(true)
+  }
+
   const openButton = (
     <Button
       className="hidden group-hover:flex justify-center hover:bg-gray-200 rounded-full"
       icon={crossIcon}
       size="small"
       style="text"
-      onClick={() => setIsShowing(true)}
+      onClick={(e) => handleClick(e)}
     />
   )
 

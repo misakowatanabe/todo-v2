@@ -57,7 +57,7 @@ export default function TodoList() {
     const todosCopy = [...localOrderedTodos]
     const dragItemContent = todosCopy.find((el) => el.todoId === dragItem.current)
     const dragOverItemContent = todosCopy.find((el) => el.todoId === dragOverItem.current)
-    // console.log(dragItemContent, dragOverItemContent, dragOverItem.current)
+
     if (!dragItemContent || !dragOverItemContent) return
 
     const dragItemContentIndex = todosCopy.indexOf(dragItemContent)
@@ -145,7 +145,7 @@ export default function TodoList() {
             </div>
             <div
               id={todo.todoId}
-              className="py-4 grow"
+              className="py-4 grow cursor-pointer"
               onDragStart={(e) => dragStart(e)}
               onDragOver={(e) => e.preventDefault()}
               draggable={true}

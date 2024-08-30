@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   if (
     userLoggedIn &&
     !request.nextUrl.pathname.startsWith('/all') &&
-    !request.nextUrl.pathname.startsWith('/account') &&
+    !request.nextUrl.pathname.startsWith('/settings') &&
     !request.nextUrl.pathname.startsWith('/label/:path')
   ) {
     return NextResponse.redirect(new URL('/all', request.url))
@@ -26,5 +26,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/all', '/label/:path', '/account', '/signin', '/signup'],
+  matcher: ['/all', '/label/:path', '/settings', '/signin', '/signup'],
 }

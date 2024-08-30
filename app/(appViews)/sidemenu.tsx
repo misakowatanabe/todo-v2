@@ -74,7 +74,7 @@ export default function Sidemenu() {
       <LabelList pathname={pathname} />
       <hr />
       <div className="my-3">
-        <ListItem label="Account" icon={settingsIcon} href="/account" pathname={pathname} />
+        <ListItem label="Settings" icon={settingsIcon} href="/settings" pathname={pathname} />
         <Logout />
       </div>
     </div>
