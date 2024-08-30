@@ -1,26 +1,20 @@
 'use client'
 
 import { useAppContext } from 'app/appContext'
-import { useEffect, useRef, useState, useTransition } from 'react'
-import { Todo, tickTodo, updateOrder } from 'app/actions'
-import { Chip, ChipColor } from 'components/Chip'
-import { Checkbox } from 'components/Checkbox'
-import { Button } from 'components/Button'
+import { useEffect, useRef, useState } from 'react'
+import { Todo, updateOrder } from 'app/actions'
 import TodoDetail from './todoDetail'
 import DeleteTodoModal from './DeleteTodoModal'
+import { TodoListItem } from '../todoListItem'
 
 export default function TodoList() {
-  const { todos, completedTodos, labels: availableLabels, socketError } = useAppContext()
+  const { todos, completedTodos, socketError } = useAppContext()
   const [localOrderedTodos, setLocalOrderedTodos] = useState<Todo[]>([])
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
   const [labels, setLabels] = useState<string[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [selectedTodoToDelete, setSelectedTodoToDelete] = useState<Todo | null>(null)
   const [deleteTodoModalOpen, setDeleteTodoModalOpen] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  // TODO: add visual feedback on pending
-  // eslint-disable-next-line
-  const [isPending, startTransition] = useTransition()
   const dragItem = useRef('')
   const dragOverItem = useRef('')
 
@@ -73,10 +67,6 @@ export default function TodoList() {
     dragOverItem.current = ''
   }
 
-  const getLabelColor = (label: string) => {
-    return (availableLabels.find((el) => el.label === label)?.color ?? 'default') as ChipColor
-  }
-
   const openTodo = (todo: Todo) => {
     setIsOpen(true)
     setSelectedTodo(todo)
@@ -91,128 +81,32 @@ export default function TodoList() {
     setSelectedTodoToDelete(todo)
   }
 
-  const removeIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-      role="graphics-symbol"
-      aria-labelledby="title-79 desc-79"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  )
-
-  const handleTick = (todoId: Pick<Todo, 'todoId'>) => {
-    startTransition(async () => {
-      const res = await tickTodo(todoId)
-
-      if (!res.ok) {
-        setError(res.error)
-      } else {
-        setIsOpen(false)
-      }
-    })
-  }
-
   return (
     <div>
       <div className="text-red-700">{socketError}</div>
-      {error && (
-        <div className="flex labels-center text-red-700">
-          <div>{error}</div>
-          <Button
-            type="button"
-            style="text"
-            size="small"
-            label="OK"
-            onClick={() => setError(null)}
-          />
-        </div>
-      )}
       {localOrderedTodos.map((todo) => {
         return (
-          <div key={todo.todoId} className="group flex border-t items-start gap-2">
-            <div className="py-2">
-              <Checkbox
-                onChange={() => handleTick(todo.todoId as unknown as Pick<Todo, 'todoId'>)}
-                checked={todo.completed}
-                id={`todo-${todo.todoId}`}
-              />
-            </div>
-            <div
-              id={todo.todoId}
-              className="py-4 grow cursor-pointer"
-              onDragStart={(e) => dragStart(e)}
-              onDragOver={(e) => e.preventDefault()}
-              draggable={true}
-              onDragEnter={(e) => dragEnter(e)}
-              onDragEnd={(e) => e.preventDefault()}
-              onDrop={drop}
-              onClick={() => openTodo(todo)}
-            >
-              <div className="pointer-events-none flex justify-between items-center">
-                <div className="pointer-events-none flex gap-2">
-                  <div className="pointer-events-none">{todo.title}</div>
-                  <div className="pointer-events-none text-gray-400">{todo.todoId}</div>
-                  <div className="pointer-events-none flex gap-2">
-                    {todo.labels &&
-                      todo.labels.map((el) => (
-                        <Chip key={el} label={el} color={getLabelColor(el)} size="small" />
-                      ))}
-                  </div>
-                </div>
-                <div
-                  className="pointer-events-none group-hover:flex hidden h-6 w-6 justify-center items-center"
-                  onClick={(e) => openDeleteTodoModal(e, todo)}
-                >
-                  {removeIcon}
-                </div>
-              </div>
-              {todo.body && (
-                <p className="pointer-events-none text-gray-500 text-sm line-clamp-1 mt-1">
-                  {todo.body}
-                </p>
-              )}
-            </div>
-          </div>
+          <TodoListItem
+            key={todo.todoId}
+            todo={todo}
+            dragStart={dragStart}
+            dragEnter={dragEnter}
+            drop={drop}
+            openTodo={openTodo}
+            openDeleteTodoModal={openDeleteTodoModal}
+            setIsOpen={setIsOpen}
+          />
         )
       })}
       {completedTodos.map((todo) => {
         return (
-          <div key={todo.todoId} className="group flex border-t items-start">
-            <div className="py-2">
-              <Checkbox
-                // onChange={(e) => handleTick(e, todo.todoId as unknown as Pick<Todo, 'todoId'>)}
-                onChange={() => {}}
-                checked={todo.completed}
-                id={`todo-${todo.todoId}`}
-              />{' '}
-            </div>
-            <div onClick={() => openTodo(todo)} className="py-4">
-              <div className="flex justify-between items-center gap-2">
-                <div className="flex gap-2">
-                  <div className="pointer-events-none text-gray-400 line-through">
-                    {todo.todoId}
-                  </div>
-                  <div className="pointer-events-none text-gray-400 line-through">{todo.title}</div>
-                  <div className="pointer-events-none flex gap-2">
-                    {todo.labels &&
-                      todo.labels.map((el) => (
-                        <Chip key={el} label={el} color={getLabelColor(el)} size="small" />
-                      ))}
-                  </div>
-                </div>
-              </div>
-              <div className="pointer-events-none text-gray-400 line-through">
-                {todo.body && todo.body}
-              </div>
-              <div className="pointer-events-none text-gray-400 line-through">{todo.createdAt}</div>
-            </div>
-          </div>
+          <TodoListItem
+            key={todo.todoId}
+            todo={todo}
+            openTodo={openTodo}
+            openDeleteTodoModal={openDeleteTodoModal}
+            setIsOpen={setIsOpen}
+          />
         )
       })}
       {selectedTodo && (

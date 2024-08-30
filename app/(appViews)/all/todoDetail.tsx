@@ -140,16 +140,18 @@ export default function TodoDetail({
           </div>
         </div>
         <div className="flex gap-4">
-          <Button
-            type="submit"
-            label={isPending ? 'Saving...' : 'Save'}
-            disabled={isPending}
-            form="form-task"
-          />
+          {!selectedTodo.completed && (
+            <Button
+              type="submit"
+              label={isPending ? 'Saving...' : 'Save'}
+              disabled={isPending}
+              form="form-task"
+            />
+          )}
           <Button
             onClick={() => setIsOpen(false)}
             style="text"
-            label="Cancel"
+            label={selectedTodo.completed ? 'Close' : 'Cancel'}
             aria-label="Side drawer"
             aria-controls="basic-drawer"
           />
