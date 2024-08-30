@@ -4,7 +4,7 @@ import { useAppContext } from 'app/appContext'
 import { useEffect, useRef, useState } from 'react'
 import { Todo, updateOrder } from 'app/actions'
 import TodoDetail from '../todoDetail'
-import DeleteTodoModal from './DeleteTodoModal'
+import DeleteTodoModal from '../DeleteTodoModal'
 import { TodoListItem } from '../todoListItem'
 
 export default function TodoList() {
@@ -109,15 +109,13 @@ export default function TodoList() {
           />
         )
       })}
-      {selectedTodo && (
-        <TodoDetail
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          selectedTodo={selectedTodo}
-          labels={labels}
-          setLabels={setLabels}
-        />
-      )}
+      <TodoDetail
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        selectedTodo={selectedTodo}
+        labels={labels}
+        setLabels={setLabels}
+      />
       {selectedTodoToDelete && (
         <DeleteTodoModal
           deleteTodoModalOpen={deleteTodoModalOpen}

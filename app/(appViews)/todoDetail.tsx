@@ -12,7 +12,7 @@ import { Textarea } from 'components/Textarea'
 type TodoDetailProps = {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  selectedTodo: Todo
+  selectedTodo: Todo | null
   labels: string[]
   setLabels: React.Dispatch<React.SetStateAction<string[]>>
 }
@@ -109,13 +109,13 @@ export default function TodoDetail({
             name="title"
             type="text"
             placeholder="Task title"
-            defaultValue={selectedTodo.title}
+            defaultValue={selectedTodo?.title}
             disabled={isPending}
           />
           <Textarea
             name="body"
             placeholder="Add description..."
-            defaultValue={selectedTodo.body}
+            defaultValue={selectedTodo?.body}
             disabled={isPending}
             rows={6}
           />
@@ -140,7 +140,7 @@ export default function TodoDetail({
           </div>
         </div>
         <div className="flex gap-4">
-          {!selectedTodo.completed && (
+          {selectedTodo && !selectedTodo.completed && (
             <Button
               type="submit"
               label={isPending ? 'Saving...' : 'Save'}
@@ -151,7 +151,7 @@ export default function TodoDetail({
           <Button
             onClick={() => setIsOpen(false)}
             style="text"
-            label={selectedTodo.completed ? 'Close' : 'Cancel'}
+            label={selectedTodo?.completed ? 'Close' : 'Cancel'}
             aria-label="Side drawer"
             aria-controls="basic-drawer"
           />

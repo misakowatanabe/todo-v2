@@ -1,13 +1,21 @@
 'use client'
 
 import { useAppContext } from 'app/appContext'
-import { useMemo } from 'react'
-import { Chip, ChipColor } from 'components/Chip'
+import { useMemo, useState } from 'react'
+import { TodoListItem } from '../../todoListItem'
+import { Todo } from 'app/actions'
+import TodoDetail from '../../todoDetail'
+import DeleteTodoModal from '../../DeleteTodoModal'
 
 type MatchedTodoListProps = { labelParam: string }
 
 export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
-  const { todos, labels, socketError } = useAppContext()
+  const { todos, completedTodos, socketError } = useAppContext()
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
+  const [labels, setLabels] = useState<string[]>([])
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedTodoToDelete, setSelectedTodoToDelete] = useState<Todo | null>(null)
+  const [deleteTodoModalOpen, setDeleteTodoModalOpen] = useState(false)
 
   const matchedTodos = useMemo(
     () =>
@@ -20,36 +28,76 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
     [todos, labelParam],
   )
 
-  const getLabelColor = (label: string) => {
-    return (labels.find((el) => el.label === label)?.color ?? 'default') as ChipColor
+  const matchedCompletedTodos = useMemo(
+    () =>
+      completedTodos.filter((el) => {
+        if (!el.labels) return false
+
+        const labels = el.labels.map((el) => el.replace(/ /g, '_'))
+        return labels.includes(labelParam)
+      }),
+    [completedTodos, labelParam],
+  )
+
+  const openTodo = (todo: Todo) => {
+    setIsOpen(true)
+    setSelectedTodo(todo)
+
+    if (todo.labels) setLabels(todo.labels)
+  }
+
+  const openDeleteTodoModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, todo: Todo) => {
+    e.stopPropagation()
+
+    setDeleteTodoModalOpen(true)
+    setSelectedTodoToDelete(todo)
   }
 
   return (
     <div>
       <div>{labelParam.replace(/_/g, ' ')}</div>
       <div className="text-red-700">{socketError}</div>
-      {matchedTodos.length === 0 ? (
+      {matchedTodos.length === 0 && matchedCompletedTodos.length === 0 ? (
         <div>There are no tasks with this label.</div>
       ) : (
-        matchedTodos.map((todo) => {
-          return (
-            <div id={todo.todoId} key={todo.todoId} className="border-t cursor-move py-4">
-              <div className="flex gap-2">
-                <div className="pointer-events-none text-gray-400">{todo.todoId}</div>
-                <div className="pointer-events-none">{todo.title}</div>
-                <div className="pointer-events-none flex gap-2">
-                  {todo.labels &&
-                    todo.labels.map((el) => (
-                      <Chip key={el} label={el} color={getLabelColor(el)} size="small" />
-                    ))}
-                </div>
-              </div>
-              <div className="pointer-events-none text-gray-500">{todo.body && todo.body}</div>
-              <div className="pointer-events-none">{todo.createdAt}</div>
-              <div className="pointer-events-none">done: {todo.completed.toString()} </div>
-            </div>
-          )
-        })
+        <>
+          {matchedTodos.map((todo) => {
+            return (
+              <TodoListItem
+                key={todo.todoId}
+                todo={todo}
+                openTodo={openTodo}
+                openDeleteTodoModal={openDeleteTodoModal}
+                setIsOpen={setIsOpen}
+              />
+            )
+          })}
+          {matchedCompletedTodos.map((todo) => {
+            return (
+              <TodoListItem
+                key={todo.todoId}
+                todo={todo}
+                openTodo={openTodo}
+                openDeleteTodoModal={openDeleteTodoModal}
+                setIsOpen={setIsOpen}
+              />
+            )
+          })}
+          <TodoDetail
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            selectedTodo={selectedTodo}
+            labels={labels}
+            setLabels={setLabels}
+          />
+          {selectedTodoToDelete && (
+            <DeleteTodoModal
+              deleteTodoModalOpen={deleteTodoModalOpen}
+              setDeleteTodoModalOpen={setDeleteTodoModalOpen}
+              selectedTodoToDelete={selectedTodoToDelete}
+            />
+          )}
+        </>
       )}
     </div>
   )
