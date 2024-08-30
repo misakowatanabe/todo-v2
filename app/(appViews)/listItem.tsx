@@ -4,13 +4,13 @@ import clsx from 'clsx'
 
 type ListItemProps = (
   | {
-      href?: string
+      href: string
       onClick?: never
-      pathname?: string
+      pathname: string
     }
   | {
       href?: never
-      onClick?: (_event: React.MouseEvent<HTMLDivElement>) => void
+      onClick: (_event: React.MouseEvent<HTMLDivElement>) => void
       pathname?: never
     }
 ) & { label: string; icon: ReactNode; action?: ReactNode }

@@ -3,7 +3,7 @@
 import { useAppContext } from 'app/appContext'
 import { useEffect, useRef, useState } from 'react'
 import { Todo, updateOrder } from 'app/actions'
-import TodoDetail from './todoDetail'
+import TodoDetail from '../todoDetail'
 import DeleteTodoModal from './DeleteTodoModal'
 import { TodoListItem } from '../todoListItem'
 
