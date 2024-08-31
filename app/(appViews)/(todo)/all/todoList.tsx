@@ -6,6 +6,7 @@ import { Todo, updateOrder } from 'app/actions'
 import TodoDetail from '../todoDetail'
 import DeleteTodoModal from '../DeleteTodoModal'
 import { TodoListItem } from '../todoListItem'
+import { Heading } from 'components/Heading'
 
 export default function TodoList() {
   const { todos, completedTodos, socketError } = useAppContext()
@@ -82,7 +83,8 @@ export default function TodoList() {
   }
 
   return (
-    <div>
+    <>
+      <Heading title="All" itemLength={todos.length} />
       <div className="text-red-700">{socketError}</div>
       {localOrderedTodos.map((todo) => {
         return (
@@ -123,6 +125,6 @@ export default function TodoList() {
           selectedTodoToDelete={selectedTodoToDelete}
         />
       )}
-    </div>
+    </>
   )
 }

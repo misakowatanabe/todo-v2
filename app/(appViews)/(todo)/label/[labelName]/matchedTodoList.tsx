@@ -6,6 +6,7 @@ import { TodoListItem } from '../../todoListItem'
 import { Todo } from 'app/actions'
 import TodoDetail from '../../todoDetail'
 import DeleteTodoModal from '../../DeleteTodoModal'
+import { Heading } from 'components/Heading'
 
 type MatchedTodoListProps = { labelParam: string }
 
@@ -54,7 +55,8 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
   }
 
   return (
-    <div>
+    <>
+      <Heading title={labelParam.replace(/_/g, ' ')} itemLength={matchedTodos.length} />
       <div className="text-red-700">{socketError}</div>
       {matchedTodos.length === 0 && matchedCompletedTodos.length === 0 ? (
         <div>There are no tasks with this label.</div>
@@ -98,6 +100,6 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
           )}
         </>
       )}
-    </div>
+    </>
   )
 }
