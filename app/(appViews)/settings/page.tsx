@@ -1,7 +1,9 @@
+import { Heading } from '../Heading'
+
 export default function Page() {
   return (
     <>
-      <div>Settings</div>
+      <Heading title="Settings" />
     </>
   )
 }

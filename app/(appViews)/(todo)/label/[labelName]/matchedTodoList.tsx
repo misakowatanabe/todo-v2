@@ -55,7 +55,6 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
 
   return (
     <div>
-      <div>{labelParam.replace(/_/g, ' ')}</div>
       <div className="text-red-700">{socketError}</div>
       {matchedTodos.length === 0 && matchedCompletedTodos.length === 0 ? (
         <div>There are no tasks with this label.</div>
