@@ -513,8 +513,6 @@ app.put('/tick', (req, res) => {
         .update({
           [completed]: true,
         })
-
-      res.sendStatus(200)
     } catch (err) {
       res.status(400).send(err.details)
     }
@@ -534,12 +532,14 @@ app.put('/tick', (req, res) => {
 
       orderData.active.splice(indexOfTodoId, 1)
 
-      await db
-        .collection(uid)
-        .doc('order')
-        .update({
-          active: FieldValue.arrayUnion(...orderData.active),
-        })
+      if (orderData.active.length !== 0) {
+        await db
+          .collection(uid)
+          .doc('order')
+          .update({
+            active: FieldValue.arrayUnion(...orderData.active),
+          })
+      }
 
       // when there is at least 1 completed todo
       if (orderData.completed.length !== 0) {
@@ -560,6 +560,8 @@ app.put('/tick', (req, res) => {
             completed: FieldValue.arrayUnion(...orderData.completed),
           })
 
+        res.sendStatus(200)
+
         break modifyOrder
       }
 
@@ -570,6 +572,99 @@ app.put('/tick', (req, res) => {
         .update({
           completed: [req.body.todoId],
         })
+
+      res.sendStatus(200)
+    } catch (err) {
+      // The update will fail if applied to a document that does not exist
+      res.status(400).send(err.details)
+    }
+  })()
+})
+
+app.put('/untick', (req, res) => {
+  ;(async () => {
+    untickTodo: try {
+      const todos = await db.collection(uid).doc('todos').get()
+      const todosData = todos.data()
+
+      if (!todosData) {
+        res.status(400).send('Oops! This todo was already removed.')
+
+        break untickTodo
+      }
+
+      const id = req.body.todoId
+      const completed = `${id}.completed`
+
+      await db
+        .collection(uid)
+        .doc('todos')
+        .update({
+          [completed]: false,
+        })
+    } catch (err) {
+      res.status(400).send(err.details)
+
+      break untickTodo
+    }
+
+    modifyOrder: try {
+      const order = await db.collection(uid).doc('order').get()
+      const orderData = order.data()
+      const indexOfTodoId = orderData.completed.indexOf(req.body.todoId)
+
+      // Remove the todo ID from completed todo's order array
+      await db
+        .collection(uid)
+        .doc('order')
+        .update({
+          completed: FieldValue.arrayRemove(...orderData.completed),
+        })
+
+      orderData.completed.splice(indexOfTodoId, 1)
+
+      if (orderData.completed.length !== 0) {
+        await db
+          .collection(uid)
+          .doc('order')
+          .update({
+            completed: FieldValue.arrayUnion(...orderData.completed),
+          })
+      }
+
+      // when there is at least 1 active todo
+      if (orderData.active.length !== 0) {
+        await db
+          .collection(uid)
+          .doc('order')
+          .update({
+            active: FieldValue.arrayRemove(...orderData.active),
+          })
+
+        // Add the todo ID to index 0 in active todos array in the order doc
+        orderData.active.splice(0, 0, req.body.todoId)
+
+        await db
+          .collection(uid)
+          .doc('order')
+          .update({
+            active: FieldValue.arrayUnion(...orderData.active),
+          })
+
+        res.sendStatus(200)
+
+        break modifyOrder
+      }
+
+      // when there is no active todo, but there is order doc with empty array, ex: after ticking/deleting all active todos
+      await db
+        .collection(uid)
+        .doc('order')
+        .update({
+          active: [req.body.todoId],
+        })
+
+      res.sendStatus(200)
     } catch (err) {
       // The update will fail if applied to a document that does not exist
       res.status(400).send(err.details)

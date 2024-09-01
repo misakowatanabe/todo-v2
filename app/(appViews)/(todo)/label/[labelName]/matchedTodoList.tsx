@@ -72,7 +72,6 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
                     todo={todo}
                     openTodo={openTodo}
                     openDeleteTodoModal={openDeleteTodoModal}
-                    setIsOpen={setIsOpen}
                   />
                 )
               })}
@@ -89,7 +88,6 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
                         todo={todo}
                         openTodo={openTodo}
                         openDeleteTodoModal={openDeleteTodoModal}
-                        setIsOpen={setIsOpen}
                       />
                     )
                   })}

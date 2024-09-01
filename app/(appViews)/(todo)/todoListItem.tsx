@@ -2,7 +2,7 @@
 
 import { useAppContext } from 'app/appContext'
 import { useState, useTransition } from 'react'
-import { Todo, tickTodo } from 'app/actions'
+import { Todo, tickTodo, untickTodo } from 'app/actions'
 import { Chip, ChipColor } from 'components/Chip'
 import { Checkbox } from 'components/Checkbox'
 import clsx from 'clsx'
@@ -11,7 +11,6 @@ type TodoListItemProps = {
   todo: Todo
   openTodo: (_todo: Todo) => void
   openDeleteTodoModal: (_e: React.MouseEvent<HTMLDivElement, MouseEvent>, _todo: Todo) => void
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 } & (
   | {
       dragStart: (_e: React.DragEvent<HTMLDivElement>) => void
@@ -32,7 +31,6 @@ export function TodoListItem({
   drop,
   openTodo,
   openDeleteTodoModal,
-  setIsOpen,
 }: TodoListItemProps) {
   const { labels: availableLabels } = useAppContext()
   // TODO: show this error as snackbar or global error
@@ -48,8 +46,16 @@ export function TodoListItem({
 
       if (!res.ok) {
         setError(res.error)
-      } else {
-        setIsOpen(false)
+      }
+    })
+  }
+
+  const handleUntick = (todoId: Pick<Todo, 'todoId'>) => {
+    startTransition(async () => {
+      const res = await untickTodo(todoId)
+
+      if (!res.ok) {
+        setError(res.error)
       }
     })
   }
@@ -80,8 +86,8 @@ export function TodoListItem({
           onChange={() =>
             // TODO: add handleUntick with a new API
             todo.completed
-              ? undefined
-              : handleTick?.(todo.todoId as unknown as Pick<Todo, 'todoId'>)
+              ? handleUntick(todo.todoId as unknown as Pick<Todo, 'todoId'>)
+              : handleTick(todo.todoId as unknown as Pick<Todo, 'todoId'>)
           }
           checked={todo.completed}
           id={`todo-${todo.todoId}`}

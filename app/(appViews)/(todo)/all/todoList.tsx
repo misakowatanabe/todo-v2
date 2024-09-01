@@ -99,7 +99,6 @@ export default function TodoList() {
                 drop={drop}
                 openTodo={openTodo}
                 openDeleteTodoModal={openDeleteTodoModal}
-                setIsOpen={setIsOpen}
               />
             )
           })}
@@ -116,7 +115,6 @@ export default function TodoList() {
                     todo={todo}
                     openTodo={openTodo}
                     openDeleteTodoModal={openDeleteTodoModal}
-                    setIsOpen={setIsOpen}
                   />
                 )
               })}

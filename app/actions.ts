@@ -52,6 +52,7 @@ export async function update(todo: Omit<Todo, 'createdAt'>) {
 
   if (!res.ok) {
     const error = await res.text()
+
     return { ok: false, error: error }
   }
 
@@ -70,6 +71,7 @@ export async function deleteTodo(todoId: Pick<Todo, 'todoId'>) {
 
   if (!res.ok) {
     const error = await res.text()
+
     return { ok: false, error: error }
   }
 
@@ -88,6 +90,26 @@ export async function tickTodo(todoId: Pick<Todo, 'todoId'>) {
 
   if (!res.ok) {
     const error = await res.text()
+
+    return { ok: false, error: error }
+  }
+
+  return { ok: true, error: '' }
+}
+
+export async function untickTodo(todoId: Pick<Todo, 'todoId'>) {
+  const res = await fetch(`${ENDPOINT}/untick`, {
+    method: 'PUT',
+    body: JSON.stringify({ todoId: todoId }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+  })
+
+  if (!res.ok) {
+    const error = await res.text()
+
     return { ok: false, error: error }
   }
 
