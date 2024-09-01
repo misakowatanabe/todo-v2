@@ -7,6 +7,7 @@ import { Todo } from 'app/actions'
 import TodoDetail from '../../todoDetail'
 import DeleteTodoModal from '../../DeleteTodoModal'
 import { Heading } from 'components/Heading'
+import { Accordion } from 'components/Accordion'
 
 type MatchedTodoListProps = { labelParam: string }
 
@@ -62,28 +63,40 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
         <div>There are no tasks with this label.</div>
       ) : (
         <>
-          {matchedTodos.map((todo) => {
-            return (
-              <TodoListItem
-                key={todo.todoId}
-                todo={todo}
-                openTodo={openTodo}
-                openDeleteTodoModal={openDeleteTodoModal}
-                setIsOpen={setIsOpen}
-              />
-            )
-          })}
-          {matchedCompletedTodos.map((todo) => {
-            return (
-              <TodoListItem
-                key={todo.todoId}
-                todo={todo}
-                openTodo={openTodo}
-                openDeleteTodoModal={openDeleteTodoModal}
-                setIsOpen={setIsOpen}
-              />
-            )
-          })}
+          <div className="flex flex-col gap-4">
+            <div>
+              {matchedTodos.map((todo) => {
+                return (
+                  <TodoListItem
+                    key={todo.todoId}
+                    todo={todo}
+                    openTodo={openTodo}
+                    openDeleteTodoModal={openDeleteTodoModal}
+                    setIsOpen={setIsOpen}
+                  />
+                )
+              })}
+            </div>
+            <Accordion label="Completed" itemLength={matchedCompletedTodos.length}>
+              {matchedCompletedTodos.length === 0 ? (
+                <div className="text-gray-600">There is no completed task.</div>
+              ) : (
+                <>
+                  {matchedCompletedTodos.map((todo) => {
+                    return (
+                      <TodoListItem
+                        key={todo.todoId}
+                        todo={todo}
+                        openTodo={openTodo}
+                        openDeleteTodoModal={openDeleteTodoModal}
+                        setIsOpen={setIsOpen}
+                      />
+                    )
+                  })}
+                </>
+              )}
+            </Accordion>
+          </div>
           <TodoDetail
             isOpen={isOpen}
             setIsOpen={setIsOpen}

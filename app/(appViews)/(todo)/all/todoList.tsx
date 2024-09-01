@@ -7,6 +7,7 @@ import TodoDetail from '../todoDetail'
 import DeleteTodoModal from '../DeleteTodoModal'
 import { TodoListItem } from '../todoListItem'
 import { Heading } from 'components/Heading'
+import { Accordion } from 'components/Accordion'
 
 export default function TodoList() {
   const { todos, completedTodos, socketError } = useAppContext()
@@ -86,31 +87,43 @@ export default function TodoList() {
     <>
       <Heading title="All" itemLength={todos.length} />
       <div className="text-red-700">{socketError}</div>
-      {localOrderedTodos.map((todo) => {
-        return (
-          <TodoListItem
-            key={todo.todoId}
-            todo={todo}
-            dragStart={dragStart}
-            dragEnter={dragEnter}
-            drop={drop}
-            openTodo={openTodo}
-            openDeleteTodoModal={openDeleteTodoModal}
-            setIsOpen={setIsOpen}
-          />
-        )
-      })}
-      {completedTodos.map((todo) => {
-        return (
-          <TodoListItem
-            key={todo.todoId}
-            todo={todo}
-            openTodo={openTodo}
-            openDeleteTodoModal={openDeleteTodoModal}
-            setIsOpen={setIsOpen}
-          />
-        )
-      })}
+      <div className="flex flex-col gap-4">
+        <div>
+          {localOrderedTodos.map((todo) => {
+            return (
+              <TodoListItem
+                key={todo.todoId}
+                todo={todo}
+                dragStart={dragStart}
+                dragEnter={dragEnter}
+                drop={drop}
+                openTodo={openTodo}
+                openDeleteTodoModal={openDeleteTodoModal}
+                setIsOpen={setIsOpen}
+              />
+            )
+          })}
+        </div>
+        <Accordion label="Completed" itemLength={completedTodos.length}>
+          {completedTodos.length === 0 ? (
+            <div className="text-gray-600">There is no completed task.</div>
+          ) : (
+            <>
+              {completedTodos.map((todo) => {
+                return (
+                  <TodoListItem
+                    key={todo.todoId}
+                    todo={todo}
+                    openTodo={openTodo}
+                    openDeleteTodoModal={openDeleteTodoModal}
+                    setIsOpen={setIsOpen}
+                  />
+                )
+              })}
+            </>
+          )}
+        </Accordion>
+      </div>
       <TodoDetail
         isOpen={isOpen}
         setIsOpen={setIsOpen}
