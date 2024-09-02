@@ -497,7 +497,7 @@ app.delete('/delete', (req, res) => {
 })
 
 // delete all completed todos
-app.delete('/deleteCompleted', (res) => {
+app.delete('/deleteCompleted', (req, res) => {
   ;(async () => {
     // Remove all completed todo (ID) fields from the todos doc
     try {

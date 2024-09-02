@@ -34,12 +34,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <button
       type={type}
       className={clsx(
-        'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium rounded-full cursor-pointer leading-none',
+        'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium rounded-full cursor-pointer leading-none transition duration-100',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500',
         !disabled && {
           'text-white bg-black': style === 'primary',
           'text-black outline outline-offset-0 outline-black bg-transparent': style === 'secondary',
-          'text-black': style === 'text',
+          'text-black hover:bg-gray-200': style === 'text',
         },
         disabled && {
           'text-white bg-[#b3b3b3]': style === 'primary',

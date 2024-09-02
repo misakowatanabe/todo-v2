@@ -9,6 +9,7 @@ import { TodoListItem } from '../todoListItem'
 import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
 import { Button } from 'components/Button'
+import { DropdownMenu, MenuItem } from 'components/DropdownMenu'
 
 type HeadingActionsProps = {
   setError: React.Dispatch<React.SetStateAction<string | null>>
@@ -16,9 +17,25 @@ type HeadingActionsProps = {
 }
 
 function HeadingActions({ setError, completedTodos }: HeadingActionsProps) {
-  // TODO: add visual feedback on pending
-  // eslint-disable-next-line
   const [isPending, startTransition] = useTransition()
+
+  const verticalDotsIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={24}
+      height={24}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#000000"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="1"></circle>
+      <circle cx="12" cy="5" r="1"></circle>
+      <circle cx="12" cy="19" r="1"></circle>
+    </svg>
+  )
 
   const handleDeleteCompleted = () => {
     setError(null)
@@ -32,14 +49,15 @@ function HeadingActions({ setError, completedTodos }: HeadingActionsProps) {
     })
   }
 
-  return (
-    <Button
-      label="Delete completed todos"
-      style="text"
-      disabled={isPending || completedTodos.length === 0}
-      onClick={handleDeleteCompleted}
-    />
-  )
+  const MenuItems: MenuItem[] = [
+    {
+      label: 'Delete completed todos',
+      onClick: handleDeleteCompleted,
+      disabled: isPending || completedTodos.length === 0,
+    },
+  ]
+
+  return <DropdownMenu icon={verticalDotsIcon} items={MenuItems} alignment="right" />
 }
 
 export default function TodoList() {
