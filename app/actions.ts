@@ -83,6 +83,24 @@ export async function deleteTodo(deleteInfo: DeleteInfo) {
   return { ok: true, error: '' }
 }
 
+export async function deleteCompletedTodos() {
+  const res = await fetch(`${ENDPOINT}/deleteCompleted`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+  })
+
+  if (!res.ok) {
+    const error = await res.text()
+
+    return { ok: false, error: error }
+  }
+
+  return { ok: true, error: '' }
+}
+
 export async function tickTodo(todoId: Pick<Todo, 'todoId'>) {
   const res = await fetch(`${ENDPOINT}/tick`, {
     method: 'PUT',

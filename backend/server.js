@@ -496,6 +496,52 @@ app.delete('/delete', (req, res) => {
   })()
 })
 
+// delete all completed todos
+app.delete('/deleteCompleted', (res) => {
+  ;(async () => {
+    // Remove all completed todo (ID) fields from the todos doc
+    try {
+      const todos = await db.collection(uid).doc('todos').get()
+      const todosData = todos.data()
+      let todoListCompleted = []
+
+      if (todosData) {
+        todoListCompleted = Object.values(todosData).filter((el) => {
+          return el.completed
+        })
+
+        todoListCompleted.forEach(async (el) => {
+          await db
+            .collection(uid)
+            .doc('todos')
+            .update({
+              [el.todoId]: FieldValue.delete(),
+            })
+        })
+      }
+    } catch (err) {
+      res.status(400).send(err.details)
+    }
+
+    // Remove all completed todo IDs from the order doc
+    try {
+      const order = await db.collection(uid).doc('order').get()
+      const orderData = order.data()
+
+      await db
+        .collection(uid)
+        .doc('order')
+        .update({
+          completed: FieldValue.arrayRemove(...orderData.completed),
+        })
+
+      res.sendStatus(200)
+    } catch (err) {
+      res.status(400).send(err.details)
+    }
+  })()
+})
+
 app.put('/tick', (req, res) => {
   ;(async () => {
     tickTodo: try {

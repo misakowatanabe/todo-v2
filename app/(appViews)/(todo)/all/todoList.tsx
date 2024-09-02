@@ -1,13 +1,46 @@
 'use client'
 
 import { useAppContext } from 'app/appContext'
-import { useEffect, useRef, useState } from 'react'
-import { Todo, updateOrder } from 'app/actions'
+import { useEffect, useRef, useState, useTransition } from 'react'
+import { Todo, deleteCompletedTodos, updateOrder } from 'app/actions'
 import TodoDetail from '../todoDetail'
 import DeleteTodoModal from '../DeleteTodoModal'
 import { TodoListItem } from '../todoListItem'
 import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
+import { Button } from 'components/Button'
+
+type HeadingActionsProps = {
+  setError: React.Dispatch<React.SetStateAction<string | null>>
+  completedTodos: Todo[]
+}
+
+function HeadingActions({ setError, completedTodos }: HeadingActionsProps) {
+  // TODO: add visual feedback on pending
+  // eslint-disable-next-line
+  const [isPending, startTransition] = useTransition()
+
+  const handleDeleteCompleted = () => {
+    setError(null)
+
+    startTransition(async () => {
+      const res = await deleteCompletedTodos()
+
+      if (!res.ok) {
+        setError(res.error)
+      }
+    })
+  }
+
+  return (
+    <Button
+      label="Delete completed todos"
+      style="text"
+      disabled={isPending || completedTodos.length === 0}
+      onClick={handleDeleteCompleted}
+    />
+  )
+}
 
 export default function TodoList() {
   const { todos, completedTodos, socketError } = useAppContext()
@@ -17,6 +50,7 @@ export default function TodoList() {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedTodoToDelete, setSelectedTodoToDelete] = useState<Todo | null>(null)
   const [deleteTodoModalOpen, setDeleteTodoModalOpen] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const dragItem = useRef('')
   const dragOverItem = useRef('')
 
@@ -85,8 +119,24 @@ export default function TodoList() {
 
   return (
     <>
-      <Heading title="All" itemLength={todos.length} />
+      <Heading
+        title="All"
+        itemLength={todos.length}
+        action={<HeadingActions setError={setError} completedTodos={completedTodos} />}
+      />
       <div className="text-red-700">{socketError}</div>
+      {error && (
+        <div className="flex items-center text-red-700">
+          <div>{error}</div>
+          <Button
+            type="button"
+            style="text"
+            size="small"
+            label="OK"
+            onClick={() => setError(null)}
+          />
+        </div>
+      )}
       <div className="flex flex-col gap-4">
         <div>
           {localOrderedTodos.map((todo) => {
