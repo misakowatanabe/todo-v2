@@ -84,7 +84,6 @@ export function TodoListItem({
       <div className="py-2">
         <Checkbox
           onChange={() =>
-            // TODO: add handleUntick with a new API
             todo.completed
               ? handleUntick(todo.todoId as unknown as Pick<Todo, 'todoId'>)
               : handleTick(todo.todoId as unknown as Pick<Todo, 'todoId'>)
@@ -116,17 +115,12 @@ export function TodoListItem({
                 ))}
             </div>
           </div>
-          {!todo.completed && (
-            <div
-              className="pointer-events-auto group-hover:flex hidden h-6 w-6 justify-center items-center rounded-full hover:bg-gray-200"
-              onClick={(e) =>
-                // TODO: add openDeleteCompletedTodoModal with a new API and make the icon visible again
-                todo.completed ? undefined : openDeleteTodoModal(e, todo)
-              }
-            >
-              {removeIcon}
-            </div>
-          )}
+          <div
+            className="pointer-events-auto group-hover:flex hidden h-6 w-6 justify-center items-center rounded-full hover:bg-gray-200"
+            onClick={(e) => openDeleteTodoModal(e, todo)}
+          >
+            {removeIcon}
+          </div>
         </div>
         {todo.body && (
           <p className="pointer-events-none text-gray-500 text-sm line-clamp-1 mt-1">{todo.body}</p>

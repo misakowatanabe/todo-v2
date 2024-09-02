@@ -36,7 +36,12 @@ export default function DeleteTodoModal({
     if (!selectedTodoToDelete) return
 
     startTransition(async () => {
-      const res = await deleteTodo(selectedTodoToDelete.todoId as unknown as Pick<Todo, 'todoId'>)
+      const deleteInfo = {
+        todoId: selectedTodoToDelete.todoId as unknown as Pick<Todo, 'todoId'>,
+        completed: selectedTodoToDelete.completed as unknown as Pick<Todo, 'completed'>,
+      }
+
+      const res = await deleteTodo(deleteInfo)
 
       if (!res.ok) {
         setError(res.error)
