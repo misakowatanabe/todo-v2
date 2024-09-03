@@ -8,6 +8,10 @@ import TodoDetail from '../../todoDetail'
 import DeleteTodoModal from '../../DeleteTodoModal'
 import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
+import { Button } from 'components/Button'
+import { View } from '../../todoListItem'
+import { HeadingActions } from '../../headingActions'
+import clsx from 'clsx'
 
 type MatchedTodoListProps = { labelParam: string }
 
@@ -18,6 +22,8 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedTodoToDelete, setSelectedTodoToDelete] = useState<Todo | null>(null)
   const [deleteTodoModalOpen, setDeleteTodoModalOpen] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [view, setView] = useState<View>('table')
 
   const matchedTodos = useMemo(
     () =>
@@ -57,14 +63,30 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
 
   return (
     <>
-      <Heading title={labelParam.replace(/_/g, ' ')} itemLength={matchedTodos.length} />
+      <Heading
+        title={labelParam.replace(/_/g, ' ')}
+        itemLength={matchedTodos.length}
+        action={<HeadingActions setError={setError} setView={setView} />}
+      />
       <div className="text-red-700">{socketError}</div>
+      {error && (
+        <div className="flex items-center text-red-700">
+          <div>{error}</div>
+          <Button
+            type="button"
+            style="text"
+            size="small"
+            label="OK"
+            onClick={() => setError(null)}
+          />
+        </div>
+      )}
       {matchedTodos.length === 0 && matchedCompletedTodos.length === 0 ? (
         <div>There are no tasks with this label.</div>
       ) : (
         <>
           <div className="flex flex-col gap-4">
-            <div>
+            <div className={clsx({ 'flex flex-wrap gap-4': view === 'card' })}>
               {matchedTodos.map((todo) => {
                 return (
                   <TodoListItem
@@ -72,6 +94,7 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
                     todo={todo}
                     openTodo={openTodo}
                     openDeleteTodoModal={openDeleteTodoModal}
+                    view={view}
                   />
                 )
               })}
@@ -88,6 +111,7 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
                         todo={todo}
                         openTodo={openTodo}
                         openDeleteTodoModal={openDeleteTodoModal}
+                        view={view}
                       />
                     )
                   })}

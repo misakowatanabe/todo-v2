@@ -29,7 +29,7 @@ type ChipProps = {
   onRemove?: (_event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 } & React.ButtonHTMLAttributes<HTMLButtonElement>
 
-type ColorVariants = Record<string, string>
+export type ColorVariants = Record<ChipColor, string>
 
 export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
   {

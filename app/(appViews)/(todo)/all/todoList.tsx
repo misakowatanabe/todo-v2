@@ -1,120 +1,16 @@
 'use client'
 
 import { useAppContext } from 'app/appContext'
-import { useEffect, useRef, useState, useTransition } from 'react'
-import { Todo, deleteCompletedTodos, updateOrder } from 'app/actions'
+import { useEffect, useRef, useState } from 'react'
+import { Todo, updateOrder } from 'app/actions'
 import TodoDetail from '../todoDetail'
 import DeleteTodoModal from '../DeleteTodoModal'
 import { TodoListItem, View } from '../todoListItem'
 import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
 import { Button } from 'components/Button'
-import { DropdownMenu, MenuItem } from 'components/DropdownMenu'
-import { ButtonSwitcher } from 'components/ButtonSwitcher'
-
-type HeadingActionsProps = {
-  setError: React.Dispatch<React.SetStateAction<string | null>>
-  completedTodos: Todo[]
-  setView: React.Dispatch<React.SetStateAction<View>>
-}
-
-function HeadingActions({ setError, completedTodos, setView }: HeadingActionsProps) {
-  const [isPending, startTransition] = useTransition()
-
-  const verticalDotsIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={24}
-      height={24}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="1"></circle>
-      <circle cx="12" cy="5" r="1"></circle>
-      <circle cx="12" cy="19" r="1"></circle>
-    </svg>
-  )
-
-  const listIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="8" y1="6" x2="21" y2="6"></line>
-      <line x1="8" y1="12" x2="21" y2="12"></line>
-      <line x1="8" y1="18" x2="21" y2="18"></line>
-      <line x1="3" y1="6" x2="3.01" y2="6"></line>
-      <line x1="3" y1="12" x2="3.01" y2="12"></line>
-      <line x1="3" y1="18" x2="3.01" y2="18"></line>
-    </svg>
-  )
-
-  const gridIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#000000"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="3" y="3" width="7" height="7"></rect>
-      <rect x="14" y="3" width="7" height="7"></rect>
-      <rect x="14" y="14" width="7" height="7"></rect>
-      <rect x="3" y="14" width="7" height="7"></rect>
-    </svg>
-  )
-
-  const handleDeleteCompleted = () => {
-    setError(null)
-
-    startTransition(async () => {
-      const res = await deleteCompletedTodos()
-
-      if (!res.ok) {
-        setError(res.error)
-      }
-    })
-  }
-
-  const menuItems: MenuItem[] = [
-    {
-      label: 'Delete completed todos',
-      onClick: handleDeleteCompleted,
-      disabled: isPending || completedTodos.length === 0,
-    },
-  ]
-
-  const handleSwitch = (e: any) => {
-    // the right one is selected when checked
-    setView(e.target.checked ? 'card' : 'table')
-  }
-
-  return (
-    <div className="flex gap-2.5">
-      <DropdownMenu icon={verticalDotsIcon} items={menuItems} alignment="right" />
-      <ButtonSwitcher
-        onChange={handleSwitch}
-        left={{ icon: listIcon }}
-        right={{ icon: gridIcon }}
-      />
-    </div>
-  )
-}
+import { HeadingActions } from '../headingActions'
+import clsx from 'clsx'
 
 export default function TodoList() {
   const { todos, completedTodos, socketError } = useAppContext()
@@ -215,7 +111,7 @@ export default function TodoList() {
         </div>
       )}
       <div className="flex flex-col gap-4">
-        <div>
+        <div className={clsx({ 'flex flex-wrap gap-4': view === 'card' })}>
           {localOrderedTodos.map((todo) => {
             return (
               <TodoListItem

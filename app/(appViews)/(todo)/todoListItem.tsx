@@ -3,7 +3,7 @@
 import { useAppContext } from 'app/appContext'
 import { useState, useTransition } from 'react'
 import { Todo, tickTodo, untickTodo } from 'app/actions'
-import { Chip, ChipColor } from 'components/Chip'
+import { Chip, ChipColor, ColorVariants } from 'components/Chip'
 import { Checkbox } from 'components/Checkbox'
 import clsx from 'clsx'
 
@@ -83,6 +83,21 @@ export function TodoListItem({
     </svg>
   )
 
+  const cardBgColor: ColorVariants = {
+    default: 'bg-gray-300/10',
+    raspberry: 'bg-raspberry/10',
+    honey: 'bg-honey/10',
+    blueberry: 'bg-blueberry/10',
+    greenApple: 'bg-greenApple/10',
+    orange: 'bg-orange/10',
+    midnight: 'bg-midnight/10',
+    powderPink: 'bg-powderPink/10',
+    sky: 'bg-sky/10',
+    lemon: 'bg-lemon/10',
+    lime: 'bg-lime text-white/10',
+    dreamyPurple: 'bg-dreamyPurple/10',
+  }
+
   if (view === 'table')
     return (
       <div key={todo.todoId} className="group flex border-t items-start gap-2">
@@ -138,8 +153,14 @@ export function TodoListItem({
 
   // card view
   return (
-    <div key={todo.todoId} className="group flex bg-gray-400/50 items-start gap-2">
-      <div className="py-2">
+    <div
+      key={todo.todoId}
+      className={clsx(
+        'group flex items-start gap-0.5 w-80 h-80 p-3 rounded-lg shadow',
+        todo.labels ? cardBgColor[getLabelColor(todo.labels[0])] : cardBgColor.default,
+      )}
+    >
+      <div className="-mt-1.5 -ml-1.5">
         <Checkbox
           onChange={() =>
             todo.completed
@@ -152,7 +173,7 @@ export function TodoListItem({
       </div>
       <div
         id={todo.todoId}
-        className={clsx('py-4 grow', { 'cursor-pointer': dragStart })}
+        className={clsx('flex flex-col grow h-full', { 'cursor-pointer': dragStart })}
         onDragStart={(e) => dragStart?.(e)}
         onDragOver={(e) => e.preventDefault()}
         draggable={true}
@@ -162,17 +183,7 @@ export function TodoListItem({
         onClick={() => openTodo(todo)}
       >
         <div className="pointer-events-none flex justify-between items-center">
-          <div className="pointer-events-none flex gap-2">
-            <div className="pointer-events-none">{todo.title}</div>
-            {/* TODO: remove todo ID (only for dev) */}
-            <div className="pointer-events-none text-gray-400">{todo.todoId}</div>
-            <div className="pointer-events-none flex gap-2">
-              {todo.labels &&
-                todo.labels.map((el) => (
-                  <Chip key={el} label={el} color={getLabelColor(el)} size="small" />
-                ))}
-            </div>
-          </div>
+          <div className="pointer-events-none text-xl">{todo.title}</div>
           <div
             className="pointer-events-auto group-hover:flex hidden h-6 w-6 justify-center items-center rounded-full hover:bg-gray-200"
             onClick={(e) => openDeleteTodoModal(e, todo)}
@@ -180,9 +191,15 @@ export function TodoListItem({
             {removeIcon}
           </div>
         </div>
-        {todo.body && (
-          <p className="pointer-events-none text-gray-500 text-sm line-clamp-1 mt-1">{todo.body}</p>
-        )}
+        <div className="pointer-events-none text-gray-500 text-base mt-3 grow">
+          <p className="line-clamp-[9]">{todo.body && todo.body}</p>
+        </div>
+        <div className="pointer-events-none flex gap-2 justify-end">
+          {todo.labels &&
+            todo.labels.map((el) => (
+              <Chip key={el} label={el} color={getLabelColor(el)} size="small" />
+            ))}
+        </div>
       </div>
     </div>
   )
