@@ -5,18 +5,20 @@ import { useEffect, useRef, useState, useTransition } from 'react'
 import { Todo, deleteCompletedTodos, updateOrder } from 'app/actions'
 import TodoDetail from '../todoDetail'
 import DeleteTodoModal from '../DeleteTodoModal'
-import { TodoListItem } from '../todoListItem'
+import { TodoListItem, View } from '../todoListItem'
 import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
 import { Button } from 'components/Button'
 import { DropdownMenu, MenuItem } from 'components/DropdownMenu'
+import { ButtonSwitcher } from 'components/ButtonSwitcher'
 
 type HeadingActionsProps = {
   setError: React.Dispatch<React.SetStateAction<string | null>>
   completedTodos: Todo[]
+  setView: React.Dispatch<React.SetStateAction<View>>
 }
 
-function HeadingActions({ setError, completedTodos }: HeadingActionsProps) {
+function HeadingActions({ setError, completedTodos, setView }: HeadingActionsProps) {
   const [isPending, startTransition] = useTransition()
 
   const verticalDotsIcon = (
@@ -37,6 +39,46 @@ function HeadingActions({ setError, completedTodos }: HeadingActionsProps) {
     </svg>
   )
 
+  const listIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#000000"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="8" y1="6" x2="21" y2="6"></line>
+      <line x1="8" y1="12" x2="21" y2="12"></line>
+      <line x1="8" y1="18" x2="21" y2="18"></line>
+      <line x1="3" y1="6" x2="3.01" y2="6"></line>
+      <line x1="3" y1="12" x2="3.01" y2="12"></line>
+      <line x1="3" y1="18" x2="3.01" y2="18"></line>
+    </svg>
+  )
+
+  const gridIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#000000"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="3" width="7" height="7"></rect>
+      <rect x="14" y="3" width="7" height="7"></rect>
+      <rect x="14" y="14" width="7" height="7"></rect>
+      <rect x="3" y="14" width="7" height="7"></rect>
+    </svg>
+  )
+
   const handleDeleteCompleted = () => {
     setError(null)
 
@@ -49,7 +91,7 @@ function HeadingActions({ setError, completedTodos }: HeadingActionsProps) {
     })
   }
 
-  const MenuItems: MenuItem[] = [
+  const menuItems: MenuItem[] = [
     {
       label: 'Delete completed todos',
       onClick: handleDeleteCompleted,
@@ -57,7 +99,21 @@ function HeadingActions({ setError, completedTodos }: HeadingActionsProps) {
     },
   ]
 
-  return <DropdownMenu icon={verticalDotsIcon} items={MenuItems} alignment="right" />
+  const handleSwitch = (e: any) => {
+    // the right one is selected when checked
+    setView(e.target.checked ? 'card' : 'table')
+  }
+
+  return (
+    <div className="flex gap-2.5">
+      <DropdownMenu icon={verticalDotsIcon} items={menuItems} alignment="right" />
+      <ButtonSwitcher
+        onChange={handleSwitch}
+        left={{ icon: listIcon }}
+        right={{ icon: gridIcon }}
+      />
+    </div>
+  )
 }
 
 export default function TodoList() {
@@ -69,6 +125,7 @@ export default function TodoList() {
   const [selectedTodoToDelete, setSelectedTodoToDelete] = useState<Todo | null>(null)
   const [deleteTodoModalOpen, setDeleteTodoModalOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [view, setView] = useState<View>('table')
   const dragItem = useRef('')
   const dragOverItem = useRef('')
 
@@ -140,7 +197,9 @@ export default function TodoList() {
       <Heading
         title="All"
         itemLength={todos.length}
-        action={<HeadingActions setError={setError} completedTodos={completedTodos} />}
+        action={
+          <HeadingActions setError={setError} completedTodos={completedTodos} setView={setView} />
+        }
       />
       <div className="text-red-700">{socketError}</div>
       {error && (
@@ -167,6 +226,7 @@ export default function TodoList() {
                 drop={drop}
                 openTodo={openTodo}
                 openDeleteTodoModal={openDeleteTodoModal}
+                view={view}
               />
             )
           })}
@@ -183,6 +243,7 @@ export default function TodoList() {
                     todo={todo}
                     openTodo={openTodo}
                     openDeleteTodoModal={openDeleteTodoModal}
+                    view={view}
                   />
                 )
               })}
