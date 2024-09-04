@@ -23,6 +23,7 @@ export default function TodoList() {
   const [deleteTodoModalOpen, setDeleteTodoModalOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [view, setView] = useLocalStorage<View>('view-mode', 'table')
+  const formRef = useRef<HTMLFormElement>(null)
   const dragItem = useRef('')
   const dragOverItem = useRef('')
 
@@ -37,6 +38,10 @@ export default function TodoList() {
 
     setLabels([])
     setSelectedTodo(null)
+
+    if (!formRef.current) return
+
+    formRef.current.reset()
   }, [isOpen])
 
   useEffect(() => {
@@ -159,6 +164,7 @@ export default function TodoList() {
         selectedTodo={selectedTodo}
         labels={labels}
         setLabels={setLabels}
+        formRef={formRef}
       />
       {selectedTodoToDelete && (
         <DeleteTodoModal

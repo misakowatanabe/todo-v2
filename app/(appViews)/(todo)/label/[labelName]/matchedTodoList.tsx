@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppContext } from 'app/appContext'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { TodoListItem } from '../../todoListItem'
 import { Todo } from 'app/actions'
 import TodoDetail from '../../todoDetail'
@@ -25,6 +25,18 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
   const [deleteTodoModalOpen, setDeleteTodoModalOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [view, setView] = useLocalStorage<View>('view-mode', 'table')
+  const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    if (isOpen) return
+
+    setLabels([])
+    setSelectedTodo(null)
+
+    if (!formRef.current) return
+
+    formRef.current.reset()
+  }, [isOpen])
 
   const matchedTodos = useMemo(
     () =>
@@ -126,6 +138,7 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
             selectedTodo={selectedTodo}
             labels={labels}
             setLabels={setLabels}
+            formRef={formRef}
           />
           {selectedTodoToDelete && (
             <DeleteTodoModal

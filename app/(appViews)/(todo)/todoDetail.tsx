@@ -15,6 +15,7 @@ type TodoDetailProps = {
   selectedTodo: Todo | null
   labels: string[]
   setLabels: React.Dispatch<React.SetStateAction<string[]>>
+  formRef: React.RefObject<HTMLFormElement>
 }
 
 export default function TodoDetail({
@@ -23,6 +24,7 @@ export default function TodoDetail({
   selectedTodo,
   labels,
   setLabels,
+  formRef,
 }: TodoDetailProps) {
   const { labels: availableLabels } = useAppContext()
   const [error, setError] = useState<string | null>(null)
@@ -47,6 +49,10 @@ export default function TodoDetail({
         setError(res.error)
       } else {
         setIsOpen(false)
+
+        if (!formRef.current) return
+
+        formRef.current.reset()
       }
     })
   }
@@ -104,6 +110,7 @@ export default function TodoDetail({
           action={onSubmitTodo}
           className="flex flex-col gap-2"
           id="form-task"
+          ref={formRef}
         >
           <input
             name="title"

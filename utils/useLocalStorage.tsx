@@ -25,37 +25,3 @@ export function useLocalStorage<T>(key: string, defaultValue: T) {
 
   return [value, setValue] as const
 }
-
-// export const useLocalStorage = (storageKey: string, fallbackState: View) => {
-//   //   const [value, setValue] = useState(
-//   //     localStorage.getItem(storageKey)
-//   //       ? JSON.parse(localStorage.getItem(storageKey))
-//   //       : String(fallbackState),
-//   //   )
-
-//   //   const [value, setValue] = useState<string>(
-//   //     JSON.parse(localStorage.getItem(storageKey)) ?? fallbackState,
-//   //   )
-
-//   //   const [value, setValue] = useState<string>(
-//   //     JSON.parse(localStorage.getItem(storageKey) || String(fallbackState)) ?? fallbackState,
-//   //   )
-
-//   const [value, setValue] = useState(() => {
-//     let currentValue
-
-//     try {
-//       currentValue = JSON.parse(localStorage.getItem(storageKey) || fallbackState)
-//     } catch (error) {
-//       currentValue = fallbackState
-//     }
-
-//     return currentValue
-//   })
-
-//   useEffect(() => {
-//     localStorage.setItem(storageKey, JSON.stringify(value))
-//   }, [value, storageKey])
-
-//   return [value, setValue]
-// }
