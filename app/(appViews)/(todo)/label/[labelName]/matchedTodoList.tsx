@@ -116,7 +116,7 @@ export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
               {matchedCompletedTodos.length === 0 ? (
                 <div className="text-gray-600">There is no completed task.</div>
               ) : (
-                <>
+                <div className={clsx({ 'flex flex-wrap gap-4': view === 'card' })}>
                   {matchedCompletedTodos.map((todo) => {
                     return (
                       <TodoListItem
@@ -128,7 +128,7 @@ export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
                       />
                     )
                   })}
-                </>
+                </div>
               )}
             </Accordion>
           </div>

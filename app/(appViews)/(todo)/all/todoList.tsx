@@ -142,7 +142,7 @@ export function TodoList() {
           {completedTodos.length === 0 ? (
             <div className="text-gray-600">There is no completed task.</div>
           ) : (
-            <>
+            <div className={clsx({ 'flex flex-wrap gap-4': view === 'card' })}>
               {completedTodos.map((todo) => {
                 return (
                   <TodoListItem
@@ -154,7 +154,7 @@ export function TodoList() {
                   />
                 )
               })}
-            </>
+            </div>
           )}
         </Accordion>
       </div>
