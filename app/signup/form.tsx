@@ -19,7 +19,7 @@ type Data = {
   confirmationPassword: string
 }
 
-export default function Form() {
+export function Form() {
   const [error, setError] = useState(false)
   const nameInputId = useId()
   const emailInputId = useId()

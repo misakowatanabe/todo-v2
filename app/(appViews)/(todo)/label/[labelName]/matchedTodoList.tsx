@@ -4,8 +4,8 @@ import { useAppContext } from 'app/appContext'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { TodoListItem } from '../../todoListItem'
 import { Todo } from 'app/actions'
-import TodoDetail from '../../todoDetail'
-import DeleteTodoModal from '../../DeleteTodoModal'
+import { TodoDetail } from '../../todoDetail'
+import { DeleteTodoModal } from '../../DeleteTodoModal'
 import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
 import { Button } from 'components/Button'
@@ -16,7 +16,7 @@ import clsx from 'clsx'
 
 type MatchedTodoListProps = { labelParam: string }
 
-export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
+export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
   const { todos, completedTodos, socketError } = useAppContext()
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
   const [labels, setLabels] = useState<string[]>([])

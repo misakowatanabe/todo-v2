@@ -3,8 +3,8 @@
 import { useAppContext } from 'app/appContext'
 import { useEffect, useRef, useState } from 'react'
 import { Todo, updateOrder } from 'app/actions'
-import TodoDetail from '../todoDetail'
-import DeleteTodoModal from '../DeleteTodoModal'
+import { TodoDetail } from '../todoDetail'
+import { DeleteTodoModal } from '../DeleteTodoModal'
 import { TodoListItem, View } from '../todoListItem'
 import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
@@ -13,7 +13,7 @@ import { HeadingActions } from '../headingActions'
 import { useLocalStorage } from 'utils/useLocalStorage'
 import clsx from 'clsx'
 
-export default function TodoList() {
+export function TodoList() {
   const { todos, completedTodos, socketError } = useAppContext()
   const [localOrderedTodos, setLocalOrderedTodos] = useState<Todo[]>([])
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)

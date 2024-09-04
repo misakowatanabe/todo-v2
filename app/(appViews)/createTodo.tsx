@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid'
 import { Button } from 'components/Button'
 import { Chip, ChipColor } from 'components/Chip'
 import { Dropdown } from 'components/Dropdown'
-import Modal from 'components/Modal'
+import { Modal } from 'components/Modal'
 import { Todo, create } from 'app/actions'
 
 type SubmitProps = { isPending: boolean }
@@ -23,7 +23,7 @@ function Submit({ isPending }: SubmitProps) {
   )
 }
 
-export default function CreateTodo() {
+export function CreateTodo() {
   const { labels: availableLabels } = useAppContext()
   const [error, setError] = useState(false)
   const titleInputId = useId()

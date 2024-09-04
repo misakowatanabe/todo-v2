@@ -8,7 +8,7 @@ type DrawerProps = {
   children: ReactNode
 }
 
-export default function Drawer({ openButton, setIsOpen, isOpen, children }: DrawerProps) {
+export function Drawer({ openButton, setIsOpen, isOpen, children }: DrawerProps) {
   return (
     <>
       {openButton}

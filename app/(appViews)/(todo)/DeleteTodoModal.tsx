@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { Todo, deleteTodo } from 'app/actions'
-import Modal from 'components/Modal'
+import { Modal } from 'components/Modal'
 import { Button } from 'components/Button'
 
 type SubmitProps = { isPending: boolean; onDelete: React.MouseEventHandler<HTMLButtonElement> }
@@ -24,7 +24,7 @@ type DeleteTodoModalProps = {
   selectedTodoToDelete: Todo
 }
 
-export default function DeleteTodoModal({
+export function DeleteTodoModal({
   deleteTodoModalOpen,
   setDeleteTodoModalOpen,
   selectedTodoToDelete,

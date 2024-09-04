@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import { deleteCookies } from 'app/actions'
 import { ListItem } from './listItem'
 
-export default function Logout() {
+export function Logout() {
   const { user } = useAppContext()
   const [error, setError] = useState(false)
 

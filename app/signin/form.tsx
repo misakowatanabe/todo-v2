@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { setCookies } from 'app/actions'
 
-export default function Form() {
+export function Form() {
   const [error, setError] = useState(false)
   const emailInputId = useId()
   const passwordInputId = useId()

@@ -65,7 +65,7 @@ function Footer({ okButton, setIsShowing }: FooterProps) {
   )
 }
 
-export default function Modal({
+export function Modal({
   openButton,
   okButton,
   setIsShowing,

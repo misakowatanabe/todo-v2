@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useTransition } from 'react'
 import { Button } from 'components/Button'
-import Modal from 'components/Modal'
+import { Modal } from 'components/Modal'
 import { removeLabel } from 'app/actions'
 
 type SubmitProps = { isPending: boolean; onRemove: React.MouseEventHandler<HTMLButtonElement> }
@@ -20,7 +20,7 @@ function Submit({ isPending, onRemove }: SubmitProps) {
   )
 }
 
-export default function RemoveLabel({ label }: RemoveLabelProps) {
+export function RemoveLabel({ label }: RemoveLabelProps) {
   const [error, setError] = useState<string | null>(null)
   const [isShowing, setIsShowing] = useState(false)
   const [isPending, startTransition] = useTransition()

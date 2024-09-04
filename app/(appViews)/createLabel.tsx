@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useTransition } from 'react'
 import { Button } from 'components/Button'
 import { Chip, ChipColor, colorOptions } from 'components/Chip'
-import Modal from 'components/Modal'
+import { Modal } from 'components/Modal'
 import { Label, createLabel } from 'app/actions'
 import clsx from 'clsx'
 import { ListItem } from './listItem'
@@ -21,7 +21,7 @@ function Submit({ isPending }: SubmitProps) {
   )
 }
 
-export default function CreateLabel() {
+export function CreateLabel() {
   const [color, setColor] = useState<ChipColor | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isShowing, setIsShowing] = useState(false)

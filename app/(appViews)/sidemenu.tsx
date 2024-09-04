@@ -1,12 +1,12 @@
 'use client'
 
-import CreateTodo from './createTodo'
-import LabelList from './labelList'
-import Logout from './logout'
+import { CreateTodo } from './createTodo'
+import { LabelList } from './labelList'
+import { Logout } from './logout'
 import { ListItem } from './listItem'
 import { usePathname } from 'next/navigation'
 
-export default function Sidemenu() {
+export function Sidemenu() {
   const pathname = usePathname()
 
   const allIcon = (

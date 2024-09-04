@@ -2,8 +2,8 @@
 
 import { useAppContext } from 'app/appContext'
 import clsx from 'clsx'
-import CreateLabel from './createLabel'
-import RemoveLabel from './removeLabel'
+import { CreateLabel } from './createLabel'
+import { RemoveLabel } from './removeLabel'
 import { ListItem } from './listItem'
 
 type ColorVariants = Record<string, string>
@@ -12,7 +12,7 @@ type LabelColor = { labelColor: string }
 
 type LabelListProps = { pathname: string }
 
-export default function LabelList({ pathname }: LabelListProps) {
+export function LabelList({ pathname }: LabelListProps) {
   const { labels } = useAppContext()
 
   // TODO: use single source of truth

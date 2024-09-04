@@ -4,7 +4,7 @@ import { useAppContext } from 'app/appContext'
 import { useMemo, useState, useTransition } from 'react'
 import { Todo, update } from 'app/actions'
 import { Chip, ChipColor } from 'components/Chip'
-import Drawer from 'components/Drawer'
+import { Drawer } from 'components/Drawer'
 import { Button } from 'components/Button'
 import { Dropdown } from 'components/Dropdown'
 import { Textarea } from 'components/Textarea'
@@ -18,7 +18,7 @@ type TodoDetailProps = {
   formRef: React.RefObject<HTMLFormElement>
 }
 
-export default function TodoDetail({
+export function TodoDetail({
   isOpen,
   setIsOpen,
   selectedTodo,

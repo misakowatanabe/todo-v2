@@ -1,4 +1,4 @@
-import Form from './form'
+import { Form } from './form'
 import Link from 'next/link'
 
 export default function Page() {
