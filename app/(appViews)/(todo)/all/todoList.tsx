@@ -10,6 +10,7 @@ import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
 import { Button } from 'components/Button'
 import { HeadingActions } from '../headingActions'
+import { useLocalStorage } from 'utils/useLocalStorage'
 import clsx from 'clsx'
 
 export default function TodoList() {
@@ -21,7 +22,7 @@ export default function TodoList() {
   const [selectedTodoToDelete, setSelectedTodoToDelete] = useState<Todo | null>(null)
   const [deleteTodoModalOpen, setDeleteTodoModalOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [view, setView] = useState<View>('table')
+  const [view, setView] = useLocalStorage<View>('view-mode', 'table')
   const dragItem = useRef('')
   const dragOverItem = useRef('')
 
@@ -94,7 +95,12 @@ export default function TodoList() {
         title="All"
         itemLength={todos.length}
         action={
-          <HeadingActions setError={setError} completedTodos={completedTodos} setView={setView} />
+          <HeadingActions
+            setError={setError}
+            completedTodos={completedTodos}
+            setView={setView}
+            view={view}
+          />
         }
       />
       <div className="text-red-700">{socketError}</div>

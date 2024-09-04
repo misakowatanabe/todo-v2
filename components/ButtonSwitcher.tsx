@@ -9,11 +9,12 @@ type ButtonSwitcherProps = {
   right: ButtonOption
   onChange: (_event: React.ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
+  checked?: boolean
 } & React.ButtonHTMLAttributes<HTMLLabelElement>
 
 export const ButtonSwitcher = forwardRef<HTMLInputElement, ButtonSwitcherProps>(
   function ButtonSwitcher(
-    { size = 'medium', left, right, onChange, disabled = false }: ButtonSwitcherProps,
+    { size = 'medium', left, right, onChange, disabled = false, checked }: ButtonSwitcherProps,
     ref,
   ) {
     return (
@@ -24,6 +25,7 @@ export const ButtonSwitcher = forwardRef<HTMLInputElement, ButtonSwitcherProps>(
           id="button-switcher"
           ref={ref}
           onChange={onChange}
+          checked={checked}
         />
         <label
           className={clsx(

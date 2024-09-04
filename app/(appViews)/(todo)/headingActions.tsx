@@ -10,9 +10,10 @@ type HeadingActionsProps = {
   setError: React.Dispatch<React.SetStateAction<string | null>>
   completedTodos?: Todo[]
   setView: React.Dispatch<React.SetStateAction<View>>
+  view: View
 }
 
-export function HeadingActions({ setError, completedTodos, setView }: HeadingActionsProps) {
+export function HeadingActions({ setError, completedTodos, setView, view }: HeadingActionsProps) {
   const [isPending, startTransition] = useTransition()
 
   const verticalDotsIcon = (
@@ -93,11 +94,6 @@ export function HeadingActions({ setError, completedTodos, setView }: HeadingAct
     },
   ]
 
-  const handleSwitch = (e: any) => {
-    // the right one is selected when checked
-    setView(e.target.checked ? 'card' : 'table')
-  }
-
   return (
     <div className="flex gap-2.5">
       {/* completed todos deletion is available only on "All" view for now */}
@@ -105,9 +101,11 @@ export function HeadingActions({ setError, completedTodos, setView }: HeadingAct
         <DropdownMenu icon={verticalDotsIcon} items={menuItems} alignment="right" />
       )}
       <ButtonSwitcher
-        onChange={handleSwitch}
+        // the right one is selected when checked
+        onChange={(e: any) => setView(e.target.checked ? 'card' : 'table')}
         left={{ icon: listIcon }}
         right={{ icon: gridIcon }}
+        checked={view === 'card' ? true : false}
       />
     </div>
   )

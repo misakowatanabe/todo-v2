@@ -38,7 +38,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const [user, setUser] = useState<User | null>(null)
   const [labels, setLabels] = useState<Label[]>([])
   const [socketError, setSocketError] = useState<Error>(null)
-  const [globalError, setGlobalErrorError] = useState<Error>(null)
+  const [globalError, setGlobalError] = useState<Error>(null)
 
   const router = useRouter()
 
@@ -112,7 +112,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       } catch (error) {
         // Set login status cookie to keep the user inside the app routes when sign out failed
         await setCookies('user_logged_in')
-        setGlobalErrorError('Sign out has failed')
+        setGlobalError('Sign out has failed')
         console.error('Error signing out: ', error instanceof Error ? error.message : String(error))
       }
     }, 5000)

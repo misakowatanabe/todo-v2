@@ -11,6 +11,7 @@ import { Accordion } from 'components/Accordion'
 import { Button } from 'components/Button'
 import { View } from '../../todoListItem'
 import { HeadingActions } from '../../headingActions'
+import { useLocalStorage } from 'utils/useLocalStorage'
 import clsx from 'clsx'
 
 type MatchedTodoListProps = { labelParam: string }
@@ -23,7 +24,7 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
   const [selectedTodoToDelete, setSelectedTodoToDelete] = useState<Todo | null>(null)
   const [deleteTodoModalOpen, setDeleteTodoModalOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [view, setView] = useState<View>('table')
+  const [view, setView] = useLocalStorage<View>('view-mode', 'table')
 
   const matchedTodos = useMemo(
     () =>
@@ -66,7 +67,7 @@ export default function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
       <Heading
         title={labelParam.replace(/_/g, ' ')}
         itemLength={matchedTodos.length}
-        action={<HeadingActions setError={setError} setView={setView} />}
+        action={<HeadingActions setError={setError} setView={setView} view={view} />}
       />
       <div className="text-red-700">{socketError}</div>
       {error && (
