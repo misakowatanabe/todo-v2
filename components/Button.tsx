@@ -52,10 +52,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
           'text-sm px-5 h-10': size === 'medium',
           'text-base px-6 h-12': size === 'large',
         },
-        {
-          'w-8': size === 'small' && !label,
-          'w-10': size === 'medium' && !label,
-          'w-12': size === 'large' && !label,
+        !label && {
+          'w-8': size === 'small',
+          'w-10': size === 'medium',
+          'w-12': size === 'large',
         },
         className,
       )}

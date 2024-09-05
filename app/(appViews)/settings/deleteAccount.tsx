@@ -1,5 +1,6 @@
 'use client'
 
+import { useAppContext } from 'app/appContext'
 import { useState, useTransition } from 'react'
 import { deleteAccount, deleteCookies } from 'app/actions'
 import { Modal } from 'components/Modal'
@@ -22,6 +23,7 @@ function Submit({ isPending, onDelete }: SubmitProps) {
 }
 
 export function DeleteAccount() {
+  const { user } = useAppContext()
   const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
@@ -48,13 +50,20 @@ export function DeleteAccount() {
   }
 
   return (
-    <>
-      <Button
-        type="button"
-        label={isPending ? 'Deleting account...' : 'Delete account'}
-        disabled={isPending}
-        onClick={() => setDeleteAccountModalOpen(true)}
-      />
+    <div>
+      <div className="text-2xl font-semibold text-red-600 pb-3 border-b mt-10 mb-4">
+        Delete Account
+      </div>
+      <div className="flex flex-col gap-2">
+        <div>Once you delete your account, there is no going back.</div>
+        <Button
+          type="button"
+          label={isPending ? 'Deleting account...' : 'Delete account'}
+          disabled={!user || isPending}
+          onClick={() => setDeleteAccountModalOpen(true)}
+          className="w-fit"
+        />
+      </div>
       <Modal
         title="Delete account"
         setIsShowing={setDeleteAccountModalOpen}
@@ -81,6 +90,6 @@ export function DeleteAccount() {
           </div>
         </div>
       </Modal>
-    </>
+    </div>
   )
 }

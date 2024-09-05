@@ -723,32 +723,17 @@ app.put('/untick', (req, res) => {
   })()
 })
 
-// update userInfo(name) in firestore
-app.put('/update-userInfo-name/:userUid', (req, res) => {
+// update user profile info in Firebase authentication
+app.put('/updateProfile', (req, res) => {
   ;(async () => {
     try {
-      const document = db.collection(req.params.userUid).doc('userInfo')
-      await document.update({
-        name: req.body.name,
-      })
-      return res.status(200).json({ message: 200 })
-    } catch (error) {
-      return res.status(500).json({ message: 500 })
-    }
-  })()
-})
+      const userRecord = await auth.updateUser(uid, req.body)
 
-// update userInfo(email) in firestore
-app.put('/update-userInfo-email/:userUid', (req, res) => {
-  ;(async () => {
-    try {
-      const document = db.collection(req.params.userUid).doc('userInfo')
-      await document.update({
-        email: req.body.email,
-      })
-      return res.status(200).json({ message: 200 })
-    } catch (error) {
-      return res.status(500).json({ message: 500 })
+      // eslint-disable-next-line no-console
+      console.log('Successfully updated user', userRecord.toJSON())
+      res.sendStatus(200)
+    } catch (err) {
+      res.status(400).send(err.details)
     }
   })()
 })
