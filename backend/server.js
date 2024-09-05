@@ -356,6 +356,7 @@ app.post('/create', (req, res) => {
             [req.body.todoId]: {
               todoId: req.body.todoId,
               title: req.body.title,
+              body: req.body.body,
               createdAt: req.body.createdAt,
               completed: req.body.completed,
             },
@@ -753,44 +754,17 @@ app.put('/update-userInfo-email/:userUid', (req, res) => {
 })
 
 // delete user account
-app.delete('/deleteAccount/:userUid/', (req, res) => {
+app.delete('/deleteAccount', (req, res) => {
   ;(async () => {
+    // delete user collection (all todos-related info)
     try {
-      await auth.deleteUser(req.params.userUid)
-      return res.status(200).json({ message: 200 })
-    } catch (error) {
-      return res.status(500).json({ message: 500 })
-    }
-  })()
-})
-
-// delete user collection
-app.delete('/deleteCollection/:userUid/', (req, res) => {
-  ;(async () => {
-    try {
-      async function deleteCollection() {
-        const collectionRef = db.collection(req.params.userUid)
-        const collectionRef2 = db.collection(req.params.userUid).doc('todos').collection('active')
-        const query = collectionRef.orderBy('__name__').limit(100)
-        const query2 = collectionRef2.orderBy('__name__').limit(100)
-
-        return new Promise((resolve, reject) => {
-          deleteQueryBatch(db, query, query2, resolve).catch(reject)
-        })
-      }
-
-      async function deleteQueryBatch(db, query, query2, resolve) {
+      const deleteQueryBatch = async (db, query, resolve) => {
         const snapshot = await query.get()
-        const snapshot2 = await query2.get()
 
         const batchSize = snapshot.size
         if (batchSize === 0) {
           resolve()
-          return
-        }
-        const batchSize2 = snapshot2.size
-        if (batchSize2 === 0) {
-          resolve()
+
           return
         }
 
@@ -799,21 +773,32 @@ app.delete('/deleteCollection/:userUid/', (req, res) => {
         snapshot.docs.forEach((doc) => {
           batch.delete(doc.ref)
         })
-        snapshot2.docs.forEach((doc) => {
-          batch.delete(doc.ref)
-        })
+
         await batch.commit()
 
         // Recurse on the next process tick, to avoid
         // exploding the stack.
         process.nextTick(() => {
-          deleteQueryBatch(db, query, query2, resolve)
+          deleteQueryBatch(db, query, resolve)
         })
       }
-      deleteCollection()
-      return res.status(200).json({ message: 200 })
+
+      const collectionRef = db.collection(uid)
+      const query = collectionRef.orderBy('__name__').limit(100)
+
+      await new Promise((resolve, reject) => {
+        deleteQueryBatch(db, query, resolve).catch(reject)
+      })
     } catch (error) {
-      return res.status(500).json({ message: 500 })
+      res.status(400).send(err.details)
+    }
+
+    // delete user account
+    try {
+      await auth.deleteUser(uid)
+      res.sendStatus(200)
+    } catch (error) {
+      res.status(400).send(err.details)
     }
   })()
 })

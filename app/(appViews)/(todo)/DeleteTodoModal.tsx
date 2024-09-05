@@ -10,7 +10,7 @@ type SubmitProps = { isPending: boolean; onDelete: React.MouseEventHandler<HTMLB
 function Submit({ isPending, onDelete }: SubmitProps) {
   return (
     <Button
-      type="button"
+      type="submit"
       label={isPending ? 'Deleting...' : 'Delete'}
       disabled={isPending}
       onClick={onDelete}

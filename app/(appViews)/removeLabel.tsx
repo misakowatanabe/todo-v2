@@ -12,7 +12,7 @@ type RemoveLabelProps = { label: string }
 function Submit({ isPending, onRemove }: SubmitProps) {
   return (
     <Button
-      type="button"
+      type="submit"
       label={isPending ? 'Deleting...' : 'Delete'}
       disabled={isPending}
       onClick={onRemove}

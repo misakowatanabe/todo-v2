@@ -139,6 +139,24 @@ export async function untickTodo(todoId: Pick<Todo, 'todoId'>) {
   return { ok: true, error: '' }
 }
 
+export async function deleteAccount() {
+  const res = await fetch(`${ENDPOINT}/deleteAccount`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'cors',
+  })
+
+  if (!res.ok) {
+    const error = await res.text()
+
+    return { ok: false, error: error }
+  }
+
+  return { ok: true, error: '' }
+}
+
 export async function sendIdToken(idToken: string) {
   const res = await fetch(`${ENDPOINT}/sendIdToken`, {
     method: 'POST',
