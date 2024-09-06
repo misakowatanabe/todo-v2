@@ -723,21 +723,6 @@ app.put('/untick', (req, res) => {
   })()
 })
 
-// update user profile info in Firebase authentication
-app.put('/updateProfile', (req, res) => {
-  ;(async () => {
-    try {
-      const userRecord = await auth.updateUser(uid, req.body)
-
-      // eslint-disable-next-line no-console
-      console.log('Successfully updated user', userRecord.toJSON())
-      res.sendStatus(200)
-    } catch (err) {
-      res.status(400).send(err.details)
-    }
-  })()
-})
-
 // delete user account
 app.delete('/deleteAccount', (req, res) => {
   ;(async () => {

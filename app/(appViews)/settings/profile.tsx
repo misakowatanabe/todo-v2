@@ -4,16 +4,41 @@ import { useAppContext } from 'app/appContext'
 import { Input } from 'components/Input'
 import { Button } from 'components/Button'
 import { useRef, useState, useTransition } from 'react'
-import { User, updateProfile } from 'app/actions'
+import { Modal } from 'components/Modal'
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updateEmail,
+  updateProfile,
+} from 'firebase/auth'
+
+type SubmitProps = {
+  isPending: boolean
+}
+
+function Submit({ isPending }: SubmitProps) {
+  return (
+    <Button
+      type="submit"
+      label={isPending ? 'Re-authenticating...' : 'Re-authenticate'}
+      disabled={isPending}
+      form="form-reauthenticate-user"
+    />
+  )
+}
 
 export function Profile() {
   const { user } = useAppContext()
+  const [reauthenticationModalOpen, setReauthenticationModalOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [newEmailInput, setNewEmailInput] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const formRef = useRef<HTMLFormElement>(null)
 
   const onSubmitUpdateProfile = async (formData: FormData) => {
     setError(null)
+
+    if (!user) return
 
     const newDisplayName = formData.get('displayName')
     const newEmail = formData.get('email')
@@ -24,43 +49,47 @@ export function Profile() {
       return
     }
 
-    const currentDisplayName = user?.displayName
-    const currentEmail = user?.email
-
-    const profileObject: User = {}
-
-    if (currentDisplayName !== newDisplayName) {
-      profileObject['displayName'] = newDisplayName as string
-    }
-
-    if (currentEmail !== newEmail) {
-      profileObject['email'] = newEmail as string
-    }
-
-    if (Object.keys(profileObject).length === 0) {
-      setError('No change')
-
-      return
-    }
+    const currentDisplayName = user.displayName
+    const currentEmail = user.email
 
     startTransition(async () => {
-      const res = await updateProfile(profileObject)
-
-      if (!res.ok) {
-        setError(res.error)
-
-        return
+      try {
+        if (currentDisplayName !== newDisplayName) {
+          await updateProfile(user, { displayName: newDisplayName as string })
+        }
+        if (currentEmail !== newEmail) {
+          await updateEmail(user, newEmail as string)
+        }
+        await user.reload()
+      } catch (err) {
+        // if the user signed in too long ago, the action fails, and the user needs to be re-authenticated by getting new sign-in credentials
+        setNewEmailInput(newEmail as string)
+        // TODO: disable closing modal unless password is filled
+        setReauthenticationModalOpen(true)
       }
+    })
+  }
 
-      // TODO: investigate why user gets lost after email update and manual reload, or after user.reload()
+  const onReauthenticate = async (formData: FormData) => {
+    const password = formData.get('password')
+
+    if (!password || !user || !user.email || !newEmailInput) return
+
+    const credential = EmailAuthProvider.credential(user.email, password as string)
+
+    try {
+      await reauthenticateWithCredential(user, credential)
+      await user.reload()
+      setReauthenticationModalOpen(false)
+
       if (!formRef.current) return
 
       formRef.current.reset()
 
-      if (!user) return
-
-      await user.reload()
-    })
+      setError(null)
+    } catch (error) {
+      setError(error instanceof Error ? error.message : String(error))
+    }
   }
 
   return (
@@ -112,6 +141,43 @@ export function Profile() {
           className="w-fit"
         />
       </div>
+      <Modal
+        title="Re-authenticate"
+        setIsShowing={setReauthenticationModalOpen}
+        isShowing={reauthenticationModalOpen}
+        okButton={<Submit isPending={isPending} />}
+      >
+        {error && (
+          <div className="flex items-center text-red-700">
+            <div>{error}</div>
+            <Button
+              type="button"
+              style="text"
+              size="small"
+              label="OK"
+              onClick={() => setError(null)}
+            />
+          </div>
+        )}
+        <div>
+          The session expired and failed to update your email. <br />
+          Please re-authenticate yourself by typing your password, then, try updating email again!
+        </div>
+        <form
+          autoComplete="off"
+          action={onReauthenticate}
+          className="flex gap-4"
+          id="form-reauthenticate-user"
+        >
+          <Input
+            disabled={!user || isPending}
+            label="Password"
+            name="password"
+            type="password"
+            required={true}
+          />
+        </form>
+      </Modal>
     </div>
   )
 }
