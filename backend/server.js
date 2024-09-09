@@ -73,54 +73,6 @@ io.on('connection', (socket) => {
 
 var uid = null
 
-// delete either active or completed todo
-app.delete('/delete', (req, res) => {
-  ;(async () => {
-    // Remove the selected todo (ID) field from the todos doc
-    try {
-      await db
-        .collection(uid)
-        .doc('todos')
-        .update({
-          [req.body.todoId]: FieldValue.delete(),
-        })
-    } catch (err) {
-      res.status(400).send(err.details)
-    }
-
-    // Remove the todo ID from the order doc
-    try {
-      const order = await db.collection(uid).doc('order').get()
-      const orderData = order.data()
-      const orderDataElements = req.body.completed ? orderData.completed : orderData.active
-      const fieldName = req.body.completed ? 'completed' : 'active'
-      const indexOfTodoId = orderDataElements.indexOf(req.body.todoId)
-
-      await db
-        .collection(uid)
-        .doc('order')
-        .update({
-          [fieldName]: FieldValue.arrayRemove(...orderDataElements),
-        })
-
-      orderDataElements.splice(indexOfTodoId, 1)
-
-      if (orderDataElements.length !== 0) {
-        await db
-          .collection(uid)
-          .doc('order')
-          .update({
-            [fieldName]: FieldValue.arrayUnion(...orderDataElements),
-          })
-      }
-
-      res.sendStatus(200)
-    } catch (err) {
-      res.status(400).send(err.details)
-    }
-  })()
-})
-
 // delete all completed todos
 app.delete('/deleteCompleted', (req, res) => {
   ;(async () => {

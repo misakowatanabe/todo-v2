@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Todo, deleteTodo } from 'app/actions'
+import { useAppContext } from 'app/appContext'
+import { Todo } from 'app/actions'
 import { Modal } from 'components/Modal'
 import { Button } from 'components/Button'
+import { deleteTodo } from './deleteTodo'
 
 type SubmitProps = { isPending: boolean; onDelete: React.MouseEventHandler<HTMLButtonElement> }
 
@@ -29,19 +31,21 @@ export function DeleteTodoModal({
   setDeleteTodoModalOpen,
   selectedTodoToDelete,
 }: DeleteTodoModalProps) {
+  const { user } = useAppContext()
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   const onDelete = () => {
     if (!selectedTodoToDelete) return
 
-    startTransition(async () => {
-      const deleteInfo = {
-        todoId: selectedTodoToDelete.todoId as unknown as Pick<Todo, 'todoId'>,
-        completed: selectedTodoToDelete.completed as unknown as Pick<Todo, 'completed'>,
-      }
+    if (!user) return
 
-      const res = await deleteTodo(deleteInfo)
+    startTransition(async () => {
+      const res = await deleteTodo(
+        user.uid,
+        selectedTodoToDelete.todoId,
+        selectedTodoToDelete.completed,
+      )
 
       if (!res.ok) {
         setError(res.error)
