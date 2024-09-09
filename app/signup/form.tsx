@@ -1,16 +1,15 @@
 'use client'
 
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { auth } from '../firebase'
 import { useId } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
-import { updateUser } from 'app/actions'
 import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
-import { create } from 'app/actions'
 import { useRouter } from 'next/navigation'
 import { Todo, setCookies } from 'app/actions'
+import { createTodo } from 'app/createTodo'
 
 type Data = {
   name: string
@@ -20,7 +19,7 @@ type Data = {
 }
 
 export function Form() {
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<null | string>(null)
   const nameInputId = useId()
   const emailInputId = useId()
   const passwordInputId = useId()
@@ -47,18 +46,14 @@ export function Form() {
 
     if (!validateForm(data)) {
       // TODO: show what is not validated to user
-      setError(true)
+      setError('Please check if name, email and password are filled in correctly.')
       return
     }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
-      const idToken = await userCredential.user.getIdToken(true)
-      const userData = { idToken: idToken, displayName: data.name }
-      await updateUser(userData)
-      await userCredential.user.reload()
-      await setCookies('user_logged_in')
-      router.push('/all')
+      // TODO: consider removing this not to get a situation where user was created but failed to update displayname
+      await updateProfile(userCredential.user, { displayName: data.name })
 
       // create a welcome todo
       const date = format(new Date(), 'yyyy-MM-dd')
@@ -72,11 +67,19 @@ export function Form() {
         completed: false,
       }
 
-      await create(todo)
+      const res = await createTodo(userCredential.user, todo)
+
+      if (!res.ok) {
+        throw new Error(
+          'Something went wrong with creating a welcome todo! You can still login with your newly created account.',
+        )
+      }
+
+      await userCredential.user.reload()
+      await setCookies('user_logged_in')
       router.push('/all')
     } catch (error) {
-      setError(true)
-      console.error('Error signing up: ', error instanceof Error ? error.message : String(error))
+      setError(error instanceof Error ? error.message : String(error))
     }
   }
 
@@ -100,13 +103,13 @@ export function Form() {
       </form>
       {error && (
         <div className="flex items-center text-red-700">
-          <div>Failed to signup</div>
+          <div>{error}</div>
           <Button
             type="button"
             style="text"
             size="small"
             label="OK"
-            onClick={() => setError(false)}
+            onClick={() => setError(null)}
           />
         </div>
       )}

@@ -27,24 +27,6 @@ export type DeleteInfo = {
  * https://react.dev/reference/rsc/use-server#serializable-parameters-and-return-values
  */
 
-export async function create(todo: Todo) {
-  const res = await fetch(`${ENDPOINT}/create`, {
-    method: 'POST',
-    body: JSON.stringify(todo),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-  })
-
-  if (!res.ok) {
-    const error = await res.text()
-    console.error(error)
-  }
-
-  return res.ok
-}
-
 export async function update(todo: Omit<Todo, 'createdAt'>) {
   const res = await fetch(`${ENDPOINT}/update`, {
     method: 'PUT',
@@ -157,34 +139,6 @@ export async function deleteAccount() {
   return { ok: true, error: '' }
 }
 
-export async function sendIdToken(idToken: string) {
-  const res = await fetch(`${ENDPOINT}/sendIdToken`, {
-    method: 'POST',
-    body: JSON.stringify({ idToken: idToken }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-  })
-
-  return res.ok
-}
-
-type userData = { idToken: string; displayName: string }
-
-export async function updateUser(userData: userData) {
-  const res = await fetch(`${ENDPOINT}/updateUser`, {
-    method: 'POST',
-    body: JSON.stringify(userData),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-  })
-
-  return res.ok
-}
-
 export async function setCookies(name: string) {
   const hasCookie = cookies().get(name)?.value
 
@@ -209,19 +163,6 @@ export async function deleteCookies(name: string) {
 
 export async function getCookies(name: string) {
   return cookies().get(name)?.value
-}
-
-export async function updateOrder(order: string[]) {
-  const res = await fetch(`${ENDPOINT}/updateOrder`, {
-    method: 'POST',
-    body: JSON.stringify({ order: order }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-  })
-
-  return res.ok
 }
 
 export async function createLabel(label: Label): Promise<{

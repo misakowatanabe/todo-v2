@@ -8,7 +8,8 @@ import { Button } from 'components/Button'
 import { Chip, ChipColor } from 'components/Chip'
 import { Dropdown } from 'components/Dropdown'
 import { Modal } from 'components/Modal'
-import { Todo, create } from 'app/actions'
+import { Todo } from 'app/actions'
+import { createTodo } from 'app/createTodo'
 
 type SubmitProps = { isPending: boolean }
 
@@ -23,9 +24,9 @@ function Submit({ isPending }: SubmitProps) {
   )
 }
 
-export function CreateTodo() {
-  const { labels: availableLabels } = useAppContext()
-  const [error, setError] = useState(false)
+export function CreateTodoButton() {
+  const { labels: availableLabels, user } = useAppContext()
+  const [error, setError] = useState<null | string>(null)
   const titleInputId = useId()
   const bodyInputId = useId()
   const [labels, setLabels] = useState<string[]>([])
@@ -37,7 +38,7 @@ export function CreateTodo() {
   }, [isShowing])
 
   const onSubmitTodo = async (formData: FormData) => {
-    setError(false)
+    setError(null)
     const date = format(new Date(), 'yyyy-MM-dd')
     const id = nanoid(8)
 
@@ -51,11 +52,13 @@ export function CreateTodo() {
       completed: false,
     }
 
-    startTransition(async () => {
-      const resOk = await create(todo)
+    if (!user) return
 
-      if (!resOk) {
-        setError(true)
+    startTransition(async () => {
+      const res = await createTodo(user, todo)
+
+      if (!res.ok) {
+        setError('Something went wrong! Could not create a todo.')
       } else {
         setIsShowing(false)
         setLabels([])
@@ -117,13 +120,13 @@ export function CreateTodo() {
     >
       {error && (
         <div className="flex labels-center text-red-700">
-          <div>Failed to create a todo</div>
+          <div>{error}</div>
           <Button
             type="button"
             style="text"
             size="small"
             label="OK"
-            onClick={() => setError(false)}
+            onClick={() => setError(null)}
           />
         </div>
       )}

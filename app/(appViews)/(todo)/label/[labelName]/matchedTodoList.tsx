@@ -17,7 +17,7 @@ import clsx from 'clsx'
 type MatchedTodoListProps = { labelParam: string }
 
 export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
-  const { todos, completedTodos, socketError } = useAppContext()
+  const { todos, completedTodos } = useAppContext()
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
   const [labels, setLabels] = useState<string[]>([])
   const [isOpen, setIsOpen] = useState(false)
@@ -81,7 +81,6 @@ export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
         itemLength={matchedTodos.length}
         action={<HeadingActions setError={setError} setView={setView} view={view} />}
       />
-      <div className="text-red-700">{socketError}</div>
       {error && (
         <div className="flex items-center text-red-700">
           <div>{error}</div>

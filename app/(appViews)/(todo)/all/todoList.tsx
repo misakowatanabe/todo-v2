@@ -2,7 +2,7 @@
 
 import { useAppContext } from 'app/appContext'
 import { useEffect, useRef, useState } from 'react'
-import { Todo, updateOrder } from 'app/actions'
+import { Todo } from 'app/actions'
 import { TodoDetail } from '../todoDetail'
 import { DeleteTodoModal } from '../DeleteTodoModal'
 import { TodoListItem, View } from '../todoListItem'
@@ -12,9 +12,11 @@ import { Button } from 'components/Button'
 import { HeadingActions } from '../headingActions'
 import { useLocalStorage } from 'utils/useLocalStorage'
 import clsx from 'clsx'
+import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore'
+import { db } from 'app/firebase'
 
 export function TodoList() {
-  const { todos, completedTodos, socketError } = useAppContext()
+  const { todos, completedTodos, user } = useAppContext()
   const [localOrderedTodos, setLocalOrderedTodos] = useState<Todo[]>([])
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
   const [labels, setLabels] = useState<string[]>([])
@@ -61,6 +63,8 @@ export function TodoList() {
   }
 
   const drop = async () => {
+    if (!user) return
+
     const todosCopy = [...localOrderedTodos]
     const dragItemContent = todosCopy.find((el) => el.todoId === dragItem.current)
     const dragOverItemContent = todosCopy.find((el) => el.todoId === dragOverItem.current)
@@ -74,7 +78,20 @@ export function TodoList() {
 
     setLocalOrderedTodos(todosCopy)
     const order = todosCopy.map((el) => el.todoId)
-    await updateOrder(order)
+
+    // update order of todos
+    try {
+      await updateDoc(doc(db, user.uid, 'order'), {
+        active: arrayRemove(...order),
+      })
+      await updateDoc(doc(db, user.uid, 'order'), {
+        active: arrayUnion(...order),
+      })
+    } catch {
+      setError(
+        'Could not update the todos order, and this local change disappears once you refresh the page. The todos might not exist.',
+      )
+    }
 
     dragItem.current = ''
     dragOverItem.current = ''
@@ -108,7 +125,6 @@ export function TodoList() {
           />
         }
       />
-      <div className="text-red-700">{socketError}</div>
       {error && (
         <div className="flex items-center text-red-700">
           <div>{error}</div>

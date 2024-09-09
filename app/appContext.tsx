@@ -2,13 +2,11 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User, onAuthStateChanged } from 'firebase/auth'
-import { auth } from './firebase'
-import io from 'socket.io-client'
-import { ENDPOINT } from './config'
+import { auth, db } from './firebase'
 import { useRouter } from 'next/navigation'
-import { sendIdToken } from 'app/actions'
 import { Todo, getCookies, setCookies } from 'app/actions'
 import { signOut } from 'firebase/auth'
+import { doc, getDoc, onSnapshot } from 'firebase/firestore'
 
 type Label = { label: string; color: string }
 
@@ -19,7 +17,6 @@ type AppContextType = {
   todos: Todo[]
   completedTodos: Todo[]
   labels: Label[]
-  socketError: Error
   globalError: Error
 }
 
@@ -37,58 +34,83 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const [completedTodos, setCompletedTodos] = useState<Todo[]>([])
   const [user, setUser] = useState<User | null>(null)
   const [labels, setLabels] = useState<Label[]>([])
-  const [socketError, setSocketError] = useState<Error>(null)
   const [globalError, setGlobalError] = useState<Error>(null)
 
   const router = useRouter()
 
   useEffect(() => {
-    const socket = io(ENDPOINT, {
-      autoConnect: false,
-    })
+    if (!user) return
 
-    socket.on('connect_error', () => {
-      setSocketError('Server is currently not available')
-      socket.removeAllListeners('todos')
-      socket.removeAllListeners('labels')
-      setTodos((prev) => {
-        if (prev.length === 0) return prev
-        return []
-      })
-    })
+    const unsubTodos = onSnapshot(
+      doc(db, user.uid, 'todos'),
+      async (docSnapshot) => {
+        const todosData = docSnapshot.data()
+        const order = await getDoc(doc(db, user.uid, 'order'))
+        const orderData = order.data()
+        let todoListActive = []
+        let todoListCompleted = []
 
-    socket.on('connect', async () => {
-      if (!auth.currentUser) return
+        // Skip filtering active todos unless there is any todo
+        if (todosData) {
+          todoListActive = Object.values(todosData).filter((el) => {
+            return !el.completed
+          })
 
-      /** This sends the user's ID token to Node.js server, verify the integrity and authenticity of
-       * the ID token and retrieve the uid from it.
-       * https://firebase.google.com/docs/auth/admin/verify-id-tokens#web
-       */
-      const idToken = await auth.currentUser.getIdToken(true)
-      const res = await sendIdToken(idToken)
+          todoListCompleted = Object.values(todosData).filter((el) => {
+            return el.completed
+          })
+        }
 
-      if (!res) {
-        setSocketError('Todo data is not found')
-      } else {
-        setSocketError(null)
-        socket.on('todos', (todoList: { todoListActive: Todo[]; todoListCompleted: Todo[] }) => {
-          setTodos(todoList.todoListActive)
-          setCompletedTodos(todoList.todoListCompleted)
-        })
-        socket.on('labels', (labelList: Label[]) => {
-          setLabels(labelList)
-        })
-      }
-    })
+        // Skip ordering active todos unless there is order data
+        if (orderData) {
+          const activeOrder = orderData.active
+          todoListActive.sort((a, b) => {
+            return activeOrder.indexOf(a.todoId) - activeOrder.indexOf(b.todoId)
+          })
 
+          const completedOrder = orderData.completed
+          todoListCompleted.sort((a, b) => {
+            return completedOrder.indexOf(a.todoId) - completedOrder.indexOf(b.todoId)
+          })
+        }
+
+        setTodos(todoListActive)
+        setCompletedTodos(todoListCompleted)
+      },
+      (err) => {
+        // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
+        console.error(err)
+      },
+    )
+
+    const unsubLables = onSnapshot(
+      doc(db, user.uid, 'labels'),
+      async (docSnapshot) => {
+        const labelsData = docSnapshot.data()
+        let labelsArray = []
+        if (labelsData) {
+          labelsArray = Object.values(labelsData)
+        }
+
+        setLabels(labelsArray)
+      },
+      (err) => {
+        // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
+        console.error(err)
+      },
+    )
+
+    return () => {
+      unsubTodos()
+      unsubLables()
+    }
+  }, [user])
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        socket.connect()
         setUser(auth.currentUser)
       } else {
-        socket.disconnect()
-        socket.removeAllListeners('todos')
-        socket.removeAllListeners('labels')
         setTodos([])
         setUser(null)
       }
@@ -120,7 +142,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     return () => clearInterval(interval)
   }, [user, router])
 
-  const value = { user, todos, completedTodos, labels, socketError, globalError }
+  const value = { user, todos, completedTodos, labels, globalError }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
