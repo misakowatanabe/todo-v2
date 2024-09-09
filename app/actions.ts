@@ -20,26 +20,6 @@ export type DeleteInfo = {
 /** Data passed from server component to client one must be serializable.
  * https://react.dev/reference/rsc/use-server#serializable-parameters-and-return-values
  */
-
-export async function update(todo: Omit<Todo, 'createdAt'>) {
-  const res = await fetch(`${ENDPOINT}/update`, {
-    method: 'PUT',
-    body: JSON.stringify(todo),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-  })
-
-  if (!res.ok) {
-    const error = await res.text()
-
-    return { ok: false, error: error }
-  }
-
-  return { ok: true, error: '' }
-}
-
 export async function deleteTodo(deleteInfo: DeleteInfo) {
   const res = await fetch(`${ENDPOINT}/delete`, {
     method: 'DELETE',

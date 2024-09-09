@@ -2,12 +2,13 @@
 
 import { useAppContext } from 'app/appContext'
 import { useMemo, useState, useTransition } from 'react'
-import { Todo, update } from 'app/actions'
+import { Todo } from 'app/actions'
 import { Chip, ChipColor } from 'components/Chip'
 import { Drawer } from 'components/Drawer'
 import { Button } from 'components/Button'
 import { Dropdown } from 'components/Dropdown'
 import { Textarea } from 'components/Textarea'
+import { updateTodo } from './updateTodo'
 
 type TodoDetailProps = {
   isOpen: boolean
@@ -26,7 +27,7 @@ export function TodoDetail({
   setLabels,
   formRef,
 }: TodoDetailProps) {
-  const { labels: availableLabels } = useAppContext()
+  const { labels: availableLabels, user } = useAppContext()
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
@@ -42,8 +43,10 @@ export function TodoDetail({
       completed: false,
     }
 
+    if (!user) return
+
     startTransition(async () => {
-      const res = await update(todo)
+      const res = await updateTodo(user.uid, todo)
 
       if (!res.ok) {
         setError(res.error)

@@ -73,53 +73,6 @@ io.on('connection', (socket) => {
 
 var uid = null
 
-// update todo
-app.put('/update', (req, res) => {
-  ;(async () => {
-    updateTodo: try {
-      const todos = await db.collection(uid).doc('todos').get()
-      const todosData = todos.data()
-
-      if (!todosData) {
-        res.status(400).send('Oops! This todo was already removed.')
-
-        break updateTodo
-      }
-
-      const id = req.body.todoId
-
-      const title = `${id}.title`
-      const body = `${id}.body`
-      const labels = `${id}.labels`
-      const completed = `${id}.completed`
-
-      const todoObject = {}
-
-      if (req.body.title) {
-        todoObject[title] = req.body.title
-      }
-
-      if (req.body.body) {
-        todoObject[body] = req.body.body
-      }
-
-      if (req.body.labels) {
-        todoObject[labels] = req.body.labels
-      }
-
-      if (req.body.completed) {
-        todoObject[completed] = req.body.completed
-      }
-
-      await db.collection(uid).doc('todos').update(todoObject)
-
-      res.sendStatus(200)
-    } catch (err) {
-      res.status(400).send(err.details)
-    }
-  })()
-})
-
 // delete either active or completed todo
 app.delete('/delete', (req, res) => {
   ;(async () => {
