@@ -4,9 +4,10 @@ import React, { useEffect, useState, useTransition } from 'react'
 import { Button } from 'components/Button'
 import { Chip, ChipColor, colorOptions } from 'components/Chip'
 import { Modal } from 'components/Modal'
-import { Label, createLabel } from 'app/actions'
 import clsx from 'clsx'
 import { ListItem } from './listItem'
+import { useAppContext } from 'app/appContext'
+import { createLabel } from './createLabel'
 
 type SubmitProps = { isPending: boolean }
 
@@ -21,7 +22,8 @@ function Submit({ isPending }: SubmitProps) {
   )
 }
 
-export function CreateLabel() {
+export function CreateLabelButton() {
+  const { user } = useAppContext()
   const [color, setColor] = useState<ChipColor | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isShowing, setIsShowing] = useState(false)
@@ -51,13 +53,11 @@ export function CreateLabel() {
       return
     }
 
-    const label: Label = {
-      label: labelName,
-      color: color,
-    }
+    if (!user) return
 
     startTransition(async () => {
-      const res = await createLabel(label)
+      const res = await createLabel(user.uid, labelName, color)
+
       if (!res.ok) {
         setError(res.error)
       } else {

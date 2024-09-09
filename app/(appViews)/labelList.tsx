@@ -2,7 +2,7 @@
 
 import { useAppContext } from 'app/appContext'
 import clsx from 'clsx'
-import { CreateLabel } from './createLabel'
+import { CreateLabelButton } from './createLabelButton'
 import { RemoveLabel } from './removeLabel'
 import { ListItem } from './listItem'
 
@@ -63,7 +63,7 @@ export function LabelList({ pathname }: LabelListProps) {
           pathname={pathname}
         />
       ))}
-      <CreateLabel />
+      <CreateLabelButton />
     </div>
   )
 }

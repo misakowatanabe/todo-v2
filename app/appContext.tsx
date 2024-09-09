@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User, onAuthStateChanged } from 'firebase/auth'
 import { auth, db } from './firebase'
 import { useRouter } from 'next/navigation'
-import { Todo, getCookies, setCookies } from 'app/actions'
+import { Todo, deleteCookies, getCookies, setCookies } from 'app/actions'
 import { signOut } from 'firebase/auth'
 import { doc, getDoc, onSnapshot } from 'firebase/firestore'
 
@@ -113,6 +113,20 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       } else {
         setTodos([])
         setUser(null)
+
+        try {
+          await deleteCookies('user_logged_in')
+          await signOut(auth)
+          router.push('/signin')
+        } catch (error) {
+          // Set login status cookie to keep the user inside the app routes when sign out failed
+          await setCookies('user_logged_in')
+          setGlobalError('Sign out has failed')
+          console.error(
+            'Error signing out: ',
+            error instanceof Error ? error.message : String(error),
+          )
+        }
       }
     })
 

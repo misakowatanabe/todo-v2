@@ -2,7 +2,6 @@
 
 import { ENDPOINT } from 'app/config'
 import { cookies } from 'next/headers'
-import { ChipColor } from 'components/Chip'
 
 export type Todo = {
   todoId: string
@@ -11,11 +10,6 @@ export type Todo = {
   createdAt: string
   labels?: string[]
   completed: boolean
-}
-
-export type Label = {
-  label: string
-  color: ChipColor
 }
 
 export type DeleteInfo = {
@@ -163,27 +157,6 @@ export async function deleteCookies(name: string) {
 
 export async function getCookies(name: string) {
   return cookies().get(name)?.value
-}
-
-export async function createLabel(label: Label): Promise<{
-  ok: boolean
-  error: string
-}> {
-  const res = await fetch(`${ENDPOINT}/createLabel`, {
-    method: 'POST',
-    body: JSON.stringify(label),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-  })
-
-  if (!res.ok) {
-    const error = await res.text()
-    return { ok: false, error: error }
-  }
-
-  return { ok: true, error: '' }
 }
 
 export async function removeLabel(label: string) {
