@@ -1,7 +1,9 @@
 'use client'
 
 import { useTransition } from 'react'
-import { Todo, deleteCompletedTodos } from 'app/actions'
+import { Todo } from 'app/actions'
+import { useAppContext } from 'app/appContext'
+import { deleteCompletedTodos } from './deleteCompletedTodos'
 import { View } from './todoListItem'
 import { DropdownMenu, MenuItem } from 'components/DropdownMenu'
 import { ButtonSwitcher } from 'components/ButtonSwitcher'
@@ -14,6 +16,7 @@ type HeadingActionsProps = {
 }
 
 export function HeadingActions({ setError, completedTodos, setView, view }: HeadingActionsProps) {
+  const { user } = useAppContext()
   const [isPending, startTransition] = useTransition()
 
   const verticalDotsIcon = (
@@ -77,8 +80,10 @@ export function HeadingActions({ setError, completedTodos, setView, view }: Head
   const handleDeleteCompleted = () => {
     setError(null)
 
+    if (!user) return
+
     startTransition(async () => {
-      const res = await deleteCompletedTodos()
+      const res = await deleteCompletedTodos(user.uid)
 
       if (!res.ok) {
         setError(res.error)

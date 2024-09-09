@@ -2,10 +2,11 @@
 
 import { useAppContext } from 'app/appContext'
 import { useState, useTransition } from 'react'
-import { Todo, tickTodo, untickTodo } from 'app/actions'
+import { Todo, untickTodo } from 'app/actions'
 import { Chip, ChipColor, ColorVariants } from 'components/Chip'
 import { Checkbox } from 'components/Checkbox'
 import clsx from 'clsx'
+import { tickTodo } from './tickTodo'
 
 export type View = 'table' | 'card'
 
@@ -36,7 +37,7 @@ export function TodoListItem({
   openDeleteTodoModal,
   view,
 }: TodoListItemProps) {
-  const { labels: availableLabels } = useAppContext()
+  const { labels: availableLabels, user } = useAppContext()
   // TODO: show this error as snackbar or global error
   // eslint-disable-next-line
   const [error, setError] = useState<string | null>(null)
@@ -45,8 +46,10 @@ export function TodoListItem({
   const [isPending, startTransition] = useTransition()
 
   const handleTick = (todoId: Pick<Todo, 'todoId'>) => {
+    if (!user) return
+
     startTransition(async () => {
-      const res = await tickTodo(todoId)
+      const res = await tickTodo(user.uid, todoId)
 
       if (!res.ok) {
         setError(res.error)
