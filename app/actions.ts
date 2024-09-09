@@ -21,25 +21,6 @@ export type DeleteInfo = {
  * https://react.dev/reference/rsc/use-server#serializable-parameters-and-return-values
  */
 
-export async function untickTodo(todoId: Pick<Todo, 'todoId'>) {
-  const res = await fetch(`${ENDPOINT}/untick`, {
-    method: 'PUT',
-    body: JSON.stringify({ todoId: todoId }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-  })
-
-  if (!res.ok) {
-    const error = await res.text()
-
-    return { ok: false, error: error }
-  }
-
-  return { ok: true, error: '' }
-}
-
 export async function deleteAccount() {
   const res = await fetch(`${ENDPOINT}/deleteAccount`, {
     method: 'DELETE',

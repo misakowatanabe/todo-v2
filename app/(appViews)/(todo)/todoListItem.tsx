@@ -2,11 +2,12 @@
 
 import { useAppContext } from 'app/appContext'
 import { useState, useTransition } from 'react'
-import { Todo, untickTodo } from 'app/actions'
+import { Todo } from 'app/actions'
 import { Chip, ChipColor, ColorVariants } from 'components/Chip'
 import { Checkbox } from 'components/Checkbox'
 import clsx from 'clsx'
 import { tickTodo } from './tickTodo'
+import { untickTodo } from './untickTodo'
 
 export type View = 'table' | 'card'
 
@@ -58,8 +59,10 @@ export function TodoListItem({
   }
 
   const handleUntick = (todoId: Pick<Todo, 'todoId'>) => {
+    if (!user) return
+
     startTransition(async () => {
-      const res = await untickTodo(todoId)
+      const res = await untickTodo(user.uid, todoId)
 
       if (!res.ok) {
         setError(res.error)
