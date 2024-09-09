@@ -3,7 +3,8 @@
 import React, { useEffect, useState, useTransition } from 'react'
 import { Button } from 'components/Button'
 import { Modal } from 'components/Modal'
-import { removeLabel } from 'app/actions'
+import { useAppContext } from 'app/appContext'
+import { removeLabel } from './removeLabel'
 
 type SubmitProps = { isPending: boolean; onRemove: React.MouseEventHandler<HTMLButtonElement> }
 
@@ -20,7 +21,8 @@ function Submit({ isPending, onRemove }: SubmitProps) {
   )
 }
 
-export function RemoveLabel({ label }: RemoveLabelProps) {
+export function RemoveLabelButton({ label }: RemoveLabelProps) {
+  const { user } = useAppContext()
   const [error, setError] = useState<string | null>(null)
   const [isShowing, setIsShowing] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -35,8 +37,11 @@ export function RemoveLabel({ label }: RemoveLabelProps) {
     e.preventDefault()
     setError(null)
 
+    if (!user) return
+
     startTransition(async () => {
-      const res = await removeLabel(label)
+      const res = await removeLabel(user.uid, label)
+
       if (!res.ok) {
         setError(res.error)
       } else {

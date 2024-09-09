@@ -3,7 +3,7 @@
 import { useAppContext } from 'app/appContext'
 import clsx from 'clsx'
 import { CreateLabelButton } from './createLabelButton'
-import { RemoveLabel } from './removeLabel'
+import { RemoveLabelButton } from './removeLabelButton'
 import { ListItem } from './listItem'
 
 type ColorVariants = Record<string, string>
@@ -59,7 +59,7 @@ export function LabelList({ pathname }: LabelListProps) {
           label={el.label}
           icon={<LabelIcon labelColor={el.color} />}
           href={`/label/${el.label.replace(/ /g, '_')}`}
-          action={<RemoveLabel label={el.label} />}
+          action={<RemoveLabelButton label={el.label} />}
           pathname={pathname}
         />
       ))}

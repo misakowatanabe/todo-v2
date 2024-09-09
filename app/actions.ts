@@ -158,21 +158,3 @@ export async function deleteCookies(name: string) {
 export async function getCookies(name: string) {
   return cookies().get(name)?.value
 }
-
-export async function removeLabel(label: string) {
-  const res = await fetch(`${ENDPOINT}/removeLabel`, {
-    method: 'POST',
-    body: JSON.stringify({ label: label }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-  })
-
-  if (!res.ok) {
-    const error = await res.text()
-    return { ok: false, error: error }
-  }
-
-  return { ok: true, error: '' }
-}

@@ -73,52 +73,6 @@ io.on('connection', (socket) => {
 
 var uid = null
 
-// remove a label from tasks and delete the label
-app.post('/removeLabel', (req, res) => {
-  ;(async () => {
-    try {
-      const todos = await db.collection(uid).doc('todos').get()
-      const todosData = todos.data()
-      const labelName = req.body.label
-
-      const todosWithDeletedLabel = Object.values(todosData).filter((el) => {
-        return el.labels.includes(labelName)
-      })
-
-      todosWithDeletedLabel.forEach(async (todo) => {
-        const labels = `${todo.todoId}.labels`
-
-        await db
-          .collection(uid)
-          .doc('todos')
-          .update({
-            [labels]: FieldValue.arrayRemove(labelName),
-          })
-      })
-    } catch (err) {
-      // TODO: report and monitor this error
-      res.status(400).send('Something went wrong. Could not remove the label from tasks.')
-    }
-
-    try {
-      const fieldName = req.body.label.replace(/ /g, '_').toLowerCase()
-
-      // Remove the label field from the labels doc
-      await db
-        .collection(uid)
-        .doc('labels')
-        .update({
-          [fieldName]: FieldValue.delete(),
-        })
-
-      res.sendStatus(200)
-    } catch (err) {
-      // TODO: report and monitor this error
-      res.status(400).send('Something went wrong. Could not delete a label.')
-    }
-  })()
-})
-
 // update todo
 app.put('/update', (req, res) => {
   ;(async () => {
