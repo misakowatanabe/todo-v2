@@ -1,6 +1,5 @@
 'use server'
 
-import { ENDPOINT } from 'app/config'
 import { cookies } from 'next/headers'
 
 export type Todo = {
