@@ -6,7 +6,7 @@ import { LabelList } from './labelList'
 import { Logout } from './logout'
 import { ListItem } from './listItem'
 import { usePathname } from 'next/navigation'
-import clsx from 'clsx'
+import { NumberNotification } from './numberNotification'
 
 export function Sidemenu() {
   const pathname = usePathname()
@@ -64,18 +64,6 @@ export function Sidemenu() {
     </div>
   )
 
-  const allTodosLength = (
-    <div
-      className={clsx(
-        'flex text-xs h-4 min-w-4 justify-center rounded text-black',
-        pathname === '/all' ? 'bg-white' : 'bg-gray-200',
-        { invisible: todos.length === 0 },
-      )}
-    >
-      {todos.length}
-    </div>
-  )
-
   return (
     <div className="sticky top-0 left-0 overflow-y-auto h-screen w-72 flex flex-col flex-none px-3 bg-[#F9F9F9]">
       <div className="mb-4 mx-3 flex flex-col items-center">
@@ -88,7 +76,9 @@ export function Sidemenu() {
           icon={allIcon}
           href="/all"
           pathname={pathname}
-          action={allTodosLength}
+          action={
+            <NumberNotification isCurrentPath={pathname === '/all'} todoLength={todos.length} />
+          }
         />
       </div>
       <hr />

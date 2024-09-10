@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { CreateLabelButton } from './createLabelButton'
 import { RemoveLabelButton } from './removeLabelButton'
 import { ListItem } from './listItem'
+import { NumberNotification } from './numberNotification'
 
 type ColorVariants = Record<string, string>
 
@@ -78,15 +79,7 @@ export function LabelList({ pathname }: LabelListProps) {
             action={
               <div className="flex gap-1 items-center">
                 <RemoveLabelButton label={el.label} />
-                <div
-                  className={clsx(
-                    'flex text-xs h-4 min-w-4 justify-center rounded text-black',
-                    currentPath ? 'bg-white' : 'bg-gray-200',
-                    { invisible: todoLength === 0 },
-                  )}
-                >
-                  {todoLength}
-                </div>
+                <NumberNotification isCurrentPath={currentPath} todoLength={todoLength} />
               </div>
             }
             pathname={pathname}
