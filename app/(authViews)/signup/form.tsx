@@ -1,7 +1,7 @@
 'use client'
 
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { auth } from '../firebase'
+import { auth } from 'app/firebase'
 import { useId } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
@@ -10,6 +10,7 @@ import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
 import { Todo, setCookies } from 'app/actions'
 import { createTodo } from 'app/createTodo'
+import { Input } from 'components/Input'
 
 type Data = {
   name: string
@@ -86,20 +87,23 @@ export function Form() {
   return (
     <>
       <form action={onSubmit} autoComplete="off" className="flex flex-col">
-        <label htmlFor={nameInputId}>Name:</label>
-        <input id={nameInputId} type="text" name="name" required />
-        <label htmlFor={emailInputId}>Email:</label>
-        <input id={emailInputId} type="email" name="email" required />
-        <label htmlFor={passwordInputId}>Password:</label>
-        <input id={passwordInputId} type="password" name="password" required />
-        <label htmlFor={confirmationPasswordInputId}>Confirm password:</label>
-        <input
-          id={confirmationPasswordInputId}
+        <Input label="Name" name="name" type="text" required={true} id={nameInputId} />
+        <Input label="Email" name="email" type="email" required={true} id={emailInputId} />
+        <Input
+          label="Password"
+          name="password"
           type="password"
-          name="confirmationPassword"
-          required
+          required={true}
+          id={passwordInputId}
         />
-        <Button type="submit" label="Submit" />
+        <Input
+          label="Confirm password"
+          name="confirmationPassword"
+          type="password"
+          required={true}
+          id={confirmationPasswordInputId}
+        />
+        <Button type="submit" label="Sign up" className="my-4" />
       </form>
       {error && (
         <div className="flex items-center text-red-700">

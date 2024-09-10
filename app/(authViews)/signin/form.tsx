@@ -1,12 +1,13 @@
 'use client'
 
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../firebase'
+import { auth } from 'app/firebase'
 import { useId } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { setCookies } from 'app/actions'
+import { Input } from 'components/Input'
 
 export function Form() {
   const [error, setError] = useState(false)
@@ -34,11 +35,15 @@ export function Form() {
   return (
     <>
       <form action={onSubmit} autoComplete="off" className="flex flex-col">
-        <label htmlFor={emailInputId}>Email:</label>
-        <input id={emailInputId} type="email" name="email" required />
-        <label htmlFor={passwordInputId}>Password:</label>
-        <input id={passwordInputId} type="password" name="password" required />
-        <Button type="submit" label="Submit" />
+        <Input label="Email" name="email" type="email" required={true} id={emailInputId} />
+        <Input
+          label="Password"
+          name="password"
+          type="password"
+          required={true}
+          id={passwordInputId}
+        />
+        <Button type="submit" label="Sign in" className="my-4" />
       </form>
       {error && (
         <div className="flex items-center text-red-700">
