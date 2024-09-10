@@ -13,7 +13,15 @@ type LabelColor = { labelColor: string }
 type LabelListProps = { pathname: string }
 
 export function LabelList({ pathname }: LabelListProps) {
-  const { labels } = useAppContext()
+  const { labels, todos } = useAppContext()
+
+  const getTodoLength = (label: string) => {
+    return todos.filter((el) => {
+      if (!el.labels) return false
+
+      return el.labels.includes(label)
+    })
+  }
 
   // TODO: use single source of truth
   const color: ColorVariants = {
@@ -53,16 +61,38 @@ export function LabelList({ pathname }: LabelListProps) {
   return (
     <div className="grow">
       <div className="text-sm text-gray-500 mt-6 mx-3">Labels</div>
-      {labels.map((el, idx) => (
-        <ListItem
-          key={idx}
-          label={el.label}
-          icon={<LabelIcon labelColor={el.color} />}
-          href={`/label/${el.label.replace(/ /g, '_')}`}
-          action={<RemoveLabelButton label={el.label} />}
-          pathname={pathname}
-        />
-      ))}
+      {labels.map((el, idx) => {
+        const currentPath = pathname
+          ?.toLowerCase()
+          .replace(/_/g, ' ')
+          .endsWith(el.label.toLowerCase())
+
+        const todoLength = getTodoLength(el.label).length
+
+        return (
+          <ListItem
+            key={idx}
+            label={el.label}
+            icon={<LabelIcon labelColor={el.color} />}
+            href={`/label/${el.label.replace(/ /g, '_')}`}
+            action={
+              <div className="flex gap-1 items-center">
+                <RemoveLabelButton label={el.label} />
+                <div
+                  className={clsx(
+                    'flex text-xs h-4 min-w-4 justify-center rounded text-black',
+                    currentPath ? 'bg-white' : 'bg-gray-200',
+                    { invisible: todoLength === 0 },
+                  )}
+                >
+                  {todoLength}
+                </div>
+              </div>
+            }
+            pathname={pathname}
+          />
+        )
+      })}
       <CreateLabelButton />
     </div>
   )
