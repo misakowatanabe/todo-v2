@@ -2,12 +2,13 @@
 
 import { useAppContext } from 'app/appContext'
 import { useState, useTransition } from 'react'
-import { deleteAccount, deleteCookies } from 'app/actions'
+import { deleteCookies } from 'app/actions'
 import { Modal } from 'components/Modal'
 import { Button } from 'components/Button'
 import { auth } from 'app/firebase'
 import { signOut } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
+import { deleteAccount } from './deleteAccount'
 
 type SubmitProps = { isPending: boolean; onDelete: React.MouseEventHandler<HTMLButtonElement> }
 
@@ -22,7 +23,7 @@ function Submit({ isPending, onDelete }: SubmitProps) {
   )
 }
 
-export function DeleteAccount() {
+export function AccountDeletion() {
   const { user } = useAppContext()
   const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -30,8 +31,10 @@ export function DeleteAccount() {
   const router = useRouter()
 
   const onDelete = () => {
+    if (!user) return
+
     startTransition(async () => {
-      const res = await deleteAccount()
+      const res = await deleteAccount(user)
 
       if (!res.ok) {
         setError(res.error)

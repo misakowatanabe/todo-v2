@@ -1,5 +1,5 @@
 import { Heading } from 'components/Heading'
-import { DeleteAccount } from './deleteAccount'
+import { AccountDeletion } from './accountDeletion'
 import { Profile } from './profile'
 
 export default function Page() {
@@ -7,7 +7,7 @@ export default function Page() {
     <>
       <Heading title="Settings" />
       <Profile />
-      <DeleteAccount />
+      <AccountDeletion />
     </>
   )
 }
