@@ -12,32 +12,9 @@ export type Todo = {
   completed: boolean
 }
 
-export type DeleteInfo = {
-  todoId: Pick<Todo, 'todoId'>
-  completed: Pick<Todo, 'completed'>
-}
-
 /** Data passed from server component to client one must be serializable.
  * https://react.dev/reference/rsc/use-server#serializable-parameters-and-return-values
  */
-
-export async function deleteAccount() {
-  const res = await fetch(`${ENDPOINT}/deleteAccount`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'cors',
-  })
-
-  if (!res.ok) {
-    const error = await res.text()
-
-    return { ok: false, error: error }
-  }
-
-  return { ok: true, error: '' }
-}
 
 export async function setCookies(name: string) {
   const hasCookie = cookies().get(name)?.value
