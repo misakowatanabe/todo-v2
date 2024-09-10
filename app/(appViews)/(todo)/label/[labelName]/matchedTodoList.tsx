@@ -78,7 +78,6 @@ export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
     <>
       <Heading
         title={labelParam.replace(/_/g, ' ')}
-        itemLength={matchedTodos.length}
         action={<HeadingActions setError={setError} setView={setView} view={view} />}
       />
       {error && (

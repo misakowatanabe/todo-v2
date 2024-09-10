@@ -115,7 +115,6 @@ export function TodoList() {
     <>
       <Heading
         title="All"
-        itemLength={todos.length}
         action={
           <HeadingActions
             setError={setError}

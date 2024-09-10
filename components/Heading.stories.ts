@@ -18,10 +18,3 @@ export const Default: Story = {
     title: 'Heading',
   },
 }
-
-export const WithTodoLength: Story = {
-  args: {
-    ...Default.args,
-    itemLength: 5,
-  },
-}

@@ -36,7 +36,7 @@ export function CreateLabelButton() {
     }
   }, [isShowing])
 
-  const onSubmitTodo = async (formData: FormData) => {
+  const onCreateLabel = async (formData: FormData) => {
     setError(null)
     const labelName = formData.get('label') as string
 
@@ -109,7 +109,7 @@ export function CreateLabelButton() {
       <div className="flex flex-col gap-6">
         <form
           autoComplete="off"
-          action={onSubmitTodo}
+          action={onCreateLabel}
           className="flex flex-col gap-2"
           id="form-new-label"
         >
