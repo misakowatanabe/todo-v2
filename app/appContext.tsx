@@ -111,16 +111,10 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
         try {
           await deleteCookies('user_logged_in')
-          await signOut(auth)
-          router.push('/signin')
-        } catch (error) {
+        } catch {
           // Set login status cookie to keep the user inside the app routes when sign out failed
           await setCookies('user_logged_in')
           setGlobalError('Sign out has failed')
-          console.error(
-            'Error signing out: ',
-            error instanceof Error ? error.message : String(error),
-          )
         }
       }
     })
