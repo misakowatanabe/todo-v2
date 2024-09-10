@@ -24,11 +24,6 @@ const AppContext = createContext<AppContextType | null>(null)
 
 type AppContextProps = { children: React.ReactNode }
 
-/**
- * Socket.IO client needs to be excluded from SSR.
- * https://socket.io/how-to/use-with-nextjs#client
- */
-
 export const AppContextProvider = ({ children }: AppContextProps) => {
   const [todos, setTodos] = useState<Todo[]>([])
   const [completedTodos, setCompletedTodos] = useState<Todo[]>([])
