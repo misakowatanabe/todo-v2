@@ -108,14 +108,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       } else {
         setTodos([])
         setUser(null)
-
-        try {
-          await deleteCookies('user_logged_in')
-        } catch {
-          // Set login status cookie to keep the user inside the app routes when sign out failed
-          await setCookies('user_logged_in')
-          setGlobalError('Sign out has failed')
-        }
+        await deleteCookies('user_logged_in')
       }
     })
 

@@ -2,7 +2,7 @@
 
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from 'app/firebase'
-import { useId } from 'react'
+import { useId, useTransition } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -11,6 +11,7 @@ import { Input } from 'components/Input'
 
 export function Form() {
   const [error, setError] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const emailInputId = useId()
   const passwordInputId = useId()
 
@@ -22,14 +23,16 @@ export function Form() {
       password: formData.get('password') as string,
     }
 
-    try {
-      await signInWithEmailAndPassword(auth, data.email, data.password)
-      await setCookies('user_logged_in')
-      router.push('/all')
-    } catch (error) {
-      setError(true)
-      console.error('Error signing in: ', error instanceof Error ? error.message : String(error))
-    }
+    startTransition(async () => {
+      try {
+        await signInWithEmailAndPassword(auth, data.email, data.password)
+        await setCookies('user_logged_in')
+        router.push('/all')
+      } catch (error) {
+        setError(true)
+        console.error('Error signing in: ', error instanceof Error ? error.message : String(error))
+      }
+    })
   }
 
   return (
@@ -43,7 +46,12 @@ export function Form() {
           required={true}
           id={passwordInputId}
         />
-        <Button type="submit" label="Sign in" className="my-4" />
+        <Button
+          type="submit"
+          label={isPending ? 'Processing...' : 'Sign in'}
+          className="my-4"
+          disabled={isPending}
+        />
       </form>
       {error && (
         <div className="flex items-center text-red-700">

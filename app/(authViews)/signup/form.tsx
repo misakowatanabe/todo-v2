@@ -2,7 +2,7 @@
 
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { auth } from 'app/firebase'
-import { useId } from 'react'
+import { useId, useTransition } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
 import { format } from 'date-fns'
@@ -21,6 +21,7 @@ type Data = {
 
 export function Form() {
   const [error, setError] = useState<null | string>(null)
+  const [isPending, startTransition] = useTransition()
   const nameInputId = useId()
   const emailInputId = useId()
   const passwordInputId = useId()
@@ -51,37 +52,39 @@ export function Form() {
       return
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
-      // TODO: consider removing this not to get a situation where user was created but failed to update displayname
-      await updateProfile(userCredential.user, { displayName: data.name })
+    startTransition(async () => {
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
+        // TODO: consider removing this not to get a situation where user was created but failed to update displayname
+        await updateProfile(userCredential.user, { displayName: data.name })
 
-      // create a welcome todo
-      const date = format(new Date(), 'yyyy-MM-dd')
-      const id = nanoid(8)
+        // create a welcome todo
+        const date = format(new Date(), 'yyyy-MM-dd')
+        const id = nanoid(8)
 
-      const todo: Todo = {
-        todoId: id,
-        title: 'Welcome!',
-        body: 'Happy todo listing :)',
-        createdAt: date,
-        completed: false,
+        const todo: Todo = {
+          todoId: id,
+          title: 'Welcome!',
+          body: 'Happy todo listing :)',
+          createdAt: date,
+          completed: false,
+        }
+
+        const res = await createTodo(userCredential.user, todo)
+
+        if (!res.ok) {
+          throw new Error(
+            'Something went wrong with creating a welcome todo! You can still login with your newly created account.',
+          )
+        }
+
+        await userCredential.user.reload()
+        await setCookies('user_logged_in')
+        router.push('/all')
+      } catch (error) {
+        setError(error instanceof Error ? error.message : String(error))
       }
-
-      const res = await createTodo(userCredential.user, todo)
-
-      if (!res.ok) {
-        throw new Error(
-          'Something went wrong with creating a welcome todo! You can still login with your newly created account.',
-        )
-      }
-
-      await userCredential.user.reload()
-      await setCookies('user_logged_in')
-      router.push('/all')
-    } catch (error) {
-      setError(error instanceof Error ? error.message : String(error))
-    }
+    })
   }
 
   return (
@@ -103,7 +106,12 @@ export function Form() {
           required={true}
           id={confirmationPasswordInputId}
         />
-        <Button type="submit" label="Sign up" className="my-4" />
+        <Button
+          type="submit"
+          label={isPending ? 'Processing...' : 'Sign up'}
+          className="my-4"
+          disabled={isPending}
+        />
       </form>
       {error && (
         <div className="flex items-center text-red-700">
