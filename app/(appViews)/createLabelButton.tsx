@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useTransition } from 'react'
 import { Button } from 'components/Button'
+import { Input } from 'components/Input'
 import { Chip, ChipColor, colorOptions } from 'components/Chip'
 import { Modal } from 'components/Modal'
 import clsx from 'clsx'
@@ -113,7 +114,7 @@ export function CreateLabelButton() {
           className="flex flex-col gap-2"
           id="form-new-label"
         >
-          <input name="label" type="text" placeholder="Label name" disabled={isPending} />
+          <Input disabled={isPending} label="Label name" name="label" type="text" required={true} />
         </form>
         <div className="flex gap-1 flex-wrap">
           {colorOptions.map((el, idx) => (

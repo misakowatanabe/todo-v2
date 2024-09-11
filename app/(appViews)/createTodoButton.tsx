@@ -8,6 +8,7 @@ import { Button } from 'components/Button'
 import { Chip, ChipColor } from 'components/Chip'
 import { Dropdown } from 'components/Dropdown'
 import { Modal } from 'components/Modal'
+import { Textarea } from 'components/Textarea'
 import { Todo } from 'app/actions'
 import { createTodo } from 'app/createTodo'
 
@@ -141,19 +142,19 @@ export function CreateTodoButton() {
           className="flex flex-col gap-2"
           id="form-new-task"
         >
-          <input
+          <Textarea
             id={titleInputId}
             name="title"
-            type="text"
             placeholder="Task title"
             disabled={isPending}
+            rows={1}
           />
-          <input
+          <Textarea
             id={bodyInputId}
             name="body"
-            type="text"
             placeholder="Add description..."
             disabled={isPending}
+            rows={6}
           />
         </form>
         <div className="flex flex-col gap-4">
