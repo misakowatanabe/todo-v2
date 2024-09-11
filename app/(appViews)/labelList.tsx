@@ -21,7 +21,7 @@ export function LabelList({ pathname }: LabelListProps) {
       <div className="grow">
         <div className="text-sm text-gray-500 mt-6 mx-3">Labels</div>
         {Array.from(Array(3).keys()).map((idx) => (
-          <ListItem key={idx} skelton={true} />
+          <ListItem key={idx} skeleton={true} />
         ))}
       </div>
     )

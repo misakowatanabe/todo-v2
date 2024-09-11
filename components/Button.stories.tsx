@@ -42,6 +42,13 @@ export const Text: Story = {
   },
 }
 
+export const Critical: Story = {
+  args: {
+    style: 'critical',
+    label: 'Button',
+  },
+}
+
 export const Large: Story = {
   args: {
     size: 'large',

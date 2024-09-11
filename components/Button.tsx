@@ -2,7 +2,7 @@ import React, { ReactNode, forwardRef } from 'react'
 import clsx from 'clsx'
 
 type ButtonProps = {
-  style?: 'primary' | 'secondary' | 'text'
+  style?: 'primary' | 'secondary' | 'text' | 'critical'
   size?: 'small' | 'medium' | 'large'
   backgroundColor?: string
   label?: string
@@ -37,9 +37,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium rounded-full cursor-pointer leading-none transition duration-100',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500',
         !disabled && {
-          'text-white bg-black': style === 'primary',
-          'text-black outline outline-offset-0 outline-black bg-transparent': style === 'secondary',
+          'text-white bg-black hover:bg-gray-600': style === 'primary',
+          'text-black outline outline-offset-0 outline-black bg-transparent hover:bg-gray-100':
+            style === 'secondary',
           'text-black hover:bg-gray-200': style === 'text',
+          'text-red-700 outline outline-offset-0 outline-red-700 bg-red-50 hover:bg-red-300':
+            style === 'critical',
         },
         disabled && {
           'text-white bg-[#b3b3b3]': style === 'primary',

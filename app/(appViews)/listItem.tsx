@@ -14,9 +14,9 @@ type ListItemProps =
           onClick: (_event: React.MouseEvent<HTMLDivElement>) => void
           pathname?: never
         }
-    ) & { label: string; icon: ReactNode; action?: ReactNode; skelton?: never })
+    ) & { label: string; icon: ReactNode; action?: ReactNode; skeleton?: never })
   | {
-      skelton: boolean
+      skeleton: boolean
       label?: never
       icon?: never
       action?: never
@@ -25,8 +25,16 @@ type ListItemProps =
       pathname?: never
     }
 
-export function ListItem({ href, label, icon, action, onClick, pathname, skelton }: ListItemProps) {
-  if (skelton)
+export function ListItem({
+  href,
+  label,
+  icon,
+  action,
+  onClick,
+  pathname,
+  skeleton,
+}: ListItemProps) {
+  if (skeleton)
     return (
       <div className="flex items-center h-12 animate-pulse rounded px-3">
         <div className="flex justify-start gap-3 h-6 w-full bg-gray-200"></div>

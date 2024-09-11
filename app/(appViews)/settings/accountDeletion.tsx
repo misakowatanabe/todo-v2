@@ -15,6 +15,7 @@ type SubmitProps = { isPending: boolean; onDelete: React.MouseEventHandler<HTMLB
 function Submit({ isPending, onDelete }: SubmitProps) {
   return (
     <Button
+      style="critical"
       type="submit"
       label={isPending ? 'Deleting...' : 'Delete'}
       disabled={isPending}
@@ -57,9 +58,10 @@ export function AccountDeletion() {
       <div className="text-2xl font-semibold text-red-600 pb-3 border-b mt-10 mb-4">
         Delete Account
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <div>Once you delete your account, there is no going back.</div>
         <Button
+          style="critical"
           type="button"
           label={isPending ? 'Deleting account...' : 'Delete account'}
           disabled={!user || isPending}
