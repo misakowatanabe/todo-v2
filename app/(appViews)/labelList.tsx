@@ -16,6 +16,16 @@ type LabelListProps = { pathname: string }
 export function LabelList({ pathname }: LabelListProps) {
   const { labels, todos } = useAppContext()
 
+  if (todos == null || labels == null)
+    return (
+      <div className="grow">
+        <div className="text-sm text-gray-500 mt-6 mx-3">Labels</div>
+        {Array.from(Array(3).keys()).map((idx) => (
+          <ListItem key={idx} skelton={true} />
+        ))}
+      </div>
+    )
+
   const getTodoLength = (label: string) => {
     return todos.filter((el) => {
       if (!el.labels) return false

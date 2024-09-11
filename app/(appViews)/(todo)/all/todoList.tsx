@@ -9,6 +9,7 @@ import { TodoListItem, View } from '../todoListItem'
 import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
 import { Button } from 'components/Button'
+import { Spinner } from 'components/Spinner'
 import { HeadingActions } from '../headingActions'
 import { useLocalStorage } from 'utils/useLocalStorage'
 import clsx from 'clsx'
@@ -17,7 +18,7 @@ import { db } from 'app/firebase'
 
 export function TodoList() {
   const { todos, completedTodos, user } = useAppContext()
-  const [localOrderedTodos, setLocalOrderedTodos] = useState<Todo[]>([])
+  const [localOrderedTodos, setLocalOrderedTodos] = useState<Todo[] | null>(null)
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
   const [labels, setLabels] = useState<string[]>([])
   const [isOpen, setIsOpen] = useState(false)
@@ -30,7 +31,11 @@ export function TodoList() {
   const dragOverItem = useRef('')
 
   useEffect(() => {
-    if (!todos) return
+    if (todos == null) {
+      setLocalOrderedTodos(null)
+
+      return
+    }
 
     setLocalOrderedTodos(todos)
   }, [todos])
@@ -63,7 +68,7 @@ export function TodoList() {
   }
 
   const drop = async () => {
-    if (!user) return
+    if (!user || localOrderedTodos == null) return
 
     const todosCopy = [...localOrderedTodos]
     const dragItemContent = todosCopy.find((el) => el.todoId === dragItem.current)
@@ -118,7 +123,7 @@ export function TodoList() {
         action={
           <HeadingActions
             setError={setError}
-            completedTodos={completedTodos}
+            completedTodos={completedTodos ?? undefined}
             setView={setView}
             view={view}
           />
@@ -136,33 +141,24 @@ export function TodoList() {
           />
         </div>
       )}
-      <div className="flex flex-col gap-4">
-        <div className={clsx({ 'flex flex-wrap gap-4': view === 'card' })}>
-          {localOrderedTodos.map((todo) => {
-            return (
-              <TodoListItem
-                key={todo.todoId}
-                todo={todo}
-                dragStart={dragStart}
-                dragEnter={dragEnter}
-                drop={drop}
-                openTodo={openTodo}
-                openDeleteTodoModal={openDeleteTodoModal}
-                view={view}
-              />
-            )
-          })}
+      {localOrderedTodos == null || completedTodos == null ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner />
         </div>
-        <Accordion label="Completed" itemLength={completedTodos.length}>
-          {completedTodos.length === 0 ? (
-            <div className="text-gray-600">There is no completed task.</div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {localOrderedTodos.length === 0 ? (
+            <div className="text-gray-600">No active tasks.</div>
           ) : (
             <div className={clsx({ 'flex flex-wrap gap-4': view === 'card' })}>
-              {completedTodos.map((todo) => {
+              {localOrderedTodos.map((todo) => {
                 return (
                   <TodoListItem
                     key={todo.todoId}
                     todo={todo}
+                    dragStart={dragStart}
+                    dragEnter={dragEnter}
+                    drop={drop}
                     openTodo={openTodo}
                     openDeleteTodoModal={openDeleteTodoModal}
                     view={view}
@@ -171,8 +167,27 @@ export function TodoList() {
               })}
             </div>
           )}
-        </Accordion>
-      </div>
+          <Accordion label="Completed" itemLength={completedTodos.length}>
+            {completedTodos.length === 0 ? (
+              <div className="text-gray-600">No completed tasks.</div>
+            ) : (
+              <div className={clsx({ 'flex flex-wrap gap-4': view === 'card' })}>
+                {completedTodos.map((todo) => {
+                  return (
+                    <TodoListItem
+                      key={todo.todoId}
+                      todo={todo}
+                      openTodo={openTodo}
+                      openDeleteTodoModal={openDeleteTodoModal}
+                      view={view}
+                    />
+                  )
+                })}
+              </div>
+            )}
+          </Accordion>
+        </div>
+      )}
       <TodoDetail
         isOpen={isOpen}
         setIsOpen={setIsOpen}

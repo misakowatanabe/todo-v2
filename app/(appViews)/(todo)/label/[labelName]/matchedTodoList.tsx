@@ -9,6 +9,7 @@ import { DeleteTodoModal } from '../../deleteTodoModal'
 import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
 import { Button } from 'components/Button'
+import { Spinner } from 'components/Spinner'
 import { View } from '../../todoListItem'
 import { HeadingActions } from '../../headingActions'
 import { useLocalStorage } from 'utils/useLocalStorage'
@@ -38,27 +39,27 @@ export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
     formRef.current.reset()
   }, [isOpen])
 
-  const matchedTodos = useMemo(
-    () =>
-      todos.filter((el) => {
-        if (!el.labels) return false
+  const matchedTodos = useMemo(() => {
+    if (todos == null) return null
 
-        const labels = el.labels.map((el) => el.replace(/ /g, '_'))
-        return labels.includes(labelParam)
-      }),
-    [todos, labelParam],
-  )
+    return todos.filter((el) => {
+      if (!el.labels) return false
 
-  const matchedCompletedTodos = useMemo(
-    () =>
-      completedTodos.filter((el) => {
-        if (!el.labels) return false
+      const labels = el.labels.map((el) => el.replace(/ /g, '_'))
+      return labels.includes(labelParam)
+    })
+  }, [todos, labelParam])
 
-        const labels = el.labels.map((el) => el.replace(/ /g, '_'))
-        return labels.includes(labelParam)
-      }),
-    [completedTodos, labelParam],
-  )
+  const matchedCompletedTodos = useMemo(() => {
+    if (completedTodos == null) return null
+
+    return completedTodos.filter((el) => {
+      if (!el.labels) return false
+
+      const labels = el.labels.map((el) => el.replace(/ /g, '_'))
+      return labels.includes(labelParam)
+    })
+  }, [completedTodos, labelParam])
 
   const openTodo = (todo: Todo) => {
     setIsOpen(true)
@@ -92,27 +93,33 @@ export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
           />
         </div>
       )}
-      {matchedTodos.length === 0 && matchedCompletedTodos.length === 0 ? (
-        <div>There are no tasks with this label.</div>
+      {matchedTodos == null || matchedCompletedTodos == null ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner />
+        </div>
       ) : (
         <>
           <div className="flex flex-col gap-4">
-            <div className={clsx({ 'flex flex-wrap gap-4': view === 'card' })}>
-              {matchedTodos.map((todo) => {
-                return (
-                  <TodoListItem
-                    key={todo.todoId}
-                    todo={todo}
-                    openTodo={openTodo}
-                    openDeleteTodoModal={openDeleteTodoModal}
-                    view={view}
-                  />
-                )
-              })}
-            </div>
+            {matchedTodos.length === 0 ? (
+              <div className="text-gray-600">No active tasks.</div>
+            ) : (
+              <div className={clsx({ 'flex flex-wrap gap-4': view === 'card' })}>
+                {matchedTodos.map((todo) => {
+                  return (
+                    <TodoListItem
+                      key={todo.todoId}
+                      todo={todo}
+                      openTodo={openTodo}
+                      openDeleteTodoModal={openDeleteTodoModal}
+                      view={view}
+                    />
+                  )
+                })}
+              </div>
+            )}
             <Accordion label="Completed" itemLength={matchedCompletedTodos.length}>
               {matchedCompletedTodos.length === 0 ? (
-                <div className="text-gray-600">There is no completed task.</div>
+                <div className="text-gray-600">No completed tasks.</div>
               ) : (
                 <div className={clsx({ 'flex flex-wrap gap-4': view === 'card' })}>
                   {matchedCompletedTodos.map((todo) => {

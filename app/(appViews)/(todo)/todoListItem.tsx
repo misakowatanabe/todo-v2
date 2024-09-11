@@ -71,6 +71,8 @@ export function TodoListItem({
   }
 
   const getLabelColor = (label: string) => {
+    if (availableLabels == null) return 'default'
+
     return (availableLabels.find((el) => el.label === label)?.color ?? 'default') as ChipColor
   }
 

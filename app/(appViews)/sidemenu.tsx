@@ -77,7 +77,7 @@ export function Sidemenu() {
           href="/all"
           pathname={pathname}
           action={
-            <NumberNotification isCurrentPath={pathname === '/all'} todoLength={todos.length} />
+            <NumberNotification isCurrentPath={pathname === '/all'} todoLength={todos?.length} />
           }
         />
       </div>

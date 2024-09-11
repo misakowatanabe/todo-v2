@@ -1,8 +1,10 @@
 import clsx from 'clsx'
 
-type NumberNotificationProps = { isCurrentPath: boolean; todoLength: number }
+type NumberNotificationProps = { isCurrentPath: boolean; todoLength?: number }
 
 export function NumberNotification({ isCurrentPath, todoLength }: NumberNotificationProps) {
+  if (todoLength == null) return null
+
   return (
     <div
       className={clsx(

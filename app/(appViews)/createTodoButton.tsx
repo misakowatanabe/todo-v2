@@ -71,12 +71,16 @@ export function CreateTodoButton() {
   }
 
   const nonSelectedLabels = useMemo(() => {
+    if (availableLabels == null) return []
+
     const nonSelected = availableLabels.filter((el) => !labels.includes(el.label))
 
     return nonSelected.map((el) => el.label)
   }, [availableLabels, labels])
 
   const selectedLabels = useMemo(() => {
+    if (availableLabels == null) return []
+
     const selected = availableLabels.filter((el) => labels.includes(el.label))
     selected.sort((a, b) => {
       return labels.indexOf(a.label) - labels.indexOf(b.label)

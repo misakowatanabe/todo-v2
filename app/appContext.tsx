@@ -14,9 +14,9 @@ type Error = string | null
 
 type AppContextType = {
   user: User | null
-  todos: Todo[]
-  completedTodos: Todo[]
-  labels: Label[]
+  todos: Todo[] | null
+  completedTodos: Todo[] | null
+  labels: Label[] | null
   globalError: Error
 }
 
@@ -25,10 +25,10 @@ const AppContext = createContext<AppContextType | null>(null)
 type AppContextProps = { children: React.ReactNode }
 
 export const AppContextProvider = ({ children }: AppContextProps) => {
-  const [todos, setTodos] = useState<Todo[]>([])
-  const [completedTodos, setCompletedTodos] = useState<Todo[]>([])
+  const [todos, setTodos] = useState<Todo[] | null>(null)
+  const [completedTodos, setCompletedTodos] = useState<Todo[] | null>(null)
   const [user, setUser] = useState<User | null>(null)
-  const [labels, setLabels] = useState<Label[]>([])
+  const [labels, setLabels] = useState<Label[] | null>(null)
   const [globalError, setGlobalError] = useState<Error>(null)
 
   const router = useRouter()
@@ -106,7 +106,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
       if (user) {
         setUser(auth.currentUser)
       } else {
-        setTodos([])
+        setTodos(null)
+        setCompletedTodos(null)
+        setLabels(null)
         setUser(null)
         await deleteCookies('user_logged_in')
       }

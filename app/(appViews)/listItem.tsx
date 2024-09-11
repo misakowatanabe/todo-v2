@@ -2,20 +2,37 @@ import { ReactNode } from 'react'
 import Link from 'next/link'
 import clsx from 'clsx'
 
-type ListItemProps = (
+type ListItemProps =
+  | ((
+      | {
+          href: string
+          onClick?: never
+          pathname: string
+        }
+      | {
+          href?: never
+          onClick: (_event: React.MouseEvent<HTMLDivElement>) => void
+          pathname?: never
+        }
+    ) & { label: string; icon: ReactNode; action?: ReactNode; skelton?: never })
   | {
-      href: string
-      onClick?: never
-      pathname: string
-    }
-  | {
+      skelton: boolean
+      label?: never
+      icon?: never
+      action?: never
       href?: never
-      onClick: (_event: React.MouseEvent<HTMLDivElement>) => void
+      onClick?: never
       pathname?: never
     }
-) & { label: string; icon: ReactNode; action?: ReactNode }
 
-export function ListItem({ href, label, icon, action, onClick, pathname }: ListItemProps) {
+export function ListItem({ href, label, icon, action, onClick, pathname, skelton }: ListItemProps) {
+  if (skelton)
+    return (
+      <div className="flex items-center h-12 animate-pulse rounded px-3">
+        <div className="flex justify-start gap-3 h-6 w-full bg-gray-200"></div>
+      </div>
+    )
+
   const currentPath = pathname?.toLowerCase().replace(/_/g, ' ').endsWith(label.toLowerCase())
   const className = `${clsx(
     'flex justify-between items-center group h-12 px-3 rounded gap-1 cursor-pointer',
