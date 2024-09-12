@@ -136,10 +136,11 @@ export function CreateTodoButton() {
         <form
           autoComplete="off"
           action={onSubmitTodo}
-          className="flex flex-col gap-2"
+          className="flex flex-col gap-6"
           id="form-new-task"
         >
           <Textarea
+            size="large"
             id={titleInputId}
             name="title"
             placeholder="Task title"

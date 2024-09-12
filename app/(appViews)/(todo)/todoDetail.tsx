@@ -106,11 +106,12 @@ export function TodoDetail({
           <form
             autoComplete="off"
             action={onSubmitTodo}
-            className="flex flex-col gap-2"
+            className="flex flex-col gap-6"
             id="form-task"
             ref={formRef}
           >
             <Textarea
+              size="large"
               name="title"
               placeholder="Task title"
               disabled={isPending}

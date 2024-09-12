@@ -29,3 +29,10 @@ export const Disabled: Story = {
     disabled: true,
   },
 }
+
+export const Large: Story = {
+  args: {
+    ...Default.args,
+    size: 'large',
+  },
+}

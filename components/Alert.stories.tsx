@@ -21,7 +21,7 @@ export const Info: Story = {
   render: function Render(args) {
     const [info, setInfo] = useState<string | null>('This is the info alert!')
 
-    return <Alert {...args} message={info} onClose={() => setInfo('')} />
+    return <Alert {...args} message={info} onClose={() => setInfo(null)} />
   },
 }
 
@@ -32,6 +32,6 @@ export const Critical: Story = {
   render: function Render(args) {
     const [error, setError] = useState<string | null>('This is the critical alert!')
 
-    return <Alert {...args} message={error} onClose={() => setError('')} />
+    return <Alert {...args} message={error} onClose={() => setError(null)} />
   },
 }
