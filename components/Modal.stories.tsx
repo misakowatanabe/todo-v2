@@ -93,3 +93,28 @@ export const Primary: Story = {
     )
   },
 }
+
+export const NonCloseable: Story = {
+  args: {
+    title: 'Title',
+  },
+  render: function Render(args) {
+    const [isShowing, setIsShowing] = useState(false)
+
+    const openButton = <Button onClick={() => setIsShowing(true)} label="Open Modal" />
+    const okButton = <Button onClick={() => setIsShowing(false)} label="Login" />
+
+    return (
+      <Modal
+        {...args}
+        setIsShowing={setIsShowing}
+        isShowing={isShowing}
+        openButton={openButton}
+        okButton={okButton}
+        closeable={false}
+      >
+        {contents}
+      </Modal>
+    )
+  },
+}

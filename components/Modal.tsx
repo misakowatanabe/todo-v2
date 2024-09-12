@@ -2,11 +2,16 @@ import React, { ReactNode, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { Button } from './Button'
 
-type HeaderProps = { setIsShowing: React.Dispatch<React.SetStateAction<boolean>>; title: string }
+type HeaderProps = {
+  setIsShowing: React.Dispatch<React.SetStateAction<boolean>>
+  title: string
+  closeable?: boolean
+}
 
 type FooterProps = {
   setIsShowing: React.Dispatch<React.SetStateAction<boolean>>
   okButton: ReactNode
+  closeable?: boolean
 }
 
 type ModalProps = {
@@ -15,52 +20,57 @@ type ModalProps = {
   setIsShowing: React.Dispatch<React.SetStateAction<boolean>>
   isShowing: boolean
   title: string
+  closeable?: boolean
   children: ReactNode
 }
 
-function Header({ setIsShowing, title }: HeaderProps) {
+function Header({ setIsShowing, title, closeable }: HeaderProps) {
   return (
     <header id="header-4a" className="flex items-center">
       <h3 className="flex-1 text-lg font-medium text-gray-700">{title}</h3>
-      <button
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') setIsShowing(false)
-        }}
-        onClick={() => setIsShowing(false)}
-        className="inline-flex h-10 items-center justify-center gap-2 justify-self-center whitespace-nowrap rounded-full px-5 text-sm font-medium tracking-wide  text-gray-500 transition duration-100 hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-200 focus:text-gray-700 focus-visible:outline-none disabled:cursor-not-allowed disabled:text-gray-300 disabled:shadow-none disabled:hover:bg-transparent"
-        aria-label="close dialog"
-      >
-        <span className="relative only:-mx-5">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-            role="graphics-symbol"
-            aria-labelledby="title-79 desc-79"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </span>
-      </button>
+      {closeable && (
+        <button
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') setIsShowing(false)
+          }}
+          onClick={() => setIsShowing(false)}
+          className="inline-flex h-10 items-center justify-center gap-2 justify-self-center whitespace-nowrap rounded-full px-5 text-sm font-medium tracking-wide  text-gray-500 transition duration-100 hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-200 focus:text-gray-700 focus-visible:outline-none disabled:cursor-not-allowed disabled:text-gray-300 disabled:shadow-none disabled:hover:bg-transparent"
+          aria-label="close dialog"
+        >
+          <span className="relative only:-mx-5">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              role="graphics-symbol"
+              aria-labelledby="title-79 desc-79"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </span>
+        </button>
+      )}
     </header>
   )
 }
 
-function Footer({ okButton, setIsShowing }: FooterProps) {
+function Footer({ okButton, setIsShowing, closeable }: FooterProps) {
   return (
     <div className="flex justify-start gap-2">
       {okButton}
-      <Button
-        onClick={() => setIsShowing(false)}
-        label="Cancel"
-        style="text"
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') setIsShowing(false)
-        }}
-      />
+      {closeable && (
+        <Button
+          onClick={() => setIsShowing(false)}
+          label="Cancel"
+          style="text"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') setIsShowing(false)
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -71,13 +81,14 @@ export function Modal({
   setIsShowing,
   isShowing,
   title,
+  closeable = true,
   children,
 }: ModalProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function handleClickOutside(event: any) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target) && closeable) {
         setIsShowing(false)
       }
     }
@@ -85,7 +96,7 @@ export function Modal({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [wrapperRef, setIsShowing])
+  }, [wrapperRef, setIsShowing, closeable])
 
   useEffect(() => {
     let html = document.querySelector('html')
@@ -107,7 +118,7 @@ export function Modal({
           const lastFocusableElement = focusableContent[focusableContent.length - 1] as HTMLElement
 
           document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape' && closeable) {
               setIsShowing(false)
             }
 
@@ -141,7 +152,7 @@ export function Modal({
         html.style.overflowY = 'visible'
       }
     }
-  }, [isShowing, setIsShowing])
+  }, [isShowing, setIsShowing, closeable])
 
   return (
     <>
@@ -161,11 +172,11 @@ export function Modal({
                 id="modal"
                 role="document"
               >
-                <Header setIsShowing={setIsShowing} title={title} />
+                <Header setIsShowing={setIsShowing} title={title} closeable={closeable} />
                 <div id="content-4a" className="flex-1">
                   {children}
                 </div>
-                <Footer setIsShowing={setIsShowing} okButton={okButton} />
+                <Footer setIsShowing={setIsShowing} okButton={okButton} closeable={closeable} />
               </div>
             </div>,
             document.body,

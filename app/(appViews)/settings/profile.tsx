@@ -65,7 +65,6 @@ export function Profile() {
       } catch (err) {
         // if the user signed in too long ago, the action fails, and the user needs to be re-authenticated by getting new sign-in credentials
         setNewEmailInput(newEmail as string)
-        // TODO: disable closing modal unless password is filled
         setReauthenticationModalOpen(true)
       }
     })
@@ -74,7 +73,11 @@ export function Profile() {
   const onReauthenticate = async (formData: FormData) => {
     const password = formData.get('password')
 
-    if (!password || !user || !user.email || !newEmailInput) return
+    if (!password || !user || !user.email || !newEmailInput) {
+      setError('Please enter your password!')
+
+      return
+    }
 
     const credential = EmailAuthProvider.credential(user.email, password as string)
 
@@ -136,6 +139,7 @@ export function Profile() {
         setIsShowing={setReauthenticationModalOpen}
         isShowing={reauthenticationModalOpen}
         okButton={<Submit isPending={isPending} />}
+        closeable={false}
       >
         <Alert
           severity="critical"
