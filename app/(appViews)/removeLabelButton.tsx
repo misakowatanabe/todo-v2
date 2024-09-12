@@ -5,6 +5,7 @@ import { Button } from 'components/Button'
 import { Modal } from 'components/Modal'
 import { useAppContext } from 'app/appContext'
 import { removeLabel } from './removeLabel'
+import { Alert } from 'components/Alert'
 
 type SubmitProps = { isPending: boolean; onRemove: React.MouseEventHandler<HTMLButtonElement> }
 
@@ -90,18 +91,7 @@ export function RemoveLabelButton({ label }: RemoveLabelProps) {
       openButton={openButton}
       okButton={<Submit isPending={isPending} onRemove={onRemove} />}
     >
-      {error && (
-        <div className="flex items-center text-red-700">
-          <div>{error}</div>
-          <Button
-            type="button"
-            style="text"
-            size="small"
-            label="OK"
-            onClick={() => setError(null)}
-          />
-        </div>
-      )}
+      <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
       <div>
         Remove the label <span className="font-semibold">&quot;{label}&quot;</span> from tasks and
         delete the label?

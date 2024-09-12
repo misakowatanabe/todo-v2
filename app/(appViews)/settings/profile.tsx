@@ -3,6 +3,7 @@
 import { useAppContext } from 'app/appContext'
 import { Input } from 'components/Input'
 import { Button } from 'components/Button'
+import { Alert } from 'components/Alert'
 import { useRef, useState, useTransition } from 'react'
 import { Modal } from 'components/Modal'
 import {
@@ -43,7 +44,7 @@ export function Profile() {
     const newDisplayName = formData.get('displayName')
     const newEmail = formData.get('email')
 
-    if (!newDisplayName || !newEmail) {
+    if (newDisplayName == '' || newEmail == '') {
       setError('Both name and email need to filled to update')
 
       return
@@ -95,19 +96,8 @@ export function Profile() {
   return (
     <div>
       <div className="text-2xl font-semibold text-black pb-3 border-b mb-4">Profile</div>
-      {error && (
-        <div className="flex items-center text-red-700">
-          <div>{error}</div>
-          <Button
-            type="button"
-            style="text"
-            size="small"
-            label="OK"
-            onClick={() => setError(null)}
-          />
-        </div>
-      )}
       <div className="flex flex-col gap-2">
+        <Alert severity="critical" message={error} onClose={() => setError(null)} />
         <form
           autoComplete="off"
           action={onSubmitUpdateProfile}
@@ -147,20 +137,14 @@ export function Profile() {
         isShowing={reauthenticationModalOpen}
         okButton={<Submit isPending={isPending} />}
       >
-        {error && (
-          <div className="flex items-center text-red-700">
-            <div>{error}</div>
-            <Button
-              type="button"
-              style="text"
-              size="small"
-              label="OK"
-              onClick={() => setError(null)}
-            />
-          </div>
-        )}
+        <Alert
+          severity="critical"
+          message={error}
+          onClose={() => setError(null)}
+          className="mb-4"
+        />
         <div>
-          The session expired and failed to update your email. <br />
+          The session has expired and failed to update your email. <br />
           Please re-authenticate yourself by typing your password, then, try updating email again!
         </div>
         <form

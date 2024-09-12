@@ -8,9 +8,10 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { setCookies } from 'app/actions'
 import { Input } from 'components/Input'
+import { Alert } from 'components/Alert'
 
 export function Form() {
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const emailInputId = useId()
   const passwordInputId = useId()
@@ -29,14 +30,14 @@ export function Form() {
         await setCookies('user_logged_in')
         router.push('/all')
       } catch (error) {
-        setError(true)
-        console.error('Error signing in: ', error instanceof Error ? error.message : String(error))
+        setError(error instanceof Error ? error.message : String(error))
       }
     })
   }
 
   return (
     <>
+      <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
       <form action={onSubmit} autoComplete="off" className="flex flex-col">
         <Input label="Email" name="email" type="email" required={true} id={emailInputId} />
         <Input
@@ -53,18 +54,6 @@ export function Form() {
           disabled={isPending}
         />
       </form>
-      {error && (
-        <div className="flex items-center text-red-700">
-          <div>Failed to signin</div>
-          <Button
-            type="button"
-            style="text"
-            size="small"
-            label="OK"
-            onClick={() => setError(false)}
-          />
-        </div>
-      )}
     </>
   )
 }

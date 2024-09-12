@@ -11,6 +11,7 @@ import { Modal } from 'components/Modal'
 import { Textarea } from 'components/Textarea'
 import { Todo } from 'app/actions'
 import { createTodo } from 'app/createTodo'
+import { Alert } from 'components/Alert'
 
 type SubmitProps = { isPending: boolean }
 
@@ -40,13 +41,20 @@ export function CreateTodoButton() {
 
   const onSubmitTodo = async (formData: FormData) => {
     setError(null)
+
+    const title = formData.get('title')
+    if (title === '') {
+      setError('Please add title.')
+
+      return
+    }
+
     const date = format(new Date(), 'yyyy-MM-dd')
     const id = nanoid(8)
 
-    // TODO: add validation for mandatory inputs
     const todo: Todo = {
       todoId: id,
-      title: (formData.get('title') ?? '<No title>') as string,
+      title: title as string,
       body: !formData.get('body') ? undefined : (formData.get('body') as string),
       createdAt: date,
       labels: labels,
@@ -123,19 +131,8 @@ export function CreateTodoButton() {
       openButton={openButton}
       okButton={<Submit isPending={isPending} />}
     >
-      {error && (
-        <div className="flex labels-center text-red-700">
-          <div>{error}</div>
-          <Button
-            type="button"
-            style="text"
-            size="small"
-            label="OK"
-            onClick={() => setError(null)}
-          />
-        </div>
-      )}
       <div className="flex flex-col gap-6">
+        <Alert severity="critical" message={error} onClose={() => setError(null)} />
         <form
           autoComplete="off"
           action={onSubmitTodo}

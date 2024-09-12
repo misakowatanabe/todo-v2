@@ -9,6 +9,7 @@ import clsx from 'clsx'
 import { ListItem } from './listItem'
 import { useAppContext } from 'app/appContext'
 import { createLabel } from './createLabel'
+import { Alert } from 'components/Alert'
 
 type SubmitProps = { isPending: boolean }
 
@@ -95,18 +96,7 @@ export function CreateLabelButton() {
       openButton={openButton}
       okButton={<Submit isPending={isPending} />}
     >
-      {error && (
-        <div className="flex items-center text-red-700">
-          <div>{error}</div>
-          <Button
-            type="button"
-            style="text"
-            size="small"
-            label="OK"
-            onClick={() => setError(null)}
-          />
-        </div>
-      )}
+      <Alert severity="critical" message={error} onClose={() => setError(null)} />
       <div className="flex flex-col gap-6">
         <form
           autoComplete="off"

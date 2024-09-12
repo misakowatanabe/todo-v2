@@ -8,8 +8,8 @@ import { TodoDetail } from '../../todoDetail'
 import { DeleteTodoModal } from '../../deleteTodoModal'
 import { Heading } from 'components/Heading'
 import { Accordion } from 'components/Accordion'
-import { Button } from 'components/Button'
 import { Spinner } from 'components/Spinner'
+import { Alert } from 'components/Alert'
 import { View } from '../../todoListItem'
 import { HeadingActions } from '../../headingActions'
 import { useLocalStorage } from 'utils/useLocalStorage'
@@ -81,18 +81,7 @@ export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
         title={labelParam.replace(/_/g, ' ')}
         action={<HeadingActions setError={setError} setView={setView} view={view} />}
       />
-      {error && (
-        <div className="flex items-center text-red-700">
-          <div>{error}</div>
-          <Button
-            type="button"
-            style="text"
-            size="small"
-            label="OK"
-            onClick={() => setError(null)}
-          />
-        </div>
-      )}
+      <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
       {matchedTodos == null || matchedCompletedTodos == null ? (
         <div className="flex justify-center items-center h-screen">
           <Spinner />

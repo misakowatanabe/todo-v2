@@ -6,6 +6,7 @@ import { Todo } from 'app/actions'
 import { Modal } from 'components/Modal'
 import { Button } from 'components/Button'
 import { deleteTodo } from './deleteTodo'
+import { Alert } from 'components/Alert'
 
 type SubmitProps = { isPending: boolean; onDelete: React.MouseEventHandler<HTMLButtonElement> }
 
@@ -62,19 +63,8 @@ export function DeleteTodoModal({
       isShowing={deleteTodoModalOpen}
       okButton={<Submit isPending={isPending} onDelete={onDelete} />}
     >
-      {error && (
-        <div className="flex items-center text-red-700">
-          <div>{error}</div>
-          <Button
-            type="button"
-            style="text"
-            size="small"
-            label="OK"
-            onClick={() => setError(null)}
-          />
-        </div>
-      )}
       <div className="flex flex-col gap-6">
+        <Alert severity="critical" message={error} onClose={() => setError(null)} />
         <div>Are you sure you want to delete this todo?</div>
         <div className="font-semibold">&quot;{selectedTodoToDelete.title}&quot;</div>
       </div>

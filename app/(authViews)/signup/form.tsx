@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import { Todo, setCookies } from 'app/actions'
 import { createTodo } from 'app/createTodo'
 import { Input } from 'components/Input'
+import { Alert } from 'components/Alert'
 
 type Data = {
   name: string
@@ -89,6 +90,7 @@ export function Form() {
 
   return (
     <>
+      <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
       <form action={onSubmit} autoComplete="off" className="flex flex-col">
         <Input label="Name" name="name" type="text" required={true} id={nameInputId} />
         <Input label="Email" name="email" type="email" required={true} id={emailInputId} />
@@ -113,18 +115,6 @@ export function Form() {
           disabled={isPending}
         />
       </form>
-      {error && (
-        <div className="flex items-center text-red-700">
-          <div>{error}</div>
-          <Button
-            type="button"
-            style="text"
-            size="small"
-            label="OK"
-            onClick={() => setError(null)}
-          />
-        </div>
-      )}
     </>
   )
 }

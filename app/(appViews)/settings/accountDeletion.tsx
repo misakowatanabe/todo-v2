@@ -5,6 +5,7 @@ import { useState, useTransition } from 'react'
 import { deleteCookies } from 'app/actions'
 import { Modal } from 'components/Modal'
 import { Button } from 'components/Button'
+import { Alert } from 'components/Alert'
 import { auth } from 'app/firebase'
 import { signOut } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
@@ -75,19 +76,8 @@ export function AccountDeletion() {
         isShowing={deleteAccountModalOpen}
         okButton={<Submit isPending={isPending} onDelete={onDelete} />}
       >
-        {error && (
-          <div className="flex items-center text-red-700">
-            <div>{error}</div>
-            <Button
-              type="button"
-              style="text"
-              size="small"
-              label="OK"
-              onClick={() => setError(null)}
-            />
-          </div>
-        )}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
+          <Alert severity="critical" message={error} onClose={() => setError(null)} />
           <div>
             Are you sure you want to delete your account?
             <br />

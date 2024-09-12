@@ -9,8 +9,11 @@ const config: Config = {
       current: 'currentColor',
       white: '#ffffff',
       black: '#222222',
-      gray: colors.gray,
-      red: colors.red,
+      gray: colors.gray, // default
+      blue: colors.blue, // info
+      green: colors.green, // success
+      amber: colors.amber, // warning
+      red: colors.red, // critical
       raspberry: '#EC4899',
       honey: '#E29C15',
       blueberry: '#4D89DD',

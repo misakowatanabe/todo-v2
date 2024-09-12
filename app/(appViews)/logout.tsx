@@ -3,15 +3,15 @@
 import { useAppContext } from 'app/appContext'
 import { auth } from '../firebase'
 import { signOut } from 'firebase/auth'
-import { Button } from 'components/Button'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { deleteCookies } from 'app/actions'
 import { ListItem } from './listItem'
+import { Alert } from 'components/Alert'
 
 export function Logout() {
   const { user } = useAppContext()
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const router = useRouter()
 
@@ -23,8 +23,7 @@ export function Logout() {
       await deleteCookies('user_logged_in')
       router.push('/signin')
     } catch (error) {
-      setError(true)
-      console.error('Error signing out: ', error instanceof Error ? error.message : String(error))
+      setError('Failed to sign out.')
     }
   }
 
@@ -49,18 +48,8 @@ export function Logout() {
   return (
     <div className="flex flex-col justify-between">
       <div>
-        {error && (
-          <div className="flex items-center text-red-700">
-            <div>Failed to signout</div>
-            <Button
-              type="button"
-              style="text"
-              size="small"
-              label="OK"
-              onClick={() => setError(false)}
-            />
-          </div>
-        )}
+        {/* TODO: move this error to global error */}
+        <Alert severity="critical" message={error} onClose={() => setError(null)} />
         <ListItem label="Logout" icon={LabelIcon} onClick={onSignout} />
       </div>
       {/* TODO: move this to settings view */}

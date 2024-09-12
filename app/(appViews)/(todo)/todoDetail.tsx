@@ -9,6 +9,7 @@ import { Button } from 'components/Button'
 import { Dropdown } from 'components/Dropdown'
 import { Textarea } from 'components/Textarea'
 import { updateTodo } from './updateTodo'
+import { Alert } from 'components/Alert'
 
 type TodoDetailProps = {
   isOpen: boolean
@@ -100,19 +101,8 @@ export function TodoDetail({
   return (
     <Drawer isOpen={isOpen} setIsOpen={setIsOpen}>
       <div className="my-8">
-        {error && (
-          <div className="flex labels-center text-red-700">
-            <div>{error}</div>
-            <Button
-              type="button"
-              style="text"
-              size="small"
-              label="OK"
-              onClick={() => setError(null)}
-            />
-          </div>
-        )}
         <div className="flex flex-col gap-6">
+          <Alert severity="critical" message={error} onClose={() => setError(null)} />
           <form
             autoComplete="off"
             action={onSubmitTodo}
