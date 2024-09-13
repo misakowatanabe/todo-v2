@@ -6,7 +6,18 @@ type InputProps = {
 } & React.InputHTMLAttributes<HTMLInputElement>
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { label, value, onChange, placeholder, id, type, disabled, name, defaultValue }: InputProps,
+  {
+    label,
+    value,
+    onChange,
+    placeholder,
+    id,
+    type,
+    disabled,
+    name,
+    defaultValue,
+    autoComplete,
+  }: InputProps,
   ref,
 ) {
   return (
@@ -23,6 +34,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         onChange={onChange}
         disabled={disabled}
         defaultValue={defaultValue}
+        autoComplete={autoComplete}
       />
       <label
         htmlFor={id}

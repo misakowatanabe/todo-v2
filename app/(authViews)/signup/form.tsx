@@ -97,6 +97,7 @@ export function Form() {
           type="password"
           required={true}
           id={passwordInputId}
+          autoComplete="off"
         />
         <Input
           label="Confirm password"
@@ -104,6 +105,7 @@ export function Form() {
           type="password"
           required={true}
           id={confirmationPasswordInputId}
+          autoComplete="off"
         />
         <Button
           type="submit"

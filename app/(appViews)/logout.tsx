@@ -1,6 +1,5 @@
 'use client'
 
-import { useAppContext } from 'app/appContext'
 import { auth } from '../firebase'
 import { signOut } from 'firebase/auth'
 import { useState } from 'react'
@@ -11,7 +10,6 @@ import { Alert } from 'components/Alert'
 import { Icon } from 'components/icons'
 
 export function Logout() {
-  const { user } = useAppContext()
   const [error, setError] = useState<string | null>(null)
 
   const router = useRouter()
@@ -29,17 +27,10 @@ export function Logout() {
   }
 
   return (
-    <div className="flex flex-col justify-between">
-      <div>
-        {/* TODO: move this error to global error */}
-        <Alert severity="critical" message={error} onClose={() => setError(null)} />
-        <ListItem label="Logout" icon={<Icon.Escape size="medium" />} onClick={onSignout} />
-      </div>
-      {/* TODO: move this to settings view */}
-      <div>
-        <div>User name: {!user ? '******' : user.displayName}</div>
-        <div>User email: {!user ? '******' : user.email}</div>
-      </div>
+    <div>
+      {/* TODO: move this error to global error */}
+      <Alert severity="critical" message={error} onClose={() => setError(null)} />
+      <ListItem label="Logout" icon={<Icon.Escape size="medium" />} onClick={onSignout} />
     </div>
   )
 }

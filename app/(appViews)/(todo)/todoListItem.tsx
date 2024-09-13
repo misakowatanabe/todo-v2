@@ -120,9 +120,14 @@ export function TodoListItem({
         >
           <div className="pointer-events-none flex justify-between items-center">
             <div className="pointer-events-none flex gap-2">
-              <div className="pointer-events-none">{todo.title}</div>
-              {/* TODO: remove todo ID (only for dev) */}
-              <div className="pointer-events-none text-gray-400">{todo.todoId}</div>
+              <div
+                className={clsx(
+                  'pointer-events-none',
+                  todo.completed ? 'line-through text-gray-400' : 'text-black',
+                )}
+              >
+                {todo.title}
+              </div>
               <div className="pointer-events-none flex gap-2">
                 {todo.labels &&
                   todo.labels.map((el) => (
@@ -140,7 +145,12 @@ export function TodoListItem({
             />
           </div>
           {todo.body && (
-            <p className="pointer-events-none text-gray-500 text-sm line-clamp-1 mt-1">
+            <p
+              className={clsx(
+                'pointer-events-none text-sm line-clamp-1 mt-1',
+                todo.completed ? 'line-through text-gray-400' : 'text-gray-600',
+              )}
+            >
               {todo.body}
             </p>
           )}
@@ -180,7 +190,14 @@ export function TodoListItem({
         onClick={() => openTodo(todo)}
       >
         <div className="pointer-events-none flex justify-between items-center">
-          <div className="pointer-events-none text-xl">{todo.title}</div>
+          <div
+            className={clsx(
+              'pointer-events-none text-xl',
+              todo.completed ? 'line-through text-gray-400' : 'text-black',
+            )}
+          >
+            {todo.title}
+          </div>
           <Button
             size="small"
             style="text"
@@ -191,7 +208,14 @@ export function TodoListItem({
           />
         </div>
         <div className="pointer-events-none text-gray-500 text-base mt-3 grow">
-          <p className="line-clamp-[9]">{todo.body && todo.body}</p>
+          <p
+            className={clsx(
+              'line-clamp-[9]',
+              todo.completed ? 'line-through text-gray-400' : 'text-gray-600',
+            )}
+          >
+            {todo.body && todo.body}
+          </p>
         </div>
         <div className="pointer-events-none flex gap-2 justify-end">
           {todo.labels &&
