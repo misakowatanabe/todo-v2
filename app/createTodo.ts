@@ -50,7 +50,7 @@ export async function createTodo(user: User, todo: Todo) {
 
     // create a todos doc if there is none, ex: when creating the first todo after signup
     if (!todosData) {
-      const todoObject: Record<string, string | string[] | boolean> = {
+      const todoObject: Todo = {
         todoId: todo.todoId,
         title: todo.title,
         completed: todo.completed,
