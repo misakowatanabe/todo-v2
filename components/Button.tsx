@@ -70,12 +70,22 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {icon && (
         <div
           className={clsx(
-            'inline-flex h-5 w-5 items-center justify-center whitespace-nowrap rounded-full text-sm font-medium tracking-wide transition duration-100',
+            'relative inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium tracking-wide transition duration-100',
             'focus-visible:outline-none disabled:cursor-not-allowed cursor-pointer',
+            {
+              'h-4 w-4': size === 'small',
+              'h-[18px] w-[18px]': size === 'medium',
+              'h-5 w-5': size === 'large',
+            },
+            !label && {
+              '-mx-4': size === 'small',
+              '-mx-[18px]': size === 'medium',
+              '-mx-5': size === 'large',
+            },
           )}
           aria-label="icon"
         >
-          <span className="relative only:-mx-5">{icon}</span>
+          {icon}
         </div>
       )}
       {label}

@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { Button } from './Button'
+import { Icon } from './icons'
 
 type HeaderProps = {
   setIsShowing: React.Dispatch<React.SetStateAction<boolean>>
@@ -37,20 +38,7 @@ function Header({ setIsShowing, title, closeable }: HeaderProps) {
           className="inline-flex h-10 items-center justify-center gap-2 justify-self-center whitespace-nowrap rounded-full px-5 text-sm font-medium tracking-wide  text-gray-500 transition duration-100 hover:bg-gray-100 hover:text-gray-600 focus:bg-gray-200 focus:text-gray-700 focus-visible:outline-none disabled:cursor-not-allowed disabled:text-gray-300 disabled:shadow-none disabled:hover:bg-transparent"
           aria-label="close dialog"
         >
-          <span className="relative only:-mx-5">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-              role="graphics-symbol"
-              aria-labelledby="title-79 desc-79"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </span>
+          <Icon.Close size="large" className="-mx-5" />
         </button>
       )}
     </header>
@@ -168,7 +156,7 @@ export function Modal({
             >
               <div
                 ref={wrapperRef}
-                className="flex max-h-[90vh] w-3/4 lg:w-2/4 flex-col gap-4 overflow-hidden rounded bg-white p-6 text-gray-500 shadow-xl shadow-gray-700/10"
+                className="flex max-h-[90vh] w-3/4 lg:w-2/4 flex-col gap-4 overflow-y-auto rounded bg-white p-6 text-gray-500 shadow-xl shadow-gray-700/10"
                 id="modal"
                 role="document"
               >

@@ -1,5 +1,6 @@
 import React, { ReactNode, forwardRef } from 'react'
 import clsx from 'clsx'
+import { Icon } from 'components/icons'
 
 export const colorOptions = [
   'default',
@@ -107,12 +108,17 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
       {icon && (
         <div
           className={clsx(
-            'inline-flex h-5 w-5 items-center justify-center whitespace-nowrap rounded-full text-sm font-medium tracking-wide transition duration-100',
+            'inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium tracking-wide transition duration-100',
             'focus-visible:outline-none disabled:cursor-not-allowed cursor-pointer',
+            {
+              'h-3 w-3': size === 'small',
+              'h-4 w-4': size === 'medium',
+              'h-[18px] w-[18px]': size === 'large',
+            },
           )}
           aria-label="icon"
         >
-          <span className="relative only:-mx-5">{icon}</span>
+          {icon}
         </div>
       )}
       {label}
@@ -128,20 +134,7 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
           )}
           aria-label="remove chip"
         >
-          <span className="relative only:-mx-5">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-              role="graphics-symbol"
-              aria-labelledby="title-79 desc-79"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </span>
+          <Icon.Close size={size} />
         </div>
       )}
     </button>

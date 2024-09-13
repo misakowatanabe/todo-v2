@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { ButtonSwitcher } from './ButtonSwitcher'
+import { Icon } from './icons'
 
 const meta: Meta<typeof ButtonSwitcher> = {
   title: 'Design System/ButtonSwitcher',
@@ -13,24 +14,10 @@ const meta: Meta<typeof ButtonSwitcher> = {
 export default meta
 type Story = StoryObj<typeof ButtonSwitcher>
 
-const plusIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-    aria-labelledby="title-ac01 desc-ac01"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-  </svg>
-)
-
 export const Default: Story = {
   args: {
-    left: { icon: plusIcon },
-    right: { icon: plusIcon },
+    left: { icon: <Icon.List /> },
+    right: { icon: <Icon.Grid /> },
     onChange: (event: any) => {
       // eslint-disable-next-line no-console
       console.log(event.target.checked)
@@ -38,10 +25,35 @@ export const Default: Story = {
   },
 }
 
-export const WithLabel: Story = {
+export const LargeWithLabel: Story = {
   args: {
-    left: { icon: plusIcon, label: 'Left label' },
-    right: { icon: plusIcon, label: 'Right label' },
+    left: { icon: <Icon.List />, label: 'Left label' },
+    right: { icon: <Icon.Grid />, label: 'Right label' },
+    size: 'large',
+    onChange: (event: any) => {
+      // eslint-disable-next-line no-console
+      console.log(event.target.checked)
+    },
+  },
+}
+
+export const MediumWithLabel: Story = {
+  args: {
+    left: { icon: <Icon.List />, label: 'Left label' },
+    right: { icon: <Icon.Grid />, label: 'Right label' },
+    size: 'medium',
+    onChange: (event: any) => {
+      // eslint-disable-next-line no-console
+      console.log(event.target.checked)
+    },
+  },
+}
+
+export const SmallWithLabel: Story = {
+  args: {
+    left: { icon: <Icon.List />, label: 'Left label' },
+    right: { icon: <Icon.Grid />, label: 'Right label' },
+    size: 'small',
     onChange: (event: any) => {
       // eslint-disable-next-line no-console
       console.log(event.target.checked)

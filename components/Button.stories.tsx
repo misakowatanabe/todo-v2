@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Button } from './Button'
+import { Icon } from './icons'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof Button> = {
@@ -70,21 +71,47 @@ export const Small: Story = {
   },
 }
 
-export const WithIcon: Story = {
+export const LargeWithIcon: Story = {
   args: {
     label: 'Button',
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-        aria-labelledby="title-ac02 desc-ac02"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-      </svg>
-    ),
+    size: 'large',
+    icon: <Icon.Plus />,
+  },
+}
+
+export const MediumWithIcon: Story = {
+  args: {
+    label: 'Button',
+    size: 'medium',
+    icon: <Icon.Plus />,
+  },
+}
+
+export const SmallWithIcon: Story = {
+  args: {
+    label: 'Button',
+    size: 'small',
+    icon: <Icon.Plus />,
+  },
+}
+
+export const SmallWithoutLabel: Story = {
+  args: {
+    size: 'small',
+    icon: <Icon.Plus />,
+  },
+}
+
+export const MediumWithoutLabel: Story = {
+  args: {
+    size: 'medium',
+    icon: <Icon.Plus />,
+  },
+}
+
+export const LargeWithoutLabel: Story = {
+  args: {
+    size: 'large',
+    icon: <Icon.Plus />,
   },
 }

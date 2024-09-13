@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import clsx from 'clsx'
+import { Icon } from 'components/icons'
 
 type AccordionProps = {
   children: React.ReactNode
@@ -25,22 +26,12 @@ export function Accordion({ children, label, itemLength }: AccordionProps) {
         >
           <span className="font-semibold">{label}</span>
           {itemLength != null && <span className="font-medium">{`(${itemLength})`}</span>}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={24}
-            height={24}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#6b7280"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+          <Icon.ChevronUp
+            size={{ width: 24, height: 24 }}
             className={clsx('transform origin-center transition duration-100 ease-out', {
               '!rotate-180': isOpen,
             })}
-          >
-            <path d="M6 9l6 6 6-6" />
-          </svg>
+          />
         </button>
       </h2>
       <div

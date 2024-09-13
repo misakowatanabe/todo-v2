@@ -5,6 +5,8 @@ import { useState, useTransition } from 'react'
 import { Todo } from 'app/actions'
 import { Chip, ChipColor, ColorVariants } from 'components/Chip'
 import { Checkbox } from 'components/Checkbox'
+import { Icon } from 'components/icons'
+import { Button } from 'components/Button'
 import clsx from 'clsx'
 import { tickTodo } from './tickTodo'
 import { untickTodo } from './untickTodo'
@@ -14,7 +16,7 @@ export type View = 'table' | 'card'
 type TodoListItemProps = {
   todo: Todo
   openTodo: (_todo: Todo) => void
-  openDeleteTodoModal: (_e: React.MouseEvent<HTMLDivElement, MouseEvent>, _todo: Todo) => void
+  openDeleteTodoModal: (_e: React.MouseEvent<HTMLButtonElement, MouseEvent>, _todo: Todo) => void
   view: View
 } & (
   | {
@@ -76,21 +78,6 @@ export function TodoListItem({
     return (availableLabels.find((el) => el.label === label)?.color ?? 'default') as ChipColor
   }
 
-  const removeIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-      role="graphics-symbol"
-      aria-labelledby="title-79 desc-79"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  )
-
   const cardBgColor: ColorVariants = {
     default: 'bg-gray-300/10',
     raspberry: 'bg-raspberry/10',
@@ -122,7 +109,7 @@ export function TodoListItem({
         </div>
         <div
           id={todo.todoId}
-          className={clsx('py-4 grow', { 'cursor-pointer': dragStart })}
+          className={clsx('relative py-4 grow', { 'cursor-pointer': dragStart })}
           onDragStart={(e) => dragStart?.(e)}
           onDragOver={(e) => e.preventDefault()}
           draggable={true}
@@ -143,12 +130,14 @@ export function TodoListItem({
                   ))}
               </div>
             </div>
-            <div
-              className="pointer-events-auto group-hover:flex hidden h-6 w-6 justify-center items-center rounded-full hover:bg-gray-200"
+            <Button
+              size="small"
+              style="text"
+              type="button"
+              icon={<Icon.Close />}
               onClick={(e) => openDeleteTodoModal(e, todo)}
-            >
-              {removeIcon}
-            </div>
+              className="absolute right-0 pointer-events-auto group-hover:flex hidden"
+            />
           </div>
           {todo.body && (
             <p className="pointer-events-none text-gray-500 text-sm line-clamp-1 mt-1">
@@ -181,7 +170,7 @@ export function TodoListItem({
       </div>
       <div
         id={todo.todoId}
-        className={clsx('flex flex-col grow h-full', { 'cursor-pointer': dragStart })}
+        className={clsx('relative flex flex-col grow h-full', { 'cursor-pointer': dragStart })}
         onDragStart={(e) => dragStart?.(e)}
         onDragOver={(e) => e.preventDefault()}
         draggable={true}
@@ -192,12 +181,14 @@ export function TodoListItem({
       >
         <div className="pointer-events-none flex justify-between items-center">
           <div className="pointer-events-none text-xl">{todo.title}</div>
-          <div
-            className="pointer-events-auto group-hover:flex hidden h-6 w-6 justify-center items-center rounded-full hover:bg-gray-200"
+          <Button
+            size="small"
+            style="text"
+            type="button"
+            icon={<Icon.Close />}
             onClick={(e) => openDeleteTodoModal(e, todo)}
-          >
-            {removeIcon}
-          </div>
+            className="absolute right-0 pointer-events-auto group-hover:flex hidden"
+          />
         </div>
         <div className="pointer-events-none text-gray-500 text-base mt-3 grow">
           <p className="line-clamp-[9]">{todo.body && todo.body}</p>

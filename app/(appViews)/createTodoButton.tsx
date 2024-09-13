@@ -12,6 +12,7 @@ import { Textarea } from 'components/Textarea'
 import { Todo } from 'app/actions'
 import { createTodo } from 'app/createTodo'
 import { Alert } from 'components/Alert'
+import { Icon } from 'components/icons'
 
 type SubmitProps = { isPending: boolean }
 
@@ -98,25 +99,11 @@ export function CreateTodoButton() {
     return selected
   }, [availableLabels, labels])
 
-  const plusIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-      aria-labelledby="title-ac01 desc-ac01"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-    </svg>
-  )
-
   const openButton = (
     <Button
       onClick={() => setIsShowing(true)}
       label="New task"
-      icon={plusIcon}
+      icon={<Icon.Plus />}
       style="secondary"
       size="large"
       className="w-full"
@@ -170,7 +157,7 @@ export function CreateTodoButton() {
               label="Add label"
               items={nonSelectedLabels}
               setItems={setLabels}
-              icon={plusIcon}
+              icon={<Icon.Plus size="small" />}
             />
           </div>
         </div>

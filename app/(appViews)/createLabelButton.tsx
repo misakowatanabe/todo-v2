@@ -10,6 +10,7 @@ import { ListItem } from './listItem'
 import { useAppContext } from 'app/appContext'
 import { createLabel } from './createLabel'
 import { Alert } from 'components/Alert'
+import { Icon } from 'components/icons'
 
 type SubmitProps = { isPending: boolean }
 
@@ -69,23 +70,12 @@ export function CreateLabelButton() {
     })
   }
 
-  const plusIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-      aria-labelledby="title-ac01 desc-ac01"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-    </svg>
-  )
-
   const openButton = (
-    <ListItem label="New label" icon={plusIcon} onClick={() => setIsShowing(true)} />
+    <ListItem
+      label="New label"
+      icon={<Icon.Plus size="medium" />}
+      onClick={() => setIsShowing(true)}
+    />
   )
 
   return (

@@ -68,7 +68,7 @@ export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
     if (todo.labels) setLabels(todo.labels)
   }
 
-  const openDeleteTodoModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, todo: Todo) => {
+  const openDeleteTodoModal = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, todo: Todo) => {
     e.stopPropagation()
 
     setDeleteTodoModalOpen(true)
