@@ -2,7 +2,6 @@
 
 import React, { useEffect, useId, useMemo, useState, useTransition } from 'react'
 import { useAppContext } from 'app/appContext'
-import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 import { Button } from 'components/Button'
 import { Chip, ChipColor } from 'components/Chip'
@@ -50,14 +49,12 @@ export function CreateTodoButton() {
       return
     }
 
-    const date = format(new Date(), 'yyyy-MM-dd')
     const id = nanoid(8)
 
     const todo: Todo = {
       todoId: id,
       title: title as string,
       body: !formData.get('body') ? undefined : (formData.get('body') as string),
-      createdAt: date,
       labels: labels,
       completed: false,
     }

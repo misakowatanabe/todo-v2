@@ -37,7 +37,7 @@ export function TodoDetail({
     if (!selectedTodo) return
 
     // TODO: add validation for mandatory inputs
-    const todo: Omit<Todo, 'createdAt'> = {
+    const todo: Todo = {
       todoId: selectedTodo.todoId,
       title: (formData.get('title') ?? '<No title>') as string,
       body: !formData.get('body') ? undefined : (formData.get('body') as string),

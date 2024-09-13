@@ -6,7 +6,6 @@ export type Todo = {
   todoId: string
   title: string
   body?: string
-  createdAt: string
   labels?: string[]
   completed: boolean
 }

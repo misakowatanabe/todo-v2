@@ -5,7 +5,6 @@ import { auth } from 'app/firebase'
 import { useId, useTransition } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
-import { format } from 'date-fns'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
 import { Todo, setCookies } from 'app/actions'
@@ -60,14 +59,12 @@ export function Form() {
         await updateProfile(userCredential.user, { displayName: data.name })
 
         // create a welcome todo
-        const date = format(new Date(), 'yyyy-MM-dd')
         const id = nanoid(8)
 
         const todo: Todo = {
           todoId: id,
           title: 'Welcome!',
           body: 'Happy todo listing :)',
-          createdAt: date,
           completed: false,
         }
 

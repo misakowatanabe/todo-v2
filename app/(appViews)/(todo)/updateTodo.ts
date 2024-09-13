@@ -3,7 +3,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { Todo } from 'app/actions'
 import { User } from 'firebase/auth/web-extension'
 
-export async function updateTodo(uid: User['uid'], todo: Omit<Todo, 'createdAt'>) {
+export async function updateTodo(uid: User['uid'], todo: Todo) {
   updateTodo: try {
     const todos = await getDoc(doc(db, uid, 'todos'))
     const todosData = todos.data()

@@ -53,7 +53,6 @@ export async function createTodo(user: User, todo: Todo) {
       const todoObject: Record<string, string | string[] | boolean> = {
         todoId: todo.todoId,
         title: todo.title,
-        createdAt: todo.createdAt,
         completed: todo.completed,
       }
 
@@ -78,14 +77,12 @@ export async function createTodo(user: User, todo: Todo) {
     const todoId = `${id}.todoId`
     const title = `${id}.title`
     const body = `${id}.body`
-    const createdAt = `${id}.createdAt`
     const labels = `${id}.labels`
     const completed = `${id}.completed`
 
     const todoObject: Record<string, string | string[] | boolean> = {
       [todoId]: todo.todoId,
       [title]: todo.title,
-      [createdAt]: todo.createdAt,
       [completed]: todo.completed,
     }
 
