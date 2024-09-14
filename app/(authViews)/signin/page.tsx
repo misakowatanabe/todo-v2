@@ -1,5 +1,5 @@
 import { Form } from './form'
-import { AuthFormCard } from '../authFormCard'
+import { AuthFormCard } from 'app/(authViews)/authFormCard'
 
 export default function Page() {
   const switchLink = {
