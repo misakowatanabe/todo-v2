@@ -6,8 +6,11 @@ import { AppContextProvider } from './appContext'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Create Next App',
-  description: 'Test',
+  title: 'Todo App',
+  description: 'This todo app is created to try out Next.js features.',
+  icons: {
+    icon: 'favicon.ico',
+  },
 }
 
 type RootLayoutProps = { children: React.ReactNode }
