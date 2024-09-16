@@ -131,7 +131,7 @@ export function TodoListItem({
         </div>
         <div
           id={todo.todoId}
-          className={clsx('relative py-4 grow', { 'cursor-pointer': dragStart })}
+          className="relative py-4 grow cursor-pointer"
           onClick={() => openTodo(todo)}
         >
           <div className="pointer-events-none flex justify-between items-center">
@@ -214,7 +214,7 @@ export function TodoListItem({
       </div>
       <div
         id={todo.todoId}
-        className={clsx('relative flex flex-col grow h-full', { 'cursor-pointer': dragStart })}
+        className="relative flex flex-col grow h-full cursor-pointer"
         onClick={() => openTodo(todo)}
       >
         <div className="pointer-events-none flex justify-between items-center">
