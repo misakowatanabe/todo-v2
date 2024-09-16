@@ -20,7 +20,7 @@ type TodoListItemProps = {
   view: View
 } & (
   | {
-      dragStart: (_e: React.DragEvent<HTMLDivElement>) => void
+      dragStart: (_e: React.DragEvent<HTMLButtonElement>) => void
       dragEnter: (_e: React.DragEvent<HTMLDivElement>) => void
       drop: () => Promise<void>
     }
@@ -95,8 +95,29 @@ export function TodoListItem({
 
   if (view === 'table')
     return (
-      <div key={todo.todoId} className="group flex border-t items-start gap-2">
-        <div className="py-2">
+      <div
+        key={todo.todoId}
+        className="group flex border-t items-stretch gap-2"
+        id={todo.todoId}
+        onDragOver={(e) => dragStart && e.preventDefault()}
+        onDragEnter={(e) => dragStart && dragEnter?.(e)}
+        onDragEnd={(e) => dragStart && e.preventDefault()}
+        onDrop={dragStart && drop}
+      >
+        <div className="relative flex mt-2" id={todo.todoId}>
+          {dragStart && (
+            <Button
+              style="text"
+              type="button"
+              size="small"
+              icon={<Icon.Grab />}
+              id={todo.todoId}
+              onDragStart={(e) => dragStart?.(e)}
+              draggable={true}
+              hover={false}
+              className="absolute left-0 group-hover:block hidden mt-1 cursor-grab"
+            />
+          )}
           <Checkbox
             onChange={() =>
               todo.completed
@@ -104,18 +125,13 @@ export function TodoListItem({
                 : handleTick(todo.todoId as unknown as Pick<Todo, 'todoId'>)
             }
             checked={todo.completed}
-            id={`todo-${todo.todoId}`}
+            id={todo.todoId}
+            className="ml-5"
           />
         </div>
         <div
           id={todo.todoId}
           className={clsx('relative py-4 grow', { 'cursor-pointer': dragStart })}
-          onDragStart={(e) => dragStart?.(e)}
-          onDragOver={(e) => e.preventDefault()}
-          draggable={true}
-          onDragEnter={(e) => dragEnter?.(e)}
-          onDragEnd={(e) => e.preventDefault()}
-          onDrop={drop}
           onClick={() => openTodo(todo)}
         >
           <div className="pointer-events-none flex justify-between items-center">
@@ -162,12 +178,17 @@ export function TodoListItem({
   return (
     <div
       key={todo.todoId}
+      id={todo.todoId}
+      onDragOver={(e) => dragStart && e.preventDefault()}
+      onDragEnter={(e) => dragStart && dragEnter?.(e)}
+      onDragEnd={(e) => dragStart && e.preventDefault()}
+      onDrop={dragStart && drop}
       className={clsx(
         'group flex items-start gap-0.5 w-80 h-80 p-3 rounded-lg shadow',
         todo.labels ? cardBgColor[getLabelColor(todo.labels[0])] : cardBgColor.default,
       )}
     >
-      <div className="-mt-1.5 -ml-1.5">
+      <div className="relative -mt-1.5 -ml-1.5" id={todo.todoId}>
         <Checkbox
           onChange={() =>
             todo.completed
@@ -175,18 +196,25 @@ export function TodoListItem({
               : handleTick(todo.todoId as unknown as Pick<Todo, 'todoId'>)
           }
           checked={todo.completed}
-          id={`todo-${todo.todoId}`}
+          id={todo.todoId}
         />
+        {dragStart && (
+          <Button
+            style="text"
+            type="button"
+            size="small"
+            icon={<Icon.Grab />}
+            id={todo.todoId}
+            onDragStart={(e) => dragStart?.(e)}
+            draggable={true}
+            hover={false}
+            className="absolute left-0 group-hover:block hidden ml-1.5 cursor-grab"
+          />
+        )}
       </div>
       <div
         id={todo.todoId}
         className={clsx('relative flex flex-col grow h-full', { 'cursor-pointer': dragStart })}
-        onDragStart={(e) => dragStart?.(e)}
-        onDragOver={(e) => e.preventDefault()}
-        draggable={true}
-        onDragEnter={(e) => dragEnter?.(e)}
-        onDragEnd={(e) => e.preventDefault()}
-        onDrop={drop}
         onClick={() => openTodo(todo)}
       >
         <div className="pointer-events-none flex justify-between items-center">

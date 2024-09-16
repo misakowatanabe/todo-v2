@@ -57,7 +57,7 @@ export function TodoList() {
     setSelectedTodoToDelete(null)
   }, [deleteTodoModalOpen])
 
-  const dragStart = (e: React.DragEvent<HTMLDivElement>) => {
+  const dragStart = (e: React.DragEvent<HTMLButtonElement>) => {
     dragItem.current = (e.target as HTMLTableRowElement).id
   }
 

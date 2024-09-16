@@ -11,6 +11,7 @@ type ButtonProps = {
   onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
   form?: string
+  hover?: boolean
   className?: string
 } & React.ButtonHTMLAttributes<HTMLButtonElement>
 
@@ -25,6 +26,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     onClick,
     disabled,
     form,
+    hover = true,
     className,
     ...props
   }: ButtonProps,
@@ -37,12 +39,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium rounded-full cursor-pointer leading-none transition duration-100',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500',
         !disabled && {
-          'text-white bg-black hover:bg-gray-600': style === 'primary',
-          'text-black outline outline-offset-0 outline-black bg-transparent hover:bg-gray-100':
-            style === 'secondary',
-          'text-black hover:bg-gray-200': style === 'text',
-          'text-red-700 outline outline-offset-0 outline-red-700 bg-red-50 hover:bg-red-300':
-            style === 'critical',
+          'text-white bg-black': style === 'primary',
+          'text-black outline outline-offset-0 outline-black bg-transparent': style === 'secondary',
+          'text-black': style === 'text',
+          'text-red-700 outline outline-offset-0 outline-red-700 bg-red-50': style === 'critical',
+          'hover:bg-gray-600': style === 'primary' && hover,
+          'hover:bg-gray-100': style === 'secondary' && hover,
+          'hover:bg-gray-200': style === 'text' && hover,
+          'hover:bg-red-300': style === 'critical' && hover,
         },
         disabled && {
           'text-white bg-[#b3b3b3]': style === 'primary',
@@ -71,7 +75,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         <div
           className={clsx(
             'relative inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium tracking-wide transition duration-100',
-            'focus-visible:outline-none disabled:cursor-not-allowed cursor-pointer',
+            'focus-visible:outline-none disabled:cursor-not-allowed cursor-pointer pointer-events-none',
             {
               'h-4 w-4': size === 'small',
               'h-[18px] w-[18px]': size === 'medium',
