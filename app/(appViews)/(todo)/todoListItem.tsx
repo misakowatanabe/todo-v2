@@ -79,25 +79,25 @@ export function TodoListItem({
   }
 
   const cardBgColor: ColorVariants = {
-    default: 'bg-gray-300/10',
-    raspberry: 'bg-raspberry/10',
-    honey: 'bg-honey/10',
-    blueberry: 'bg-blueberry/10',
-    greenApple: 'bg-greenApple/10',
-    orange: 'bg-orange/10',
-    midnight: 'bg-midnight/10',
-    powderPink: 'bg-powderPink/10',
-    sky: 'bg-sky/10',
-    lemon: 'bg-lemon/10',
-    lime: 'bg-lime text-white/10',
-    dreamyPurple: 'bg-dreamyPurple/10',
+    default: 'bg-gray-300/20',
+    raspberry: 'bg-raspberry/20',
+    honey: 'bg-honey/20',
+    blueberry: 'bg-blueberry/20',
+    greenApple: 'bg-greenApple/20',
+    orange: 'bg-orange/20',
+    midnight: 'bg-midnight/20',
+    powderPink: 'bg-powderPink/20',
+    sky: 'bg-sky/20',
+    lemon: 'bg-lemon/20',
+    lime: 'bg-lime text-white/20',
+    dreamyPurple: 'bg-dreamyPurple/20',
   }
 
   if (view === 'table')
     return (
       <div
         key={todo.todoId}
-        className="group flex border-t items-stretch gap-2"
+        className="group flex first:border-none border-t items-stretch gap-2 hover:bg-gray-50 rounded"
         id={todo.todoId}
         onDragOver={(e) => dragStart && e.preventDefault()}
         onDragEnter={(e) => dragStart && dragEnter?.(e)}
@@ -184,7 +184,7 @@ export function TodoListItem({
       onDragEnd={(e) => dragStart && e.preventDefault()}
       onDrop={dragStart && drop}
       className={clsx(
-        'group flex items-start gap-0.5 w-80 h-80 p-3 rounded-lg shadow',
+        'group flex items-start gap-0.5 w-80 h-80 p-3 rounded-lg shadow-md',
         todo.labels ? cardBgColor[getLabelColor(todo.labels[0])] : cardBgColor.default,
       )}
     >
