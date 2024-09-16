@@ -68,6 +68,21 @@ export const Icon = {
       {...props}
     />
   ),
+  Grab: ({ ...props }: IconProps) => (
+    <IconBase
+      path={
+        <>
+          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="12" cy="5" r="1"></circle>
+          <circle cx="12" cy="19" r="1"></circle>
+          <circle cx="6" cy="12" r="1"></circle>
+          <circle cx="6" cy="5" r="1"></circle>
+          <circle cx="6" cy="19" r="1"></circle>
+        </>
+      }
+      {...props}
+    />
+  ),
   Label: ({ ...props }: IconProps) => (
     <IconBase
       path={

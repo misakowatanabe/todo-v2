@@ -8,18 +8,19 @@ type CheckboxProps = {
   checked: boolean
   onChange: (_event: React.ChangeEvent<HTMLInputElement>) => void
   id: string
+  className?: string
 } & React.InputHTMLAttributes<HTMLInputElement>
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
-  { label, disabled = false, checked, onChange, id }: CheckboxProps,
+  { label, disabled = false, checked, onChange, id, className }: CheckboxProps,
   ref,
 ) {
   return (
-    <div className="relative flex items-center">
+    <div className={clsx('relative flex items-center h-fit', className)}>
       <input
         ref={ref}
         className={clsx(
-          'peer w-10 h-10 items-center cursor-pointer appearance-none flex justify-center hover:bg-gray-200 rounded-full transition-all duration-100',
+          'peer w-10 h-10 items-center cursor-pointer appearance-none flex justify-center hover:bg-gray-600/10 rounded-full transition-all duration-100',
           disabled ? 'cursor-not-allowed' : 'cursor-pointer',
         )}
         type="checkbox"
