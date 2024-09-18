@@ -7,12 +7,21 @@ import { RemoveLabelButton } from './removeLabelButton'
 import { ListItem } from './listItem'
 import { NumberNotification } from './numberNotification'
 import { Icon } from 'components/icons'
+import { Todo } from 'app/actions'
 
 type ColorVariants = Record<string, string>
 
 type LabelColor = { labelColor: string }
 
 type LabelListProps = { pathname: string }
+
+export function getTodoLength(label: string, todos: Todo[]) {
+  return todos.filter((el) => {
+    if (!el.labels) return false
+
+    return el.labels.includes(label)
+  })
+}
 
 export function LabelList({ pathname }: LabelListProps) {
   const { labels, todos } = useAppContext()
@@ -26,14 +35,6 @@ export function LabelList({ pathname }: LabelListProps) {
         ))}
       </div>
     )
-
-  const getTodoLength = (label: string) => {
-    return todos.filter((el) => {
-      if (!el.labels) return false
-
-      return el.labels.includes(label)
-    })
-  }
 
   // TODO: use single source of truth
   const color: ColorVariants = {
@@ -68,7 +69,7 @@ export function LabelList({ pathname }: LabelListProps) {
           .replace(/_/g, ' ')
           .endsWith(el.label.toLowerCase())
 
-        const todoLength = getTodoLength(el.label).length
+        const todoLength = getTodoLength(el.label, todos).length
 
         return (
           <ListItem
