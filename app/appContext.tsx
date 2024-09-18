@@ -8,7 +8,7 @@ import { Todo, deleteCookies, getCookies, setCookies } from 'app/actions'
 import { signOut } from 'firebase/auth'
 import { doc, getDoc, onSnapshot } from 'firebase/firestore'
 
-type Label = { label: string; color: string }
+export type Label = { label: string; color: string }
 
 type Error = string | null
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useAppContext } from 'app/appContext'
+import { Label, useAppContext } from 'app/appContext'
 import { useState, useTransition } from 'react'
 import { Todo } from 'app/actions'
 import { Chip, ChipColor, ColorVariants } from 'components/Chip'
@@ -30,6 +30,12 @@ type TodoListItemProps = {
       drop?: never
     }
 )
+
+export function getLabelColor(label: string, availableLabels: Label[] | null) {
+  if (availableLabels == null) return 'default'
+
+  return (availableLabels.find((el) => el.label === label)?.color ?? 'default') as ChipColor
+}
 
 export function TodoListItem({
   todo,
@@ -70,12 +76,6 @@ export function TodoListItem({
         setError(res.error)
       }
     })
-  }
-
-  const getLabelColor = (label: string) => {
-    if (availableLabels == null) return 'default'
-
-    return (availableLabels.find((el) => el.label === label)?.color ?? 'default') as ChipColor
   }
 
   const cardBgColor: ColorVariants = {
@@ -147,7 +147,12 @@ export function TodoListItem({
               <div className="pointer-events-none flex gap-2">
                 {todo.labels &&
                   todo.labels.map((el) => (
-                    <Chip key={el} label={el} color={getLabelColor(el)} size="small" />
+                    <Chip
+                      key={el}
+                      label={el}
+                      color={getLabelColor(el, availableLabels)}
+                      size="small"
+                    />
                   ))}
               </div>
             </div>
@@ -185,7 +190,9 @@ export function TodoListItem({
       onDrop={dragStart && drop}
       className={clsx(
         'group flex items-start gap-0.5 w-80 h-80 p-3 rounded-lg shadow-md',
-        todo.labels ? cardBgColor[getLabelColor(todo.labels[0])] : cardBgColor.default,
+        todo.labels
+          ? cardBgColor[getLabelColor(todo.labels[0], availableLabels)]
+          : cardBgColor.default,
       )}
     >
       <div className="relative -mt-1.5 -ml-1.5" id={todo.todoId}>
@@ -248,7 +255,7 @@ export function TodoListItem({
         <div className="pointer-events-none flex gap-2 justify-end">
           {todo.labels &&
             todo.labels.map((el) => (
-              <Chip key={el} label={el} color={getLabelColor(el)} size="small" />
+              <Chip key={el} label={el} color={getLabelColor(el, availableLabels)} size="small" />
             ))}
         </div>
       </div>
