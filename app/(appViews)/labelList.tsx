@@ -36,14 +36,6 @@ export function LabelList({ pathname }: LabelListProps) {
       </div>
     )
 
-  // const getTodoLength = (label: string) => {
-  //   return todos.filter((el) => {
-  //     if (!el.labels) return false
-
-  //     return el.labels.includes(label)
-  //   })
-  // }
-
   // TODO: use single source of truth
   const color: ColorVariants = {
     default: 'text-gray-300',
