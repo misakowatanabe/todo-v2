@@ -6,5 +6,6 @@ export default defineConfig({
     //   // implement node event listeners here
     // },
     specPattern: 'app/**/*.cy.{ts,tsx}',
+    baseUrl: 'http://localhost:3000',
   },
 })
