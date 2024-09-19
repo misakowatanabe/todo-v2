@@ -13,6 +13,7 @@ type ButtonProps = {
   form?: string
   hover?: boolean
   className?: string
+  testid?: string
 } & React.ButtonHTMLAttributes<HTMLButtonElement>
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -28,6 +29,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     form,
     hover = true,
     className,
+    testid,
     ...props
   }: ButtonProps,
   ref,
@@ -69,6 +71,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       onClick={!disabled ? onClick : undefined}
       form={form}
       ref={ref}
+      data-testid={testid}
       {...props}
     >
       {icon && (
