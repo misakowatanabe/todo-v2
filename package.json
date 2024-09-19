@@ -16,7 +16,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "cypress:open": "cypress open",
-    "test:e2e:dev": "npm run dev & npm run cypress:open"
+    "firebase:emulators:start": "firebase emulators:start",
+    "test:e2e:dev": "npm run firebase:emulators:start & npm run dev & npm run cypress:open"
   },
   "dependencies": {
     "@testing-library/cypress": "^10.0.2",
