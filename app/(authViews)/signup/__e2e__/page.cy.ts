@@ -47,7 +47,7 @@ describe('Page', () => {
 describe('Sign up', () => {
   it('signs up a user', () => {
     cy.findByTestId('input-name').type('Misako')
-    cy.findByTestId('input-email').type('misako10@example.com')
+    cy.findByTestId('input-email').type('misako@example.com')
     cy.findByTestId('input-password').type('password')
     cy.findByTestId('input-password-confirmation').type('password')
     cy.findByTestId('submit').click()
