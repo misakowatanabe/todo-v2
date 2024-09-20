@@ -95,7 +95,7 @@ export function Form() {
           type="text"
           required={true}
           id={nameInputId}
-          testid="input-name"
+          testid="sign-up-input-name"
         />
         <Input
           label="Email"
@@ -103,7 +103,7 @@ export function Form() {
           type="email"
           required={true}
           id={emailInputId}
-          testid="input-email"
+          testid="sign-up-input-email"
         />
         <Input
           label="Password"
@@ -112,7 +112,7 @@ export function Form() {
           required={true}
           id={passwordInputId}
           autoComplete="off"
-          testid="input-password"
+          testid="sign-up-input-password"
         />
         <Input
           label="Confirm password"
@@ -121,14 +121,14 @@ export function Form() {
           required={true}
           id={confirmationPasswordInputId}
           autoComplete="off"
-          testid="input-password-confirmation"
+          testid="sign-up-input-password-confirmation"
         />
         <Button
           type="submit"
           label={isPending ? 'Processing...' : 'Sign up'}
           className="my-4"
           disabled={isPending}
-          data-testid="submit"
+          data-testid="sign-up-submit"
         />
       </form>
     </>

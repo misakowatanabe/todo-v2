@@ -141,6 +141,7 @@ export function TodoListItem({
                   'pointer-events-none',
                   todo.completed ? 'line-through text-gray-400' : 'text-black',
                 )}
+                data-testid="todo-title"
               >
                 {todo.title}
               </div>
@@ -171,6 +172,7 @@ export function TodoListItem({
                 'pointer-events-none text-sm line-clamp-1 mt-1',
                 todo.completed ? 'line-through text-gray-400' : 'text-gray-600',
               )}
+              data-testid="todo-body"
             >
               {todo.body}
             </p>
