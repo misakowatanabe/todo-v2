@@ -22,6 +22,7 @@ function Submit({ isPending }: SubmitProps) {
       label={isPending ? 'Creating...' : 'Create'}
       disabled={isPending}
       form="form-new-task"
+      testid="create-todo-submit"
     />
   )
 }
@@ -104,6 +105,7 @@ export function CreateTodoButton() {
       style="secondary"
       size="large"
       className="w-full"
+      testid="create-todo"
     />
   )
 
@@ -130,6 +132,7 @@ export function CreateTodoButton() {
             placeholder="Task title"
             disabled={isPending}
             rows={1}
+            testid="create-todo-title"
           />
           <Textarea
             id={bodyInputId}
@@ -137,6 +140,7 @@ export function CreateTodoButton() {
             placeholder="Add description..."
             disabled={isPending}
             rows={6}
+            testid="create-todo-body"
           />
         </form>
         <div className="flex flex-col gap-4">

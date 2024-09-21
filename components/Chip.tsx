@@ -28,6 +28,7 @@ type ChipProps = {
   onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
   onRemove?: (_event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  testid?: string
 } & React.ButtonHTMLAttributes<HTMLButtonElement>
 
 export type ColorVariants = Record<ChipColor, string>
@@ -42,6 +43,7 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
     onClick,
     disabled = false,
     onRemove,
+    testid,
   }: ChipProps,
   ref,
 ) {
@@ -104,6 +106,7 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
           : 'cursor-default focus-visible:outline-none',
       )}
       ref={ref}
+      data-testid={testid}
     >
       {icon && (
         <div

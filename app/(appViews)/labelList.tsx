@@ -84,6 +84,7 @@ export function LabelList({ pathname }: LabelListProps) {
               </div>
             }
             pathname={pathname}
+            testid={`sidemenu-${el.label.toLowerCase().replace(/ /g, '-')}`}
           />
         )
       })}

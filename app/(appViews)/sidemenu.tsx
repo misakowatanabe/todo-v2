@@ -34,6 +34,7 @@ export function Sidemenu() {
           action={
             <NumberNotification isCurrentPath={pathname === '/all'} todoLength={todos?.length} />
           }
+          testid="sidemenu-all"
         />
       </div>
       <hr />
