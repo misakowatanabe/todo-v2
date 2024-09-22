@@ -103,6 +103,7 @@ export function TodoListItem({
         onDragEnter={(e) => dragStart && dragEnter?.(e)}
         onDragEnd={(e) => dragStart && e.preventDefault()}
         onDrop={dragStart && drop}
+        data-testid={todo.completed ? 'completed-table-todo' : 'table-todo'}
       >
         <div className="relative flex mt-2" id={todo.todoId}>
           {dragStart && (
@@ -127,12 +128,14 @@ export function TodoListItem({
             checked={todo.completed}
             id={todo.todoId}
             className="ml-5"
+            testid={todo.completed ? `completed-table-todo-checkbox` : `table-todo-checkbox`}
           />
         </div>
         <div
           id={todo.todoId}
           className="relative py-4 grow cursor-pointer"
           onClick={() => openTodo(todo)}
+          data-testid="todo-detail-open"
         >
           <div className="pointer-events-none flex justify-between items-center">
             <div className="pointer-events-none flex gap-2">
@@ -141,10 +144,11 @@ export function TodoListItem({
                   'pointer-events-none',
                   todo.completed ? 'line-through text-gray-400' : 'text-black',
                 )}
+                data-testid="table-todo-title"
               >
                 {todo.title}
               </div>
-              <div className="pointer-events-none flex gap-2">
+              <div className="pointer-events-none flex gap-2" data-testid="table-todo-labels">
                 {todo.labels &&
                   todo.labels.map((el) => (
                     <Chip
@@ -152,6 +156,7 @@ export function TodoListItem({
                       label={el}
                       color={getLabelColor(el, availableLabels)}
                       size="small"
+                      testid={`table-todo-label-${el.toLowerCase().replace(/ /g, '-')}`}
                     />
                   ))}
               </div>
@@ -171,6 +176,7 @@ export function TodoListItem({
                 'pointer-events-none text-sm line-clamp-1 mt-1',
                 todo.completed ? 'line-through text-gray-400' : 'text-gray-600',
               )}
+              data-testid="table-todo-body"
             >
               {todo.body}
             </p>
@@ -204,6 +210,7 @@ export function TodoListItem({
           }
           checked={todo.completed}
           id={todo.todoId}
+          testid="card-todo-checkbox"
         />
         {dragStart && (
           <Button
@@ -230,6 +237,7 @@ export function TodoListItem({
               'pointer-events-none text-xl',
               todo.completed ? 'line-through text-gray-400' : 'text-black',
             )}
+            data-testid="card-todo-title"
           >
             {todo.title}
           </div>
@@ -243,16 +251,19 @@ export function TodoListItem({
           />
         </div>
         <div className="pointer-events-none text-gray-500 text-base mt-3 grow">
-          <p
-            className={clsx(
-              'line-clamp-[9]',
-              todo.completed ? 'line-through text-gray-400' : 'text-gray-600',
-            )}
-          >
-            {todo.body && todo.body}
-          </p>
+          {todo.body && (
+            <p
+              className={clsx(
+                'line-clamp-[9]',
+                todo.completed ? 'line-through text-gray-400' : 'text-gray-600',
+              )}
+              data-testid="card-todo-body"
+            >
+              {todo.body}
+            </p>
+          )}
         </div>
-        <div className="pointer-events-none flex gap-2 justify-end">
+        <div className="pointer-events-none flex gap-2 justify-end" data-testid="card-todo-labels">
           {todo.labels &&
             todo.labels.map((el) => (
               <Chip key={el} label={el} color={getLabelColor(el, availableLabels)} size="small" />

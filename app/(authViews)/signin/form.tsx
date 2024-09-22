@@ -39,7 +39,14 @@ export function Form() {
     <>
       <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
       <form action={onSubmit} autoComplete="off" className="flex flex-col">
-        <Input label="Email" name="email" type="email" required={true} id={emailInputId} />
+        <Input
+          label="Email"
+          name="email"
+          type="email"
+          required={true}
+          id={emailInputId}
+          testid="sign-in-input-email"
+        />
         <Input
           label="Password"
           name="password"
@@ -47,12 +54,14 @@ export function Form() {
           required={true}
           id={passwordInputId}
           autoComplete="off"
+          testid="sign-in-input-password"
         />
         <Button
           type="submit"
           label={isPending ? 'Processing...' : 'Sign in'}
           className="my-4"
           disabled={isPending}
+          data-testid="sign-in-submit"
         />
       </form>
     </>

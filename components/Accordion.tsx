@@ -7,9 +7,10 @@ type AccordionProps = {
   children: React.ReactNode
   label: string
   itemLength?: number
+  testid?: string
 }
 
-export function Accordion({ children, label, itemLength }: AccordionProps) {
+export function Accordion({ children, label, itemLength, testid }: AccordionProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -23,6 +24,7 @@ export function Accordion({ children, label, itemLength }: AccordionProps) {
           }}
           aria-expanded={isOpen}
           aria-controls="basic-accordion"
+          data-testid={testid}
         >
           <span className="font-semibold">{label}</span>
           {itemLength != null && <span className="font-medium">{`(${itemLength})`}</span>}

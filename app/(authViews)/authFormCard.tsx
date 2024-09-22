@@ -9,11 +9,20 @@ type AuthFormCardProps = {
 export function AuthFormCard({ title, form, switchLink }: AuthFormCardProps) {
   return (
     <>
-      <h3 className="text-xl font-medium text-gray-700 mb-4 flex justify-center">{title}</h3>
+      <h3
+        className="text-xl font-medium text-gray-700 mb-4 flex justify-center"
+        data-testid={`${title.toLowerCase().replace(/ /g, '-')}-title`}
+      >
+        {title}
+      </h3>
       {form}
       <div className="flex justify-center mt-8 text-gray-500">
         {switchLink.helperText}&nbsp;&nbsp;
-        <Link href={switchLink.href} className="underline">
+        <Link
+          href={switchLink.href}
+          className="underline"
+          data-testid={`${title.toLowerCase().replace(/ /g, '-')}-switch-link`}
+        >
           {switchLink.name}
         </Link>
       </div>

@@ -9,10 +9,11 @@ type CheckboxProps = {
   onChange: (_event: React.ChangeEvent<HTMLInputElement>) => void
   id: string
   className?: string
+  testid?: string
 } & React.InputHTMLAttributes<HTMLInputElement>
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
-  { label, disabled = false, checked, onChange, id, className }: CheckboxProps,
+  { label, disabled = false, checked, onChange, id, className, testid }: CheckboxProps,
   ref,
 ) {
   return (
@@ -28,6 +29,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         onChange={onChange}
         disabled={disabled}
         id={id}
+        data-testid={testid}
       />
       <div
         className={clsx(

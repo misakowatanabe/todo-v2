@@ -6,9 +6,10 @@ type DropdownProps = {
   items: string[]
   setItems: React.Dispatch<React.SetStateAction<string[]>>
   icon?: ReactNode
+  testid?: string
 }
 
-export const Dropdown = ({ label, items, setItems, icon }: DropdownProps) => {
+export const Dropdown = ({ label, items, setItems, icon, testid }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [currentItem, setCurrentItem] = useState<number>(0)
   const wrapperRef = useRef<HTMLButtonElement>(null)
@@ -118,6 +119,7 @@ export const Dropdown = ({ label, items, setItems, icon }: DropdownProps) => {
         onMouseLeave={handleMouseLeave}
         ref={wrapperRef}
         aria-expanded={isOpen ? true : false}
+        testid={testid}
       />
       <ul
         ref={dropdownRef}

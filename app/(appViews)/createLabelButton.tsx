@@ -21,6 +21,7 @@ function Submit({ isPending }: SubmitProps) {
       label={isPending ? 'Creating...' : 'Create'}
       disabled={isPending}
       form="form-new-label"
+      testid="create-label-submit"
     />
   )
 }
@@ -75,6 +76,7 @@ export function CreateLabelButton() {
       label="New label"
       icon={<Icon.Plus size="medium" />}
       onClick={() => setIsShowing(true)}
+      testid="create-label"
     />
   )
 
@@ -94,7 +96,14 @@ export function CreateLabelButton() {
           className="flex flex-col gap-2"
           id="form-new-label"
         >
-          <Input disabled={isPending} label="Label name" name="label" type="text" required={true} />
+          <Input
+            disabled={isPending}
+            label="Label name"
+            name="label"
+            type="text"
+            required={true}
+            testid="create-label-name"
+          />
         </form>
         <div className="flex gap-1 flex-wrap">
           {colorOptions.map((el, idx) => (
@@ -104,7 +113,12 @@ export function CreateLabelButton() {
               })}
               key={idx}
             >
-              <Chip label="Aa" color={el} onClick={() => setColor(el)} />
+              <Chip
+                label="Aa"
+                color={el}
+                onClick={() => setColor(el)}
+                testid={`create-label-color-${el}`}
+              />
             </div>
           ))}
         </div>

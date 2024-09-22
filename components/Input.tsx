@@ -3,6 +3,7 @@ import React, { forwardRef } from 'react'
 type InputProps = {
   label?: string
   onChange?: (_e: React.ChangeEvent<HTMLInputElement>) => void
+  testid?: string
 } & React.InputHTMLAttributes<HTMLInputElement>
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
@@ -17,6 +18,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     name,
     defaultValue,
     autoComplete,
+    testid,
   }: InputProps,
   ref,
 ) {
@@ -35,6 +37,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         disabled={disabled}
         defaultValue={defaultValue}
         autoComplete={autoComplete}
+        data-testid={testid}
       />
       <label
         htmlFor={id}

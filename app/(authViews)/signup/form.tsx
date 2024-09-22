@@ -89,8 +89,22 @@ export function Form() {
     <>
       <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
       <form action={onSubmit} autoComplete="off" className="flex flex-col">
-        <Input label="Name" name="name" type="text" required={true} id={nameInputId} />
-        <Input label="Email" name="email" type="email" required={true} id={emailInputId} />
+        <Input
+          label="Name"
+          name="name"
+          type="text"
+          required={true}
+          id={nameInputId}
+          testid="sign-up-input-name"
+        />
+        <Input
+          label="Email"
+          name="email"
+          type="email"
+          required={true}
+          id={emailInputId}
+          testid="sign-up-input-email"
+        />
         <Input
           label="Password"
           name="password"
@@ -98,6 +112,7 @@ export function Form() {
           required={true}
           id={passwordInputId}
           autoComplete="off"
+          testid="sign-up-input-password"
         />
         <Input
           label="Confirm password"
@@ -106,12 +121,14 @@ export function Form() {
           required={true}
           id={confirmationPasswordInputId}
           autoComplete="off"
+          testid="sign-up-input-password-confirmation"
         />
         <Button
           type="submit"
           label={isPending ? 'Processing...' : 'Sign up'}
           className="my-4"
           disabled={isPending}
+          data-testid="sign-up-submit"
         />
       </form>
     </>

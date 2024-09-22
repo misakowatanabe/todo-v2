@@ -156,7 +156,7 @@ export function TodoList() {
               })}
             </div>
           )}
-          <Accordion label="Completed" itemLength={completedTodos.length}>
+          <Accordion label="Completed" itemLength={completedTodos.length} testid="open-completed">
             {completedTodos.length === 0 ? (
               <div className="text-gray-600">No completed tasks.</div>
             ) : (

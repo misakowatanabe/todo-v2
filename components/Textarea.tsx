@@ -3,10 +3,11 @@ import clsx from 'clsx'
 
 type TextareaProps = {
   size?: 'small' | 'medium' | 'large'
+  testid?: string
 } & React.TextareaHTMLAttributes<HTMLTextAreaElement>
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
-  { size = 'medium', ...props }: TextareaProps,
+  { size = 'medium', testid, ...props }: TextareaProps,
   ref,
 ) {
   return (
@@ -21,6 +22,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         { 'text-base': size === 'medium' },
         { 'text-xl': size === 'large' },
       )}
+      data-testid={testid}
       {...props}
     />
   )

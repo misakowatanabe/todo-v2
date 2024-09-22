@@ -54,6 +54,7 @@ export function HeadingActions({ setError, completedTodos, setView, view }: Head
         left={{ icon: <Icon.List /> }}
         right={{ icon: <Icon.Grid /> }}
         checked={view === 'card' ? true : false}
+        testid="switch-view"
       />
     </div>
   )

@@ -16,13 +16,15 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "cypress:open": "cypress open",
-    "test:e2e:dev": "PORT=3000 npm run dev & npm run cypress:open"
+    "firebase:emulators:start": "firebase emulators:start --project demo-todo-list",
+    "test:e2e:dev": "firebase emulators:exec 'NODE_ENV=test next dev & npm run cypress:open' --project demo-todo-list"
   },
   "dependencies": {
+    "@testing-library/cypress": "^10.0.2",
     "clsx": "^2.1.0",
     "firebase": "^10.7.2",
     "nanoid": "^5.0.5",
-    "next": "14.1",
+    "next": "^14.2.12",
     "react": "^18",
     "react-dom": "^18"
   },

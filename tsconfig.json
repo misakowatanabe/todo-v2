@@ -25,7 +25,8 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "baseUrl": "."
+    "baseUrl": ".",
+    "types": ["cypress", "@testing-library/cypress"]
   },
   "ts-node": {
     "compilerOptions": {

@@ -104,6 +104,7 @@ export function TodoDetail({
               disabled={isPending}
               rows={1}
               defaultValue={selectedTodo?.title}
+              testid="todo-detail-title"
             />
             <Textarea
               name="body"
@@ -111,6 +112,7 @@ export function TodoDetail({
               defaultValue={selectedTodo?.body}
               disabled={isPending}
               rows={6}
+              testid="todo-detail-body"
             />
           </form>
           <div className="flex flex-col gap-4">
@@ -129,6 +131,7 @@ export function TodoDetail({
                 items={nonSelectedLabels}
                 setItems={setLabels}
                 icon={<Icon.Plus size="small" />}
+                testid="todo-detail-label-selection"
               />
             </div>
           </div>
@@ -139,6 +142,7 @@ export function TodoDetail({
                 label={isPending ? 'Saving...' : 'Save'}
                 disabled={isPending}
                 form="form-task"
+                testid="update-todo-submit"
               />
             )}
             <Button

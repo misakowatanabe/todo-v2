@@ -30,7 +30,12 @@ export function Logout() {
     <div>
       {/* TODO: move this error to global error */}
       <Alert severity="critical" message={error} onClose={() => setError(null)} />
-      <ListItem label="Logout" icon={<Icon.Escape size="medium" />} onClick={onSignout} />
+      <ListItem
+        label="Logout"
+        icon={<Icon.Escape size="medium" />}
+        onClick={onSignout}
+        testid="sign-out"
+      />
     </div>
   )
 }

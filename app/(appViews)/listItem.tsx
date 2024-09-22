@@ -14,12 +14,13 @@ type ListItemProps =
           onClick: (_event: React.MouseEvent<HTMLDivElement>) => void
           pathname?: never
         }
-    ) & { label: string; icon: ReactNode; action?: ReactNode; skeleton?: never })
+    ) & { label: string; icon: ReactNode; action?: ReactNode; skeleton?: never; testid?: string })
   | {
       skeleton: boolean
       label?: never
       icon?: never
       action?: never
+      testid?: never
       href?: never
       onClick?: never
       pathname?: never
@@ -33,6 +34,7 @@ export function ListItem({
   onClick,
   pathname,
   skeleton,
+  testid,
 }: ListItemProps) {
   if (skeleton)
     return (
@@ -59,12 +61,12 @@ export function ListItem({
   )
 
   const ItemAsLink = ({ children }: { children: ReactNode }) => (
-    <Link href={href ?? '/'} className={className}>
+    <Link href={href ?? '/'} className={className} data-testid={testid}>
       {children}
     </Link>
   )
   const ItemAsDiv = ({ children }: { children: ReactNode }) => (
-    <div className={className} onClick={onClick}>
+    <div className={className} onClick={onClick} data-testid={testid}>
       {children}
     </div>
   )
