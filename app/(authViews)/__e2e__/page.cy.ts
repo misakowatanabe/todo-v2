@@ -8,7 +8,7 @@ beforeEach(async () => {
 })
 
 describe('Authentication', () => {
-  it('directs users from sign up view to sign in view, and bring back to sign up view', () => {
+  it('directs users from sign up view to sign in view, and brings back to sign up view', () => {
     cy.findByTestId('sign-up-title', { timeout: 60000 }).contains('Sign up')
     cy.findByTestId('sign-up-switch-link').click({ force: true })
 
@@ -20,7 +20,7 @@ describe('Authentication', () => {
     cy.location('pathname', { timeout: 60000 }).should('eq', '/signup')
   })
 
-  it('signs up, get a welcome todo, signs out and signs in', () => {
+  it('signs up user, creates a welcome todo, signs out and signs in', () => {
     // sign up
     cy.findByTestId('sign-up-input-name').type('Test user')
     cy.findByTestId('sign-up-input-email').type('user@test.com')

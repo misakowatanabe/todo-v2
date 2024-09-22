@@ -1,99 +1,89 @@
-import { clearAuth, clearFirestore } from 'cypress/support/functions'
+import {
+  clearAuth,
+  clearFirestore,
+  createTodo,
+  createUser,
+  signin,
+} from 'cypress/support/functions'
 
-export async function createUser() {
-  const firebaseEmulatorApiKey = Cypress.env('FIREBASE_API_KEY')
-  const authEmulatorPort = Cypress.env('FIREBASE_AUTH_EMULATOR_PORT')
-
-  const res = await fetch(
-    `http://localhost:${authEmulatorPort}/identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseEmulatorApiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: 'user@test.com',
-        password: 'password',
-        returnSecureToken: true,
-      }),
-    },
-  )
-
-  if (!res.ok)
-    throw new Error(
-      'Trouble creating a test user in Autherntication Emulator: ' + (await res.text()),
-    )
-
-  return res
-}
+const email = 'user@test.com'
+const password = 'password'
+const title = 'Test title'
+const body = 'Test body'
+const label = 'Test label'
 
 beforeEach(async () => {
   cy.clearCookies()
   await clearFirestore()
   await clearAuth()
-  await createUser()
-
-  cy.visit('/signin')
+  await createUser(email, password)
+  signin(email, password)
 })
 
-describe('Todo app functions', () => {
-  it('sign in, create a todo, create a label, update a todo, switch view, tick/untick a todo', () => {
-    // sign in
-    cy.findByTestId('sign-in-input-email').type('user@test.com')
-    cy.findByTestId('sign-in-input-password').type('password')
-    cy.findByTestId('sign-in-submit').click()
-    cy.location('pathname', { timeout: 60000 }).should('eq', '/all')
-    cy.reload()
-
-    // create a todo
-    cy.findByTestId('create-todo').click({ force: true })
-    cy.findByTestId('create-todo-title').type('Test title')
-    cy.findByTestId('create-todo-body').type('Test body')
-    cy.findByTestId('create-todo-submit').click({ force: true })
+describe('App functions', () => {
+  it('creates a todo, updates a todo', () => {
+    createTodo(title, body)
 
     // check if the todo has been created
-    cy.findByTestId('table-todo-title').contains('Test title')
-    cy.findByTestId('table-todo-body').contains('Test body')
+    cy.findByTestId('table-todo-title').contains(title)
+    cy.findByTestId('table-todo-body').contains(body)
     cy.findAllByTestId('table-todo').should('have.length', 1)
 
-    // create a label
+    const update = ' :updated!'
+
+    // update todo
+    cy.findByTestId('todo-detail-open').click({ force: true })
+    cy.findByTestId('todo-detail-title').type(update)
+    cy.findByTestId('todo-detail-body').type(update)
+    cy.findByTestId('update-todo-submit').click({ force: true })
+
+    // check if the todo has been updated
+    cy.findByTestId('table-todo-title').contains(title + update)
+    cy.findByTestId('table-todo-body').contains(body + update)
+  })
+
+  it('creates a label, updates a todo with the label, creates a dedicated view for the lable', () => {
     cy.findByTestId('create-label').click({ force: true })
-    cy.findByTestId('create-label-name').type('Test label')
+    cy.findByTestId('create-label-name').type(label)
     cy.findByTestId('create-label-color-raspberry').click({ force: true })
     cy.findByTestId('create-label-submit').click({ force: true })
 
     // check if the label has been created
-    cy.findByTestId('sidemenu-test-label').contains('Test label')
+    cy.findByTestId('sidemenu-test-label').contains(label)
 
-    // update todo
+    createTodo(title, body)
+
+    // update todo by adding the label
     cy.findByTestId('todo-detail-open').click({ force: true })
-    cy.findByTestId('todo-detail-title').type(' :updated!')
-    cy.findByTestId('todo-detail-body').type(' :updated!')
     cy.findByTestId('todo-detail-label-selection').type('{enter}')
     cy.findByTestId('update-todo-submit').click({ force: true })
 
     // check if the todo has been updated
-    cy.findByTestId('table-todo-title').contains('Test title :updated!')
-    cy.findByTestId('table-todo-body').contains('Test body :updated!')
     cy.findByTestId('table-todo-labels').children().should('have.length', 1)
-    cy.findByTestId('table-todo-label-test-label').contains('Test label')
+    cy.findByTestId('table-todo-label-test-label').contains(label)
 
     // check if todo is allocated to a dedicated view based on label
     cy.findByTestId('sidemenu-test-label').click({ force: true })
     cy.location('pathname', { timeout: 60000 }).should('eq', '/label/Test_label')
     cy.reload()
-    cy.findByTestId('table-todo-title').contains('Test title :updated!')
-    cy.findByTestId('table-todo-body').contains('Test body :updated!')
+    cy.findByTestId('table-todo-title').contains(title)
+    cy.findByTestId('table-todo-body').contains(body)
+  })
 
-    cy.findByTestId('sidemenu-all').click({ force: true })
-    cy.location('pathname', { timeout: 60000 }).should('eq', '/all')
-    cy.reload()
+  it('switchs view between table and card', () => {
+    createTodo(title, body)
 
-    // switch from table view to card view
+    // go to card view
     cy.findByTestId('switch-view').click({ force: true })
     cy.findByTestId('card-todo-title').should('be.visible')
     cy.findByTestId('card-todo-body').should('be.visible')
-    cy.findByTestId('card-todo-labels').children().should('have.length', 1)
 
+    // go back to table view
     cy.findByTestId('switch-view').click({ force: true })
+  })
+
+  it('ticks/unticks a todo', () => {
+    createTodo(title, body)
 
     // tick a todo
     cy.findAllByTestId('table-todo').should('have.length', 1)
@@ -107,11 +97,5 @@ describe('Todo app functions', () => {
     cy.findByTestId('completed-table-todo-checkbox').click({ force: true })
     cy.findAllByTestId('table-todo').should('have.length', 1)
     cy.findAllByTestId('completed-table-todo').should('have.length', 0)
-
-    // TODO:
-    // delete a todo
-    // delete all completed todo
-    // change user info
-    // delete user account
   })
 })
