@@ -10,8 +10,8 @@ export default function AuthViewLayout({ children }: { children: React.ReactNode
   )
 
   return (
-    <div className="flex flex-col justify-center items-center bg-gray-100 h-screen relative">
-      <div className="overflow-hidden rounded bg-white shadow-md shadow-gray-200 w-2/5 p-6">
+    <div className="flex flex-col justify-center items-center bg-gray-100 h-screen relative mx-2 sm:mx-0">
+      <div className="overflow-hidden rounded bg-white shadow-md shadow-gray-200 w-full sm:w-2/3 lg:w-2/5 p-2 sm:p-6">
         <div className="flex justify-center">{appIcon}</div>
         {children}
       </div>

@@ -1,13 +1,15 @@
-import { Sidemenu } from './sidemenu'
+import { Nav } from './nav'
 import { GlobalAlert } from './globalAlert'
 
-export default function BaseLayout({ children }: { children: React.ReactNode }) {
+export default function AppViewLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex">
-      <Sidemenu />
-      <div className="mx-8 grow">
-        <GlobalAlert />
-        {children}
+      <Nav />
+      <div className="fixed lg:static top-16 lg:top-0 bottom-0 w-full overflow-y-auto">
+        <div className="mx-2 lg:mx-8">
+          <GlobalAlert />
+          {children}
+        </div>
       </div>
     </div>
   )

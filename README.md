@@ -9,15 +9,15 @@ In addition, users can delete their account and remove their todos data from dat
 
 ## Tech Stack
 
-| Area               | Technology                                       |
-| ------------------ | ------------------------------------------------ |
-| Frontend           | `Next.js (React)` `Storybook` `Tailwind` `Husky` |
-| Backend            | `Firebase Firestore` `Firebase Authentication`   |
-| Testing            | `Jest` `Cypress` `Testing Library`               |
-| Hosting            | `Vercel`                                         |
-| Language           | `Typescript`                                     |
-| UI Design          | `Figma`                                          |
-| Project Management | `Trello`                                         |
+| Area               | Technology                                                         |
+| ------------------ | ------------------------------------------------------------------ |
+| Frontend           | `Next.js (React)` `Storybook` `Tailwind` `Husky`                   |
+| Backend            | `Firebase Firestore` `Firebase Authentication`                     |
+| Testing            | `Jest` `Cypress` `Testing Library` `Firebase Local Emulator Suite` |
+| Hosting            | `Vercel`                                                           |
+| Language           | `Typescript`                                                       |
+| UI Design          | `Figma`                                                            |
+| Project Management | `Trello`                                                           |
 
 ## Features
 

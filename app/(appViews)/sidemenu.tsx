@@ -20,10 +20,12 @@ export function Sidemenu() {
   )
 
   return (
-    <div className="sticky top-0 left-0 overflow-y-auto h-screen w-72 flex flex-col flex-none px-3 bg-[#F9F9F9]">
-      <div className="mb-4 mx-3 flex flex-col items-center">
+    <>
+      <div className="mx-3 flex flex-col items-center">
         {clipIcon}
-        <CreateTodoButton />
+        <div className="hidden sm:block w-full mb-4">
+          <CreateTodoButton />
+        </div>
       </div>
       <div className="my-3">
         <ListItem
@@ -49,6 +51,6 @@ export function Sidemenu() {
         />
         <Logout />
       </div>
-    </div>
+    </>
   )
 }
