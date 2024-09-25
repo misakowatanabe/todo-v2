@@ -3,22 +3,22 @@ import clsx from 'clsx'
 
 type NavigationLayoutProps = {
   sidemenu: React.ReactNode
-  appBar: React.ReactNode
+  mobileAppBar: React.ReactNode
   setIsSideNavOpen: React.Dispatch<React.SetStateAction<boolean>>
   isSideNavOpen: boolean
+  appBar: React.ReactNode
 }
 
 export function NavigationLayout({
   sidemenu,
-  appBar,
+  mobileAppBar,
   setIsSideNavOpen,
   isSideNavOpen,
+  appBar,
 }: NavigationLayoutProps) {
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 block lg:hidden py-2 px-1 z-20 bg-[#F9F9F9]">
-        {appBar}
-      </header>
+      <header className="block lg:hidden z-20 fixed top-0 left-0 right-0">{mobileAppBar}</header>
       <div className="flex">
         <aside
           id="nav-menu-1"
@@ -36,6 +36,9 @@ export function NavigationLayout({
           }`}
           onClick={() => setIsSideNavOpen(false)}
         ></div>
+        <header className="hidden lg:block lg:fixed top-0 left-72 right-0 bg-white px-2 lg:px-8 z-10">
+          {appBar}
+        </header>
       </div>
     </>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import { Label, useAppContext } from 'app/appContext'
+import { View } from 'utils/useLocalStorage'
 import { useState, useTransition } from 'react'
 import { Todo } from 'app/actions'
 import { Chip, ChipColor, ColorVariants } from 'components/Chip'
@@ -10,8 +11,6 @@ import { Button } from 'components/Button'
 import clsx from 'clsx'
 import { tickTodo } from './tickTodo'
 import { untickTodo } from './untickTodo'
-
-export type View = 'table' | 'card'
 
 type TodoListItemProps = {
   todo: Todo

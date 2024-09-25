@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { Todo, deleteCookies, getCookies, setCookies } from 'app/actions'
 import { signOut } from 'firebase/auth'
 import { doc, getDoc, onSnapshot } from 'firebase/firestore'
+import { View, useLocalStorage } from 'utils/useLocalStorage'
 
 export type Label = { label: string; color: string }
 
@@ -17,7 +18,10 @@ type AppContextType = {
   todos: Todo[] | null
   completedTodos: Todo[] | null
   labels: Label[] | null
+  setGlobalError: React.Dispatch<React.SetStateAction<Error>>
   globalError: Error
+  setView: React.Dispatch<React.SetStateAction<View>>
+  view: View
 }
 
 const AppContext = createContext<AppContextType | null>(null)
@@ -30,6 +34,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const [user, setUser] = useState<User | null>(null)
   const [labels, setLabels] = useState<Label[] | null>(null)
   const [globalError, setGlobalError] = useState<Error>(null)
+  const [view, setView] = useLocalStorage<View>('view-mode', 'table')
 
   const router = useRouter()
 
@@ -140,7 +145,16 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     return () => clearInterval(interval)
   }, [user, router])
 
-  const value = { user, todos, completedTodos, labels, globalError }
+  const value = {
+    user,
+    todos,
+    completedTodos,
+    labels,
+    setGlobalError,
+    globalError,
+    setView,
+    view,
+  }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
