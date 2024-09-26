@@ -1,0 +1,108 @@
+import { TodoListItem } from './todoListItem'
+import { Accordion } from 'components/Accordion'
+import { Spinner } from 'components/Spinner'
+import { Alert } from 'components/Alert'
+import clsx from 'clsx'
+import { View } from 'utils/useLocalStorage'
+import { Todo } from 'app/actions'
+
+type Error = string | null
+
+type TodoListLayoutProps = {
+  setError: React.Dispatch<React.SetStateAction<Error>>
+  error: Error
+  todos: Todo[] | null
+  completedTodos: Todo[] | null
+  view: View
+  openTodo: (_todo: Todo) => void
+  openDeleteTodoModal: (_e: React.MouseEvent<HTMLButtonElement, MouseEvent>, _todo: Todo) => void
+} & (
+  | {
+      dragStart: (_e: React.DragEvent<HTMLButtonElement>) => void
+      dragEnter: (_e: React.DragEvent<HTMLDivElement>) => void
+      drop: () => Promise<void>
+    }
+  | {
+      dragStart?: never
+      dragEnter?: never
+      drop?: never
+    }
+)
+
+function TodosWrapper({ children, view }: { children: React.ReactNode; view: View }) {
+  return (
+    <div
+      className={clsx({
+        'grid sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4': view === 'card',
+      })}
+    >
+      {children}
+    </div>
+  )
+}
+
+export function TodoListLayout({
+  setError,
+  error,
+  todos,
+  completedTodos,
+  view,
+  dragStart,
+  dragEnter,
+  drop,
+  openTodo,
+  openDeleteTodoModal,
+}: TodoListLayoutProps) {
+  return (
+    <>
+      <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
+      {todos == null || completedTodos == null ? (
+        <div className="flex justify-center items-center h-screen">
+          <Spinner />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {todos.length === 0 ? (
+            <div className="text-gray-600">No active tasks.</div>
+          ) : (
+            <TodosWrapper view={view}>
+              {todos.map((todo) => {
+                return (
+                  <TodoListItem
+                    key={todo.todoId}
+                    todo={todo}
+                    dragStart={dragStart}
+                    dragEnter={dragEnter}
+                    drop={drop}
+                    openTodo={openTodo}
+                    openDeleteTodoModal={openDeleteTodoModal}
+                    view={view}
+                  />
+                )
+              })}
+            </TodosWrapper>
+          )}
+          <Accordion label="Completed" itemLength={completedTodos.length} testid="open-completed">
+            {completedTodos.length === 0 ? (
+              <div className="text-gray-600">No completed tasks.</div>
+            ) : (
+              <TodosWrapper view={view}>
+                {completedTodos.map((todo) => {
+                  return (
+                    <TodoListItem
+                      key={todo.todoId}
+                      todo={todo}
+                      openTodo={openTodo}
+                      openDeleteTodoModal={openDeleteTodoModal}
+                      view={view}
+                    />
+                  )
+                })}
+              </TodosWrapper>
+            )}
+          </Accordion>
+        </div>
+      )}
+    </>
+  )
+}

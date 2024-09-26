@@ -5,7 +5,7 @@ export default function AppViewLayout({ children }: { children: React.ReactNode 
   return (
     <div className="flex">
       <Nav />
-      <div className="fixed top-16 lg:top-24 left-0 lg:left-72 right-0 bottom-0 overflow-y-auto">
+      <div className="fixed top-16 lg:top-24 left-0 lg:left-72 right-0 bottom-0 pt-2 lg:pt-1 overflow-y-auto">
         <div className="mx-2 lg:mx-8">
           <GlobalAlert />
           {children}

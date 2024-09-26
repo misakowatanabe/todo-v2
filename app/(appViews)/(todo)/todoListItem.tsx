@@ -17,18 +17,10 @@ type TodoListItemProps = {
   openTodo: (_todo: Todo) => void
   openDeleteTodoModal: (_e: React.MouseEvent<HTMLButtonElement, MouseEvent>, _todo: Todo) => void
   view: View
-} & (
-  | {
-      dragStart: (_e: React.DragEvent<HTMLButtonElement>) => void
-      dragEnter: (_e: React.DragEvent<HTMLDivElement>) => void
-      drop: () => Promise<void>
-    }
-  | {
-      dragStart?: never
-      dragEnter?: never
-      drop?: never
-    }
-)
+  dragStart?: (_e: React.DragEvent<HTMLButtonElement>) => void
+  dragEnter?: (_e: React.DragEvent<HTMLDivElement>) => void
+  drop?: () => Promise<void>
+}
 
 export function getLabelColor(label: string, availableLabels: Label[] | null) {
   if (availableLabels == null) return 'default'
@@ -194,7 +186,7 @@ export function TodoListItem({
       onDragEnd={(e) => dragStart && e.preventDefault()}
       onDrop={dragStart && drop}
       className={clsx(
-        'group flex items-start gap-0.5 w-80 h-80 p-3 rounded-lg shadow-md',
+        'group flex items-start gap-0.5 w-full h-80 p-3 rounded-lg shadow-md',
         todo.labels
           ? cardBgColor[getLabelColor(todo.labels[0], availableLabels)]
           : cardBgColor.default,
