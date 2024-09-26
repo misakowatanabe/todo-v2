@@ -12,6 +12,7 @@ import { Heading } from 'components/Heading'
 import { DropdownMenu, MenuItem } from 'components/DropdownMenu'
 import { deleteCompletedTodos } from 'app/(appViews)/(todo)/deleteCompletedTodos'
 import { ButtonSwitcher } from 'components/ButtonSwitcher'
+import { Fab } from 'components/Fab'
 
 export function Nav() {
   const pathname = usePathname()
@@ -127,12 +128,17 @@ export function Nav() {
   )
 
   return (
-    <NavigationLayout
-      sidemenu={<Sidemenu />}
-      setIsSideNavOpen={setIsSideNavOpen}
-      isSideNavOpen={isSideNavOpen}
-      mobileAppBar={mobileAppBar}
-      appBar={appBar}
-    />
+    <>
+      <NavigationLayout
+        sidemenu={<Sidemenu />}
+        setIsSideNavOpen={setIsSideNavOpen}
+        isSideNavOpen={isSideNavOpen}
+        mobileAppBar={mobileAppBar}
+        appBar={appBar}
+      />
+      <div className="lg:hidden">
+        <Fab icon={<Icon.Plus />} testid="create-todo" />
+      </div>
+    </>
   )
 }
