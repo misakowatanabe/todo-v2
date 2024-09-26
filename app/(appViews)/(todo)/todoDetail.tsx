@@ -11,6 +11,7 @@ import { Textarea } from 'components/Textarea'
 import { updateTodo } from './updateTodo'
 import { Alert } from 'components/Alert'
 import { Icon } from 'components/icons'
+import { ModalFull } from 'components/ModalFull'
 
 type TodoDetailProps = {
   isOpen: boolean
@@ -85,56 +86,83 @@ export function TodoDetail({
     setLabels((prev) => prev.filter((el) => el !== item))
   }
 
+  const contents = (
+    <div className="flex flex-col gap-6">
+      <Alert severity="critical" message={error} onClose={() => setError(null)} />
+      <form
+        autoComplete="off"
+        action={onSubmitTodo}
+        className="flex flex-col gap-6"
+        id="form-task"
+        ref={formRef}
+      >
+        <Textarea
+          size="large"
+          name="title"
+          placeholder="Task title"
+          disabled={isPending}
+          rows={1}
+          defaultValue={selectedTodo?.title}
+          testid="todo-detail-title"
+        />
+        <Textarea
+          name="body"
+          placeholder="Add description..."
+          defaultValue={selectedTodo?.body}
+          disabled={isPending}
+          rows={6}
+          testid="todo-detail-body"
+        />
+      </form>
+      <div className="flex flex-col gap-4">
+        <div className="text-sm text-gray-500">Labels</div>
+        <div className="flex flex-wrap gap-2">
+          {selectedLabels.map((el, idx) => (
+            <Chip
+              key={idx}
+              label={el.label}
+              onRemove={() => onRemove(el.label)}
+              color={el.color as ChipColor}
+            />
+          ))}
+          <Dropdown
+            label="Add label"
+            items={nonSelectedLabels}
+            setItems={setLabels}
+            icon={<Icon.Plus size="small" />}
+            testid="todo-detail-label-selection"
+          />
+        </div>
+      </div>
+    </div>
+  )
+
   return (
-    <Drawer isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div className="my-8">
-        <div className="flex flex-col gap-6">
-          <Alert severity="critical" message={error} onClose={() => setError(null)} />
-          <form
-            autoComplete="off"
-            action={onSubmitTodo}
-            className="flex flex-col gap-6"
-            id="form-task"
-            ref={formRef}
-          >
-            <Textarea
-              size="large"
-              name="title"
-              placeholder="Task title"
-              disabled={isPending}
-              rows={1}
-              defaultValue={selectedTodo?.title}
-              testid="todo-detail-title"
-            />
-            <Textarea
-              name="body"
-              placeholder="Add description..."
-              defaultValue={selectedTodo?.body}
-              disabled={isPending}
-              rows={6}
-              testid="todo-detail-body"
-            />
-          </form>
-          <div className="flex flex-col gap-4">
-            <div className="text-sm text-gray-500">Labels</div>
-            <div className="flex flex-wrap gap-2">
-              {selectedLabels.map((el, idx) => (
-                <Chip
-                  key={idx}
-                  label={el.label}
-                  onRemove={() => onRemove(el.label)}
-                  color={el.color as ChipColor}
-                />
-              ))}
-              <Dropdown
-                label="Add label"
-                items={nonSelectedLabels}
-                setItems={setLabels}
-                icon={<Icon.Plus size="small" />}
-                testid="todo-detail-label-selection"
+    <>
+      <ModalFull
+        isShowing={isOpen}
+        setIsShowing={setIsOpen}
+        actions={
+          <>
+            {selectedTodo && !selectedTodo.completed && (
+              <Button
+                type="submit"
+                label={isPending ? 'Saving...' : 'Save'}
+                disabled={isPending}
+                form="form-task"
+                testid="update-todo-submit"
+                style="text"
               />
-            </div>
-          </div>
+            )}
+          </>
+        }
+        className="lg:hidden"
+      >
+        {contents}
+      </ModalFull>
+      <Drawer isOpen={isOpen} setIsOpen={setIsOpen} className="hidden lg:block">
+        <div className="my-8 flex flex-col gap-6">
+          {contents}
           <div className="flex gap-4">
             {selectedTodo && !selectedTodo.completed && (
               <Button
@@ -154,7 +182,7 @@ export function TodoDetail({
             />
           </div>
         </div>
-      </div>
-    </Drawer>
+      </Drawer>
+    </>
   )
 }

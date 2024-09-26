@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { Button } from './Button'
 import { Icon } from './icons'
+import clsx from 'clsx'
 
 type ModalFullProps = {
   openButton?: ReactNode
@@ -10,6 +11,7 @@ type ModalFullProps = {
   isShowing: boolean
   closeable?: boolean
   children: ReactNode
+  className?: string
 }
 
 export function ModalFull({
@@ -19,6 +21,7 @@ export function ModalFull({
   isShowing,
   closeable = true,
   children,
+  className,
 }: ModalFullProps) {
   useEffect(() => {
     let html = document.querySelector('html')
@@ -82,7 +85,10 @@ export function ModalFull({
       {isShowing && typeof document !== 'undefined'
         ? ReactDOM.createPortal(
             <div
-              className="fixed top-0 bottom-0 left-0 right-0 z-20 flex flex-col h-screen w-screen bg-white"
+              className={clsx(
+                'fixed top-0 bottom-0 left-0 right-0 z-20 flex flex-col h-screen w-screen bg-white',
+                className,
+              )}
               aria-labelledby="header-4a content-4a"
               aria-modal="true"
               tabIndex={-1}

@@ -6,16 +6,15 @@ type FabProps = {
   size?: 'small' | 'medium' | 'large'
   onClick?: (_event: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
-  className?: string
   testid?: string
 } & React.ButtonHTMLAttributes<HTMLButtonElement>
 
 export const Fab = forwardRef<HTMLButtonElement, FabProps>(function Fab(
-  { icon, size = 'medium', onClick, disabled, className, testid }: FabProps,
+  { icon, size = 'medium', onClick, disabled, testid }: FabProps,
   ref,
 ) {
   return (
-    <div className={clsx('fixed bottom-8 right-8 z-10', className)}>
+    <div className="fixed bottom-8 right-8 z-10">
       <button
         className={clsx(
           'relative z-50 inline-flex items-center justify-center self-center rounded-full transition duration-100 focus-visible:outline-gray-500',
