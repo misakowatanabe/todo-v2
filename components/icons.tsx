@@ -205,4 +205,7 @@ export const Icon = {
       {...props}
     />
   ),
+  ArrowLeft: ({ ...props }: IconProps) => (
+    <IconBase path={<path d="M19 12H6M12 5l-7 7 7 7" />} {...props} />
+  ),
 }

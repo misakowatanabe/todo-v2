@@ -12,12 +12,15 @@ import { Todo } from 'app/actions'
 import { createTodo } from 'app/createTodo'
 import { Alert } from 'components/Alert'
 import { Icon } from 'components/icons'
+import { Fab } from 'components/Fab'
+import { ModalFull } from 'components/ModalFull'
 
-type SubmitProps = { isPending: boolean }
+type SubmitProps = { isPending: boolean; isMobile: boolean }
 
-function Submit({ isPending }: SubmitProps) {
+function Submit({ isPending, isMobile }: SubmitProps) {
   return (
     <Button
+      style={isMobile ? 'text' : 'primary'}
       type="submit"
       label={isPending ? 'Creating...' : 'Create'}
       disabled={isPending}
@@ -27,7 +30,9 @@ function Submit({ isPending }: SubmitProps) {
   )
 }
 
-export function CreateTodoButton() {
+type CreateTodoButtonProps = { isMobile?: boolean }
+
+export function CreateTodoButton({ isMobile = false }: CreateTodoButtonProps) {
   const { labels: availableLabels, user } = useAppContext()
   const [error, setError] = useState<null | string>(null)
   const titleInputId = useId()
@@ -97,72 +102,88 @@ export function CreateTodoButton() {
     return selected
   }, [availableLabels, labels])
 
-  const openButton = (
-    <Button
-      onClick={() => setIsShowing(true)}
-      label="New task"
-      icon={<Icon.Plus />}
-      style="secondary"
-      size="large"
-      className="w-full"
-      testid="create-todo"
-    />
+  const contents = (
+    <div className="flex flex-col gap-6">
+      <Alert severity="critical" message={error} onClose={() => setError(null)} />
+      <form
+        autoComplete="off"
+        action={onSubmitTodo}
+        className="flex flex-col gap-6"
+        id="form-new-task"
+      >
+        <Textarea
+          size="large"
+          id={titleInputId}
+          name="title"
+          placeholder="Task title"
+          disabled={isPending}
+          rows={1}
+          testid="create-todo-title"
+        />
+        <Textarea
+          id={bodyInputId}
+          name="body"
+          placeholder="Add description..."
+          disabled={isPending}
+          rows={6}
+          testid="create-todo-body"
+        />
+      </form>
+      <div className="flex flex-col gap-4">
+        <div className="text-sm text-gray-500">Labels</div>
+        <div className="flex gap-2">
+          {selectedLabels.map((el, idx) => (
+            <Chip
+              key={idx}
+              label={el.label}
+              onRemove={() => onRemove(el.label)}
+              color={el.color as ChipColor}
+            />
+          ))}
+          <Dropdown
+            label="Add label"
+            items={nonSelectedLabels}
+            setItems={setLabels}
+            icon={<Icon.Plus size="small" />}
+          />
+        </div>
+      </div>
+    </div>
   )
+
+  if (isMobile)
+    return (
+      <ModalFull
+        openButton={
+          <Fab icon={<Icon.Plus />} testid="create-todo" onClick={() => setIsShowing(true)} />
+        }
+        isShowing={isShowing}
+        setIsShowing={setIsShowing}
+        actions={<Submit isPending={isPending} isMobile={isMobile} />}
+      >
+        {contents}
+      </ModalFull>
+    )
 
   return (
     <Modal
       title="New task"
       setIsShowing={setIsShowing}
       isShowing={isShowing}
-      openButton={openButton}
-      okButton={<Submit isPending={isPending} />}
+      openButton={
+        <Button
+          onClick={() => setIsShowing(true)}
+          label="New task"
+          icon={<Icon.Plus />}
+          style="secondary"
+          size="large"
+          className="w-full"
+          testid="create-todo"
+        />
+      }
+      okButton={<Submit isPending={isPending} isMobile={isMobile} />}
     >
-      <div className="flex flex-col gap-6">
-        <Alert severity="critical" message={error} onClose={() => setError(null)} />
-        <form
-          autoComplete="off"
-          action={onSubmitTodo}
-          className="flex flex-col gap-6"
-          id="form-new-task"
-        >
-          <Textarea
-            size="large"
-            id={titleInputId}
-            name="title"
-            placeholder="Task title"
-            disabled={isPending}
-            rows={1}
-            testid="create-todo-title"
-          />
-          <Textarea
-            id={bodyInputId}
-            name="body"
-            placeholder="Add description..."
-            disabled={isPending}
-            rows={6}
-            testid="create-todo-body"
-          />
-        </form>
-        <div className="flex flex-col gap-4">
-          <div className="text-sm text-gray-500">Labels</div>
-          <div className="flex gap-2">
-            {selectedLabels.map((el, idx) => (
-              <Chip
-                key={idx}
-                label={el.label}
-                onRemove={() => onRemove(el.label)}
-                color={el.color as ChipColor}
-              />
-            ))}
-            <Dropdown
-              label="Add label"
-              items={nonSelectedLabels}
-              setItems={setLabels}
-              icon={<Icon.Plus size="small" />}
-            />
-          </div>
-        </div>
-      </div>
+      {contents}
     </Modal>
   )
 }

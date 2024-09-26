@@ -23,7 +23,7 @@ export function Sidemenu() {
     <>
       <div className="mx-3 flex flex-col items-center">
         {clipIcon}
-        <div className="hidden sm:block w-full mb-4">
+        <div className="hidden lg:block w-full mb-4">
           <CreateTodoButton />
         </div>
       </div>
