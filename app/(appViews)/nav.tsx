@@ -8,7 +8,7 @@ import { Icon } from 'components/icons'
 import { Button } from 'components/Button'
 import { usePathname } from 'next/navigation'
 import { useAppContext } from 'app/appContext'
-import { Heading } from 'components/Heading'
+import { Header } from 'components/Header'
 import { DropdownMenu, MenuItem } from 'components/DropdownMenu'
 import { deleteCompletedTodos } from 'app/(appViews)/(todo)/deleteCompletedTodos'
 import { ButtonSwitcher } from 'components/ButtonSwitcher'
@@ -81,7 +81,7 @@ export function Nav() {
     </div>
   )
 
-  const appBar = <Heading title={title ?? ''} action={appBarActions} />
+  const appBar = <Header title={title ?? ''} action={appBarActions} />
 
   const mobileAppBarMenuItems: MenuItem[] = []
 
