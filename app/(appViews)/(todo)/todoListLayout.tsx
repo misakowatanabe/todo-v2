@@ -8,6 +8,8 @@ import { Todo } from 'app/actions'
 
 type TodosWrapperProps = { children: React.ReactNode; view: View }
 
+type NoTodosWrapperProps = { children: React.ReactNode; view: View; type: TodoType }
+
 type Error = string | null
 
 type TodoListLayoutProps = {
@@ -44,6 +46,20 @@ function TodosWrapper({ children, view }: TodosWrapperProps) {
   )
 }
 
+function NoTodoWrapper({ children, view, type }: NoTodosWrapperProps) {
+  return (
+    <div
+      className={clsx(
+        'text-gray-600',
+        type === 'all' && { 'pl-7': view === 'table', 'pl-4': view === 'card' },
+        type === 'label' && { 'pl-3': view === 'table', 'pl-4': view === 'card' },
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+
 export function TodoListLayout({
   setError,
   error,
@@ -65,7 +81,12 @@ export function TodoListLayout({
     )
 
   const Todos = () => {
-    if (todos.length === 0) return <div className="text-gray-600">No active tasks.</div>
+    if (todos.length === 0)
+      return (
+        <NoTodoWrapper view={view} type={type}>
+          No active tasks.
+        </NoTodoWrapper>
+      )
 
     return (
       <TodosWrapper view={view}>
@@ -89,7 +110,12 @@ export function TodoListLayout({
   }
 
   const CompletedTodos = () => {
-    if (completedTodos.length === 0) return <div className="text-gray-600">No completed tasks.</div>
+    if (completedTodos.length === 0)
+      return (
+        <NoTodoWrapper view={view} type={type}>
+          No completed tasks.
+        </NoTodoWrapper>
+      )
 
     return (
       <TodosWrapper view={view}>
