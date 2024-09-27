@@ -93,7 +93,7 @@ export function Profile() {
 
       setError(null)
     } catch (error) {
-      setError(error instanceof Error ? error.message : String(error))
+      setError('Something happened! Could not re-authenticate you.')
     }
   }
 

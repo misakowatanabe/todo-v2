@@ -47,7 +47,7 @@ export function AccountDeletion() {
       const res = await deleteTodos(user)
 
       if (!res.ok) {
-        setError('Something happend! Could not delete your account.')
+        setError(res.error)
 
         // do not delete user account unless todos data has been deleted.
         return

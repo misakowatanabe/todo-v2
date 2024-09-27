@@ -50,7 +50,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         let todoListActive = []
         let todoListCompleted = []
 
-        // Skip filtering active todos unless there is any todo
+        // skip filtering active todos unless there is any todo
         if (todosData) {
           todoListActive = Object.values(todosData).filter((el) => {
             return !el.completed
@@ -61,7 +61,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
           })
         }
 
-        // Skip ordering active todos unless there is order data
+        // skip ordering active todos unless there is order data
         if (orderData) {
           const activeOrder = orderData.active
           todoListActive.sort((a, b) => {
@@ -77,9 +77,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
         setTodos(todoListActive)
         setCompletedTodos(todoListCompleted)
       },
-      (err) => {
-        // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
-        console.error(err)
+      (_error) => {
+        // a listen may occasionally fail — for example, due to security permissions, or an invalid query
+        setGlobalError('Something happened! Could not remove todos listener.')
       },
     )
 
@@ -94,9 +94,9 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
         setLabels(labelsArray)
       },
-      (err) => {
-        // A listen may occasionally fail — for example, due to security permissions, or if you tried to listen on an invalid query
-        console.error(err)
+      (_error) => {
+        // a listen may occasionally fail — for example, due to security permissions, or an invalid query
+        setGlobalError('Something happened! Could not remove labels listener.')
       },
     )
 
@@ -130,15 +130,14 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
 
       if (userLoggedIn) return
 
-      // Sign out user either when user_logged_in cookie expired or when the cookie manually got deleted
+      // sign out user either when user_logged_in cookie expired or when the cookie manually got deleted
       try {
         await signOut(auth)
         router.push('/signin')
       } catch (error) {
-        // Set login status cookie to keep the user inside the app routes when sign out failed
+        // set login status cookie to keep the user inside the app routes when sign out failed
         await setCookies('user_logged_in')
         setGlobalError('Sign out has failed')
-        console.error('Error signing out: ', error instanceof Error ? error.message : String(error))
       }
     }, 5000)
 

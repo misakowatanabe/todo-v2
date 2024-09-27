@@ -32,10 +32,10 @@ export async function createLabel(uid: User['uid'], labelName: string, color: Ch
         },
       })
     } else {
-      throw new Error('This label name already exists.')
+      return { ok: false, error: 'This label name already exists.' }
     }
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    return { ok: false, error: 'Something happened! Could not create a label.' }
   }
 
   return { ok: true, error: '' }

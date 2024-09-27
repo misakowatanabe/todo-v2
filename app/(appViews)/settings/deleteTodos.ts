@@ -18,7 +18,7 @@ export async function deleteTodos(user: User) {
       await deleteDoc(doc(db, user.uid, 'todos'))
     }
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    return { ok: false, error: 'Something happened! Could not delete all of your todos data.' }
   }
 
   return { ok: true, error: '' }

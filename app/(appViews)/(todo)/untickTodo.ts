@@ -4,24 +4,6 @@ import { User } from 'firebase/auth/web-extension'
 import { Todo } from 'app/actions'
 
 export async function untickTodo(uid: User['uid'], todoId: Pick<Todo, 'todoId'>) {
-  untickTodo: try {
-    const todos = await getDoc(doc(db, uid, 'todos'))
-    const todosData = todos.data()
-
-    if (!todosData) {
-      break untickTodo
-    }
-
-    const id = todoId
-    const completed = `${id}.completed`
-
-    await updateDoc(doc(db, uid, 'todos'), {
-      [completed]: false,
-    })
-  } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
-  }
-
   modifyOrder: try {
     const order = await getDoc(doc(db, uid, 'order'))
     const orderData = order.data()
@@ -66,7 +48,26 @@ export async function untickTodo(uid: User['uid'], todoId: Pick<Todo, 'todoId'>)
       active: [todoId],
     })
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    return { ok: false, error: 'Something happened! Could not untick the selected todo.' }
+  }
+
+  // User can try unticking a todo again from UI even if this function failed.
+  untickTodo: try {
+    const todos = await getDoc(doc(db, uid, 'todos'))
+    const todosData = todos.data()
+
+    if (!todosData) {
+      break untickTodo
+    }
+
+    const id = todoId
+    const completed = `${id}.completed`
+
+    await updateDoc(doc(db, uid, 'todos'), {
+      [completed]: false,
+    })
+  } catch (err) {
+    return { ok: false, error: 'Something happened! Could not untick the selected todo.' }
   }
 
   return { ok: true, error: '' }

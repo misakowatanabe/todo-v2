@@ -3,15 +3,6 @@ import { arrayRemove, arrayUnion, deleteField, doc, getDoc, updateDoc } from 'fi
 import { User } from 'firebase/auth/web-extension'
 
 export async function deleteTodo(uid: User['uid'], todoId: string, completed: boolean) {
-  // Remove the selected todo (ID) field from the todos doc
-  try {
-    await updateDoc(doc(db, uid, 'todos'), {
-      [todoId]: deleteField(),
-    })
-  } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
-  }
-
   // Remove the todo ID from the order doc
   try {
     const order = await getDoc(doc(db, uid, 'order'))
@@ -35,7 +26,17 @@ export async function deleteTodo(uid: User['uid'], todoId: string, completed: bo
       })
     }
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    return { ok: false, error: 'Something happened! Could not delete the selected todo.' }
+  }
+
+  // Remove the selected todo (ID) field from the todos doc
+  // User can try deleting a todo again from UI even if this function failed.
+  try {
+    await updateDoc(doc(db, uid, 'todos'), {
+      [todoId]: deleteField(),
+    })
+  } catch (err) {
+    return { ok: false, error: 'Something happened! Could not delete the selected todo.' }
   }
 
   return { ok: true, error: '' }
