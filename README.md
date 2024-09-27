@@ -31,6 +31,7 @@ In addition, users can delete their account and remove their todos data from dat
 - Deployment of the app with Vercel. Environment variables are safely set in the Vercel with sensitive flags.
 - Pre-commit hook ensuring code quality and consistency using Husky.
 - Global state management using Context API from React. The managed contents include user authentication, user’s todos, labels and the order of todos.
+- Responsive design implemented from mobile to desktop view.
 - Non-dependent, fully customizable UI component library of 14+ components (atoms to molecules levels from the atomic design methodology) using Tailwind. No external component library is used to reduce dependency and unexpected behavior.
 - Robust visual tests implemented for each UI component with Storybook for better stability and maintainability.
 - Enhanced accessibility by introducing keyboard navigation/shortcut and focus ring ([`:focus-visible`](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible)) in the UI components, and by following recommendations outlined in WCAG 2.0 as much as possible in color contrast, text size, page layout etc.
