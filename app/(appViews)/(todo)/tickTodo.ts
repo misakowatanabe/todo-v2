@@ -4,24 +4,6 @@ import { User } from 'firebase/auth/web-extension'
 import { Todo } from 'app/actions'
 
 export async function tickTodo(uid: User['uid'], todoId: Pick<Todo, 'todoId'>) {
-  tickTodo: try {
-    const todos = await getDoc(doc(db, uid, 'todos'))
-    const todosData = todos.data()
-
-    if (!todosData) {
-      break tickTodo
-    }
-
-    const id = todoId
-    const completed = `${id}.completed`
-
-    await updateDoc(doc(db, uid, 'todos'), {
-      [completed]: true,
-    })
-  } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
-  }
-
   modifyOrder: try {
     const order = await getDoc(doc(db, uid, 'order'))
     const orderData = order.data()
@@ -66,7 +48,26 @@ export async function tickTodo(uid: User['uid'], todoId: Pick<Todo, 'todoId'>) {
       completed: [todoId],
     })
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    return { ok: false, error: 'Something happened! Could not tick the selected todo.' }
+  }
+
+  // User can try ticking a todo again from UI even if this function failed.
+  tickTodo: try {
+    const todos = await getDoc(doc(db, uid, 'todos'))
+    const todosData = todos.data()
+
+    if (!todosData) {
+      break tickTodo
+    }
+
+    const id = todoId
+    const completed = `${id}.completed`
+
+    await updateDoc(doc(db, uid, 'todos'), {
+      [completed]: true,
+    })
+  } catch (err) {
+    return { ok: false, error: 'Something happened! Could not tick the selected todo.' }
   }
 
   return { ok: true, error: '' }

@@ -1,10 +1,8 @@
 import { db } from 'app/firebase'
 import { deleteDoc, doc, getDoc } from 'firebase/firestore'
 import { User } from 'firebase/auth/web-extension'
-import { deleteUser } from 'firebase/auth'
 
-export async function deleteAccount(user: User) {
-  // delete user-specific collection
+export async function deleteTodos(user: User) {
   try {
     const orderDoc = await getDoc(doc(db, user.uid, 'order'))
     const labelsDoc = await getDoc(doc(db, user.uid, 'labels'))
@@ -20,14 +18,7 @@ export async function deleteAccount(user: User) {
       await deleteDoc(doc(db, user.uid, 'todos'))
     }
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
-  }
-
-  // delete user account
-  try {
-    await deleteUser(user)
-  } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    return { ok: false, error: 'Something happened! Could not delete all of your todos data.' }
   }
 
   return { ok: true, error: '' }

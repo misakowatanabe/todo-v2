@@ -23,10 +23,11 @@ export async function removeLabel(uid: User['uid'], label: string) {
       })
     })
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    return { ok: false, error: 'Something happened! Could not delete a label.' }
   }
 
   // remove the label field from the labels doc
+  // User can try deleting the selected label again from UI even if this function failed.
   try {
     const fieldName = label.replace(/ /g, '_').toLowerCase()
 
@@ -34,7 +35,7 @@ export async function removeLabel(uid: User['uid'], label: string) {
       [fieldName]: deleteField(),
     })
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    return { ok: false, error: 'Something happened! Could not delete a label.' }
   }
 
   return { ok: true, error: '' }

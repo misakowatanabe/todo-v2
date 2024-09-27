@@ -40,7 +40,7 @@ export async function updateTodo(uid: User['uid'], todo: Todo) {
 
     await updateDoc(doc(db, uid, 'todos'), todoObject)
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    return { ok: false, error: 'Something happened! Could not update the todo.' }
   }
   return { ok: true, error: '' }
 }

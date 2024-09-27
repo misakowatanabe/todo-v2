@@ -30,7 +30,7 @@ export function Form() {
         await setCookies('user_logged_in')
         router.push('/all')
       } catch (error) {
-        setError(error instanceof Error ? error.message : String(error))
+        setError('Error! Please check your password and email address.')
       }
     })
   }

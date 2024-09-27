@@ -1,6 +1,7 @@
 'use client'
 
 import { Label, useAppContext } from 'app/appContext'
+import { View } from 'utils/useLocalStorage'
 import { useState, useTransition } from 'react'
 import { Todo } from 'app/actions'
 import { Chip, ChipColor, ColorVariants } from 'components/Chip'
@@ -11,25 +12,18 @@ import clsx from 'clsx'
 import { tickTodo } from './tickTodo'
 import { untickTodo } from './untickTodo'
 
-export type View = 'table' | 'card'
+export type TodoType = 'all' | 'label'
 
 type TodoListItemProps = {
   todo: Todo
   openTodo: (_todo: Todo) => void
   openDeleteTodoModal: (_e: React.MouseEvent<HTMLButtonElement, MouseEvent>, _todo: Todo) => void
   view: View
-} & (
-  | {
-      dragStart: (_e: React.DragEvent<HTMLButtonElement>) => void
-      dragEnter: (_e: React.DragEvent<HTMLDivElement>) => void
-      drop: () => Promise<void>
-    }
-  | {
-      dragStart?: never
-      dragEnter?: never
-      drop?: never
-    }
-)
+  dragStart?: (_e: React.DragEvent<HTMLButtonElement>) => void
+  dragEnter?: (_e: React.DragEvent<HTMLDivElement>) => void
+  drop?: () => Promise<void>
+  type: TodoType
+}
 
 export function getLabelColor(label: string, availableLabels: Label[] | null) {
   if (availableLabels == null) return 'default'
@@ -45,6 +39,7 @@ export function TodoListItem({
   openTodo,
   openDeleteTodoModal,
   view,
+  type,
 }: TodoListItemProps) {
   const { labels: availableLabels, user } = useAppContext()
   // TODO: show this error as snackbar or global error
@@ -116,7 +111,7 @@ export function TodoListItem({
               onDragStart={(e) => dragStart?.(e)}
               draggable={true}
               hover={false}
-              className="absolute left-0 group-hover:block hidden mt-1 cursor-grab"
+              className="absolute -left-1 mt-1 cursor-grab text-gray-400"
             />
           )}
           <Checkbox
@@ -127,7 +122,7 @@ export function TodoListItem({
             }
             checked={todo.completed}
             id={todo.todoId}
-            className="ml-5"
+            className={clsx(type === 'all' ? 'ml-4' : '')}
             testid={todo.completed ? `completed-table-todo-checkbox` : `table-todo-checkbox`}
           />
         </div>
@@ -195,7 +190,7 @@ export function TodoListItem({
       onDragEnd={(e) => dragStart && e.preventDefault()}
       onDrop={dragStart && drop}
       className={clsx(
-        'group flex items-start gap-0.5 w-80 h-80 p-3 rounded-lg shadow-md',
+        'group flex items-start gap-0.5 w-full h-48 lg:h-80 p-3 rounded-lg shadow-md',
         todo.labels
           ? cardBgColor[getLabelColor(todo.labels[0], availableLabels)]
           : cardBgColor.default,
@@ -254,7 +249,7 @@ export function TodoListItem({
           {todo.body && (
             <p
               className={clsx(
-                'line-clamp-[9]',
+                'line-clamp-[4] lg:line-clamp-[9]',
                 todo.completed ? 'line-through text-gray-400' : 'text-gray-600',
               )}
               data-testid="card-todo-body"

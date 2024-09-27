@@ -1,9 +1,9 @@
-type HeadingProps = {
+type HeaderProps = {
   title: string
   action?: React.ReactNode
 }
 
-export function Heading({ title, action }: HeadingProps) {
+export function Header({ title, action }: HeaderProps) {
   return (
     <div className="flex justify-between items-center my-6 h-12">
       <div className="text-4xl font-bold text-black">{title}</div>

@@ -1,9 +1,10 @@
 'use client'
 
 import { useAppContext } from 'app/appContext'
+import { Alert } from 'components/Alert'
 
 export function GlobalAlert() {
-  const { globalError } = useAppContext()
+  const { globalError, setGlobalError } = useAppContext()
 
-  return <div className="text-red-700">{globalError}</div>
+  return <Alert severity="critical" message={globalError} onClose={() => setGlobalError(null)} />
 }

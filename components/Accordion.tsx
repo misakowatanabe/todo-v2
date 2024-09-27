@@ -6,18 +6,18 @@ import { Icon } from 'components/icons'
 type AccordionProps = {
   children: React.ReactNode
   label: string
-  itemLength?: number
   testid?: string
+  className?: string
 }
 
-export function Accordion({ children, label, itemLength, testid }: AccordionProps) {
+export function Accordion({ children, label, testid, className }: AccordionProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="py-2">
-      <h2>
+    <div>
+      <h2 className={clsx('py-2', className)}>
         <button
-          className="flex items-center gap-1 w-full text-left text-gray-500 pb-2"
+          className="flex items-center gap-1 w-full text-left text-gray-500"
           onClick={(e) => {
             e.preventDefault()
             setIsOpen(!isOpen)
@@ -26,14 +26,15 @@ export function Accordion({ children, label, itemLength, testid }: AccordionProp
           aria-controls="basic-accordion"
           data-testid={testid}
         >
-          <span className="font-semibold">{label}</span>
-          {itemLength != null && <span className="font-medium">{`(${itemLength})`}</span>}
-          <Icon.ChevronUp
-            size={{ width: 24, height: 24 }}
-            className={clsx('transform origin-center transition duration-100 ease-out', {
-              '!rotate-180': isOpen,
-            })}
-          />
+          <div className="w-10 h-10 flex justify-center items-center">
+            <Icon.ChevronUp
+              size={{ width: 24, height: 24 }}
+              className={clsx('transform origin-center transition duration-100 ease-out', {
+                '!rotate-180': isOpen,
+              })}
+            />
+          </div>
+          <span>{label}</span>
         </button>
       </h2>
       <div

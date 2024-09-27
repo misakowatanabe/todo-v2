@@ -38,7 +38,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     <button
       type={type}
       className={clsx(
-        'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium rounded-full cursor-pointer leading-none transition duration-100',
+        'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium rounded-full leading-none transition duration-100',
         'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500',
         !disabled && {
           'text-white bg-black': style === 'primary',
@@ -51,10 +51,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
           'hover:bg-red-300': style === 'critical' && hover,
         },
         disabled && {
-          'text-white bg-[#b3b3b3]': style === 'primary',
-          'text-[#b3b3b3] outline outline-offset-0 outline-[#c8c8c8] bg-transparent':
+          'text-white bg-[#b3b3b3] cursor-not-allowed': style === 'primary',
+          'text-[#b3b3b3] outline outline-offset-0 outline-[#c8c8c8] bg-transparent cursor-not-allowed':
             style === 'secondary',
-          'text-[#b3b3b3]': style === 'text',
+          'text-[#b3b3b3] cursor-not-allowed': style === 'text',
+          'text-[#ddadad] outline outline-offset-0 outline-[#ecb0b0] bg-transparent cursor-not-allowed':
+            style === 'critical',
         },
         {
           'text-xs px-4 h-8': size === 'small',

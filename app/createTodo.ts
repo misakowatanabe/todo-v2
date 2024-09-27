@@ -40,7 +40,6 @@ export async function createTodo(user: User, todo: Todo) {
     })
   } catch (err) {
     // the update will fail if applied to a document that does not exist
-    console.error(err instanceof Error ? err.message : String(err))
     return { ok: false }
   }
 

@@ -115,3 +115,19 @@ export const LargeWithoutLabel: Story = {
     icon: <Icon.Plus />,
   },
 }
+
+export const PrimaryDisabled: Story = {
+  args: {
+    style: 'primary',
+    label: 'Button',
+    disabled: true,
+  },
+}
+
+export const CriticalDisabled: Story = {
+  args: {
+    style: 'critical',
+    label: 'Button',
+    disabled: true,
+  },
+}
