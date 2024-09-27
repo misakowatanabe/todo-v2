@@ -26,6 +26,7 @@ In addition, users can delete their account and remove their todos data from dat
 - Performance optimization and enhanced data security by introducing server-side rendering when possible using Next.js (App Router).
 - Improved UX and lower security risk through session cookies. It reduces the amount of user’s sign in process by setting if a user is currently signed in. The session expires in 24 hours and the user will forcefully be logged out for better security.
 - Routes protection using Middleware in Next.js. It checks user’s sign in status based on their session cookies before granting access to any app views, and redirect the user to the sign in view unless the user is signed in, and vice-versa.
+- Stronger security through re-authentication before security-sensitive actions, such as changing email address and deleting account, unless a user has recently signed in.
 - Rigorous end-to-end testing with Cypress, Testing Library and Firebase Local Emulator Suite. The E2E tests use the emulator on a test environment to mock a full capability of real authentication and database, which enables the tests to run on the same setting as a production environment without any possibility to harm the production environment.
 - Deployment of the app with Vercel. Environment variables are safely set in the Vercel with sensitive flags.
 - Pre-commit hook ensuring code quality and consistency using Husky.
