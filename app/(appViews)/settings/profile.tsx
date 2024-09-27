@@ -33,6 +33,7 @@ export function Profile() {
   const [reauthenticationModalOpen, setReauthenticationModalOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [newEmailInput, setNewEmailInput] = useState<string | null>(null)
+  const [isDirty, setIsDirty] = useState(false)
   const [isPending, startTransition] = useTransition()
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -63,7 +64,7 @@ export function Profile() {
         }
         await user.reload()
       } catch (err) {
-        // if the user signed in too long ago, the action fails, and the user needs to be re-authenticated by getting new sign-in credentials
+        // if the user signed in too long ago, the action fails, and the user needs to be re-authenticated by providing new sign-in credentials
         setNewEmailInput(newEmail as string)
         setReauthenticationModalOpen(true)
       }
@@ -104,7 +105,7 @@ export function Profile() {
         <form
           autoComplete="off"
           action={onSubmitUpdateProfile}
-          className="flex gap-4"
+          className="flex flex-col lg:flex-row lg:gap-4"
           id="form-update-user-info"
           ref={formRef}
         >
@@ -115,6 +116,7 @@ export function Profile() {
             name="displayName"
             type="text"
             required={true}
+            onChange={() => setIsDirty((prev) => (!prev ? true : prev))}
           />
           <Input
             defaultValue={user?.email ?? '******'}
@@ -123,13 +125,14 @@ export function Profile() {
             name="email"
             type="email"
             required={true}
+            onChange={() => setIsDirty((prev) => (!prev ? true : prev))}
           />
         </form>
         <Button
           style="secondary"
           type="submit"
           label={isPending ? 'Saving...' : 'Update profile'}
-          disabled={!user || isPending}
+          disabled={!user || isPending || !isDirty}
           form="form-update-user-info"
           className="w-fit"
         />
