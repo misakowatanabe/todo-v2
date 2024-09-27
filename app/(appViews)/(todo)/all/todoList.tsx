@@ -121,6 +121,7 @@ export function TodoList() {
         drop={drop}
         openTodo={openTodo}
         openDeleteTodoModal={openDeleteTodoModal}
+        type="all"
       />
       <TodoDetail
         isOpen={isOpen}

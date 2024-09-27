@@ -1,4 +1,4 @@
-import { TodoListItem } from './todoListItem'
+import { TodoListItem, TodoType } from './todoListItem'
 import { Accordion } from 'components/Accordion'
 import { Spinner } from 'components/Spinner'
 import { Alert } from 'components/Alert'
@@ -18,6 +18,7 @@ type TodoListLayoutProps = {
   view: View
   openTodo: (_todo: Todo) => void
   openDeleteTodoModal: (_e: React.MouseEvent<HTMLButtonElement, MouseEvent>, _todo: Todo) => void
+  type: TodoType
 } & (
   | {
       dragStart: (_e: React.DragEvent<HTMLButtonElement>) => void
@@ -54,6 +55,7 @@ export function TodoListLayout({
   drop,
   openTodo,
   openDeleteTodoModal,
+  type,
 }: TodoListLayoutProps) {
   if (todos == null || completedTodos == null)
     return (
@@ -78,6 +80,7 @@ export function TodoListLayout({
               openTodo={openTodo}
               openDeleteTodoModal={openDeleteTodoModal}
               view={view}
+              type={type}
             />
           )
         })}
@@ -98,6 +101,7 @@ export function TodoListLayout({
               openTodo={openTodo}
               openDeleteTodoModal={openDeleteTodoModal}
               view={view}
+              type={type}
             />
           )
         })}
@@ -110,7 +114,14 @@ export function TodoListLayout({
       <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
       <div className="flex flex-col gap-4">
         <Todos />
-        <Accordion label="Completed" itemLength={completedTodos.length} testid="open-completed">
+        <Accordion
+          label={`${completedTodos.length} ticked item${completedTodos.length > 1 ? 's' : ''}`}
+          testid="open-completed"
+          className={clsx({
+            'pl-4': type === 'all' && view === 'table',
+            'pl-1.5': view === 'card',
+          })}
+        >
           <CompletedTodos />
         </Accordion>
       </div>

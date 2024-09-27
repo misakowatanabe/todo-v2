@@ -76,6 +76,7 @@ export function MatchedTodoList({ labelParam }: MatchedTodoListProps) {
         view={view}
         openTodo={openTodo}
         openDeleteTodoModal={openDeleteTodoModal}
+        type="label"
       />
       <TodoDetail
         isOpen={isOpen}
