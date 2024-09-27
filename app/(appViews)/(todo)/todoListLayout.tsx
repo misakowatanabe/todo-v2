@@ -6,6 +6,8 @@ import clsx from 'clsx'
 import { View } from 'utils/useLocalStorage'
 import { Todo } from 'app/actions'
 
+type TodosWrapperProps = { children: React.ReactNode; view: View }
+
 type Error = string | null
 
 type TodoListLayoutProps = {
@@ -29,7 +31,7 @@ type TodoListLayoutProps = {
     }
 )
 
-function TodosWrapper({ children, view }: { children: React.ReactNode; view: View }) {
+function TodosWrapper({ children, view }: TodosWrapperProps) {
   return (
     <div
       className={clsx({
@@ -53,56 +55,65 @@ export function TodoListLayout({
   openTodo,
   openDeleteTodoModal,
 }: TodoListLayoutProps) {
+  if (todos == null || completedTodos == null)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    )
+
+  const Todos = () => {
+    if (todos.length === 0) return <div className="text-gray-600">No active tasks.</div>
+
+    return (
+      <TodosWrapper view={view}>
+        {todos.map((todo) => {
+          return (
+            <TodoListItem
+              key={todo.todoId}
+              todo={todo}
+              dragStart={dragStart}
+              dragEnter={dragEnter}
+              drop={drop}
+              openTodo={openTodo}
+              openDeleteTodoModal={openDeleteTodoModal}
+              view={view}
+            />
+          )
+        })}
+      </TodosWrapper>
+    )
+  }
+
+  const CompletedTodos = () => {
+    if (completedTodos.length === 0) return <div className="text-gray-600">No completed tasks.</div>
+
+    return (
+      <TodosWrapper view={view}>
+        {completedTodos.map((todo) => {
+          return (
+            <TodoListItem
+              key={todo.todoId}
+              todo={todo}
+              openTodo={openTodo}
+              openDeleteTodoModal={openDeleteTodoModal}
+              view={view}
+            />
+          )
+        })}
+      </TodosWrapper>
+    )
+  }
+
   return (
     <>
       <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
-      {todos == null || completedTodos == null ? (
-        <div className="flex justify-center items-center h-screen">
-          <Spinner />
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {todos.length === 0 ? (
-            <div className="text-gray-600">No active tasks.</div>
-          ) : (
-            <TodosWrapper view={view}>
-              {todos.map((todo) => {
-                return (
-                  <TodoListItem
-                    key={todo.todoId}
-                    todo={todo}
-                    dragStart={dragStart}
-                    dragEnter={dragEnter}
-                    drop={drop}
-                    openTodo={openTodo}
-                    openDeleteTodoModal={openDeleteTodoModal}
-                    view={view}
-                  />
-                )
-              })}
-            </TodosWrapper>
-          )}
-          <Accordion label="Completed" itemLength={completedTodos.length} testid="open-completed">
-            {completedTodos.length === 0 ? (
-              <div className="text-gray-600">No completed tasks.</div>
-            ) : (
-              <TodosWrapper view={view}>
-                {completedTodos.map((todo) => {
-                  return (
-                    <TodoListItem
-                      key={todo.todoId}
-                      todo={todo}
-                      openTodo={openTodo}
-                      openDeleteTodoModal={openDeleteTodoModal}
-                      view={view}
-                    />
-                  )
-                })}
-              </TodosWrapper>
-            )}
-          </Accordion>
-        </div>
-      )}
+      <div className="flex flex-col gap-4">
+        <Todos />
+        <Accordion label="Completed" itemLength={completedTodos.length} testid="open-completed">
+          <CompletedTodos />
+        </Accordion>
+      </div>
     </>
   )
 }
