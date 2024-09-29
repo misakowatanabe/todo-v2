@@ -2,7 +2,7 @@
 
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { auth } from 'app/firebase'
-import { useId, useTransition } from 'react'
+import { useTransition } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
 import { nanoid } from 'nanoid'
@@ -22,10 +22,6 @@ type Data = {
 export function Form() {
   const [error, setError] = useState<null | string>(null)
   const [isPending, startTransition] = useTransition()
-  const nameInputId = useId()
-  const emailInputId = useId()
-  const passwordInputId = useId()
-  const confirmationPasswordInputId = useId()
 
   const router = useRouter()
 
@@ -91,20 +87,12 @@ export function Form() {
     <>
       <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
       <form action={onSubmit} autoComplete="off" className="flex flex-col">
-        <Input
-          label="Name"
-          name="name"
-          type="text"
-          required={true}
-          id={nameInputId}
-          testid="sign-up-input-name"
-        />
+        <Input label="Name" name="name" type="text" required={true} testid="sign-up-input-name" />
         <Input
           label="Email"
           name="email"
           type="email"
           required={true}
-          id={emailInputId}
           testid="sign-up-input-email"
         />
         <Input
@@ -112,7 +100,6 @@ export function Form() {
           name="password"
           type="password"
           required={true}
-          id={passwordInputId}
           autoComplete="off"
           testid="sign-up-input-password"
         />
@@ -121,7 +108,6 @@ export function Form() {
           name="confirmationPassword"
           type="password"
           required={true}
-          id={confirmationPasswordInputId}
           autoComplete="off"
           testid="sign-up-input-password-confirmation"
         />

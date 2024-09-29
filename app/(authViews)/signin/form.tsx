@@ -2,7 +2,7 @@
 
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from 'app/firebase'
-import { useId, useTransition } from 'react'
+import { useTransition } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -13,8 +13,6 @@ import { Alert } from 'components/Alert'
 export function Form() {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
-  const emailInputId = useId()
-  const passwordInputId = useId()
 
   const router = useRouter()
 
@@ -44,7 +42,7 @@ export function Form() {
           name="email"
           type="email"
           required={true}
-          id={emailInputId}
+          autoComplete="off"
           testid="sign-in-input-email"
         />
         <Input
@@ -52,7 +50,6 @@ export function Form() {
           name="password"
           type="password"
           required={true}
-          id={passwordInputId}
           autoComplete="off"
           testid="sign-in-input-password"
         />
