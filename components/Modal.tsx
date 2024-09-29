@@ -22,6 +22,7 @@ type ModalProps = {
   isShowing: boolean
   title: string
   closeable?: boolean
+  initialFocusId?: string
   children: ReactNode
 }
 
@@ -70,6 +71,7 @@ export function Modal({
   isShowing,
   title,
   closeable = true,
+  initialFocusId,
   children,
 }: ModalProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -134,13 +136,15 @@ export function Modal({
             }
           })
 
-          firstFocusableElement.focus()
+          initialFocusId
+            ? (modal.querySelector(`#${initialFocusId}`) as HTMLElement).focus()
+            : firstFocusableElement.focus()
         }
       } else {
         html.style.overflowY = 'visible'
       }
     }
-  }, [isShowing, setIsShowing, closeable])
+  }, [isShowing, setIsShowing, closeable, initialFocusId])
 
   return (
     <>

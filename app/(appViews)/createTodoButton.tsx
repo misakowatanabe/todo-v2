@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useId, useMemo, useState, useTransition } from 'react'
+import React, { useEffect, useMemo, useState, useTransition } from 'react'
 import { useAppContext } from 'app/appContext'
 import { nanoid } from 'nanoid'
 import { Button } from 'components/Button'
@@ -35,8 +35,6 @@ type CreateTodoButtonProps = { isMobile?: boolean }
 export function CreateTodoButton({ isMobile = false }: CreateTodoButtonProps) {
   const { labels: availableLabels, user } = useAppContext()
   const [error, setError] = useState<null | string>(null)
-  const titleInputId = useId()
-  const bodyInputId = useId()
   const [labels, setLabels] = useState<string[]>([])
   const [isShowing, setIsShowing] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -102,6 +100,8 @@ export function CreateTodoButton({ isMobile = false }: CreateTodoButtonProps) {
     return selected
   }, [availableLabels, labels])
 
+  const initialFocusId = 'task-title'
+
   const contents = (
     <div className="flex flex-col gap-6">
       <Alert severity="critical" message={error} onClose={() => setError(null)} />
@@ -113,7 +113,7 @@ export function CreateTodoButton({ isMobile = false }: CreateTodoButtonProps) {
       >
         <Textarea
           size="large"
-          id={titleInputId}
+          id={initialFocusId}
           name="title"
           placeholder="Task title"
           disabled={isPending}
@@ -121,7 +121,6 @@ export function CreateTodoButton({ isMobile = false }: CreateTodoButtonProps) {
           testid="create-todo-title"
         />
         <Textarea
-          id={bodyInputId}
           name="body"
           placeholder="Add description..."
           disabled={isPending}
@@ -165,6 +164,7 @@ export function CreateTodoButton({ isMobile = false }: CreateTodoButtonProps) {
         isShowing={isShowing}
         setIsShowing={setIsShowing}
         actions={<Submit isPending={isPending} isMobile={isMobile} />}
+        initialFocusId={initialFocusId}
       >
         {contents}
       </ModalFull>
@@ -187,6 +187,7 @@ export function CreateTodoButton({ isMobile = false }: CreateTodoButtonProps) {
         />
       }
       okButton={<Submit isPending={isPending} isMobile={isMobile} />}
+      initialFocusId={initialFocusId}
     >
       {contents}
     </Modal>
