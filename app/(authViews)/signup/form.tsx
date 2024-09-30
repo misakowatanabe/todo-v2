@@ -113,6 +113,7 @@ export function Form() {
           type="email"
           testid="sign-up-input-email"
           validationMessage="Please enter a valid email address"
+          pattern="^.+@.+..+"
           onChange={(e) =>
             setInputs((prev) => {
               return {
