@@ -153,14 +153,7 @@ export function CreateTodoButton({ isMobile = false }: CreateTodoButtonProps) {
   if (isMobile)
     return (
       <ModalFull
-        openButton={
-          <Fab
-            icon={<Icon.Plus />}
-            testid="create-todo"
-            onClick={() => setIsShowing(true)}
-            size="large"
-          />
-        }
+        openButton={<Fab icon={<Icon.Plus />} onClick={() => setIsShowing(true)} size="large" />}
         isShowing={isShowing}
         setIsShowing={setIsShowing}
         actions={<Submit isPending={isPending} isMobile={isMobile} />}

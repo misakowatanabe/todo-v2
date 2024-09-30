@@ -181,7 +181,7 @@ export function Form() {
           label={isPending ? 'Processing...' : 'Sign up'}
           className="my-4 group-invalid:text-white group-invalid:bg-[#b3b3b3] group-invalid:cursor-not-allowed group-invalid:pointer-events-none"
           disabled={disabled}
-          data-testid="sign-up-submit"
+          testid="sign-up-submit"
         />
       </form>
     </>
