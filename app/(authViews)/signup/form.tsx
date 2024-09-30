@@ -22,6 +22,17 @@ type Data = {
 export function Form() {
   const [error, setError] = useState<null | string>(null)
   const [isPending, startTransition] = useTransition()
+  const [inputs, setInputs] = useState<{
+    name: null | string
+    email: null | string
+    password: null | string
+    passwordConfirmation: null | string
+  }>({
+    name: null,
+    email: null,
+    password: null,
+    passwordConfirmation: null,
+  })
 
   const router = useRouter()
 
@@ -83,39 +94,93 @@ export function Form() {
     })
   }
 
+  const disabled =
+    isPending ||
+    inputs.name === null ||
+    inputs.email === null ||
+    inputs.password === null ||
+    inputs.passwordConfirmation === null
+
   return (
     <>
       <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
-      <form action={onSubmit} autoComplete="off" className="flex flex-col">
-        <Input label="Name" name="name" type="text" required={true} testid="sign-up-input-name" />
+      <form action={onSubmit} autoComplete="off" className="group flex flex-col">
+        <Input
+          label="Name"
+          name="name"
+          type="text"
+          testid="sign-up-input-name"
+          onChange={(e) =>
+            setInputs((prev) => {
+              const value = e.target.value === '' ? null : e.target.value
+              return {
+                name: value,
+                email: prev.email,
+                password: prev.password,
+                passwordConfirmation: prev.passwordConfirmation,
+              }
+            })
+          }
+        />
         <Input
           label="Email"
           name="email"
           type="email"
-          required={true}
           testid="sign-up-input-email"
+          validationMessage="Please enter a valid email address"
+          onChange={(e) =>
+            setInputs((prev) => {
+              const value = e.target.value === '' ? null : e.target.value
+              return {
+                name: prev.name,
+                email: value,
+                password: prev.password,
+                passwordConfirmation: prev.passwordConfirmation,
+              }
+            })
+          }
         />
         <Input
           label="Password"
           name="password"
           type="password"
-          required={true}
           autoComplete="off"
           testid="sign-up-input-password"
+          onChange={(e) =>
+            setInputs((prev) => {
+              const value = e.target.value === '' ? null : e.target.value
+              return {
+                name: prev.name,
+                email: prev.email,
+                password: value,
+                passwordConfirmation: prev.passwordConfirmation,
+              }
+            })
+          }
         />
         <Input
           label="Confirm password"
           name="confirmationPassword"
           type="password"
-          required={true}
           autoComplete="off"
           testid="sign-up-input-password-confirmation"
+          onChange={(e) =>
+            setInputs((prev) => {
+              const value = e.target.value === '' ? null : e.target.value
+              return {
+                name: prev.name,
+                email: prev.email,
+                password: prev.password,
+                passwordConfirmation: value,
+              }
+            })
+          }
         />
         <Button
-          type="submit"
+          type={!disabled ? 'submit' : 'button'}
           label={isPending ? 'Processing...' : 'Sign up'}
-          className="my-4"
-          disabled={isPending}
+          className="my-4 group-invalid:text-white group-invalid:bg-[#b3b3b3] group-invalid:cursor-not-allowed group-invalid:pointer-events-none"
+          disabled={disabled}
           data-testid="sign-up-submit"
         />
       </form>
