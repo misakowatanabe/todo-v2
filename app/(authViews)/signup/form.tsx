@@ -22,27 +22,18 @@ type Data = {
 export function Form() {
   const [error, setError] = useState<null | string>(null)
   const [isPending, startTransition] = useTransition()
-  const [inputs, setInputs] = useState<{
-    name: null | string
-    email: null | string
-    password: null | string
-    passwordConfirmation: null | string
-  }>({
-    name: null,
-    email: null,
-    password: null,
-    passwordConfirmation: null,
+  const [inputs, setInputs] = useState({
+    name: '',
+    email: '',
+    password: '',
+    passwordConfirmation: '',
   })
 
   const router = useRouter()
 
   const validateForm = (data: Data) => {
     // TODO: do proper validation
-    return (
-      data.name.length > 0 &&
-      data.password.length > 0 &&
-      data.password === data.confirmationPassword
-    )
+    return data.password === data.confirmationPassword
   }
 
   const onSubmit = async (formData: FormData) => {
@@ -54,8 +45,7 @@ export function Form() {
     }
 
     if (!validateForm(data)) {
-      // TODO: show what is not validated to user
-      setError('Please check if name, email and password are filled in correctly.')
+      setError('The passwords are not matched. Please fill in correctly.')
       return
     }
 
@@ -94,12 +84,10 @@ export function Form() {
     })
   }
 
-  const disabled =
-    isPending ||
-    inputs.name === null ||
-    inputs.email === null ||
-    inputs.password === null ||
-    inputs.passwordConfirmation === null
+  const { ...allInputs } = inputs
+  const canSubmit = [...Object.values(allInputs)].every(Boolean)
+
+  const disabled = isPending || !canSubmit
 
   return (
     <>
@@ -112,12 +100,9 @@ export function Form() {
           testid="sign-up-input-name"
           onChange={(e) =>
             setInputs((prev) => {
-              const value = e.target.value === '' ? null : e.target.value
               return {
-                name: value,
-                email: prev.email,
-                password: prev.password,
-                passwordConfirmation: prev.passwordConfirmation,
+                ...prev,
+                name: e.target.value,
               }
             })
           }
@@ -130,12 +115,9 @@ export function Form() {
           validationMessage="Please enter a valid email address"
           onChange={(e) =>
             setInputs((prev) => {
-              const value = e.target.value === '' ? null : e.target.value
               return {
-                name: prev.name,
-                email: value,
-                password: prev.password,
-                passwordConfirmation: prev.passwordConfirmation,
+                ...prev,
+                email: e.target.value,
               }
             })
           }
@@ -146,14 +128,13 @@ export function Form() {
           type="password"
           autoComplete="off"
           testid="sign-up-input-password"
+          pattern=".{6,}"
+          validationMessage="Password needs to be at least 6 characters."
           onChange={(e) =>
             setInputs((prev) => {
-              const value = e.target.value === '' ? null : e.target.value
               return {
-                name: prev.name,
-                email: prev.email,
-                password: value,
-                passwordConfirmation: prev.passwordConfirmation,
+                ...prev,
+                password: e.target.value,
               }
             })
           }
@@ -166,12 +147,9 @@ export function Form() {
           testid="sign-up-input-password-confirmation"
           onChange={(e) =>
             setInputs((prev) => {
-              const value = e.target.value === '' ? null : e.target.value
               return {
-                name: prev.name,
-                email: prev.email,
-                password: prev.password,
-                passwordConfirmation: value,
+                ...prev,
+                passwordConfirmation: e.target.value,
               }
             })
           }

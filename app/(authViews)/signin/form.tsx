@@ -13,9 +13,9 @@ import { Alert } from 'components/Alert'
 export function Form() {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
-  const [inputs, setInputs] = useState<{ email: null | string; password: null | string }>({
-    email: null,
-    password: null,
+  const [inputs, setInputs] = useState({
+    email: '',
+    password: '',
   })
 
   const router = useRouter()
@@ -37,7 +37,10 @@ export function Form() {
     })
   }
 
-  const disabled = isPending || inputs.email === null || inputs.password === null
+  const { ...allInputs } = inputs
+  const canSubmit = [...Object.values(allInputs)].every(Boolean)
+
+  const disabled = isPending || !canSubmit
 
   return (
     <>
@@ -52,8 +55,10 @@ export function Form() {
           validationMessage="Please enter a valid email address"
           onChange={(e) =>
             setInputs((prev) => {
-              const value = e.target.value === '' ? null : e.target.value
-              return { email: value, password: prev.password }
+              return {
+                ...prev,
+                email: e.target.value,
+              }
             })
           }
         />
@@ -65,8 +70,10 @@ export function Form() {
           testid="sign-in-input-password"
           onChange={(e) =>
             setInputs((prev) => {
-              const value = e.target.value === '' ? null : e.target.value
-              return { email: prev.email, password: value }
+              return {
+                ...prev,
+                password: e.target.value,
+              }
             })
           }
         />

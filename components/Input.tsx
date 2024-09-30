@@ -22,6 +22,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     testid,
     validationMessage,
     required,
+    pattern,
   }: InputProps,
   ref,
 ) {
@@ -42,6 +43,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         autoComplete={autoComplete}
         data-testid={testid}
         required={required}
+        pattern={pattern}
       />
       <label
         htmlFor={id}
