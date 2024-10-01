@@ -10,6 +10,7 @@ type ModalFullProps = {
   setIsShowing: React.Dispatch<React.SetStateAction<boolean>>
   isShowing: boolean
   closeable?: boolean
+  initialFocusId?: string
   children: ReactNode
   className?: string
 }
@@ -20,6 +21,7 @@ export function ModalFull({
   setIsShowing,
   isShowing,
   closeable = true,
+  initialFocusId,
   children,
   className,
 }: ModalFullProps) {
@@ -71,13 +73,15 @@ export function ModalFull({
             }
           })
 
-          firstFocusableElement.focus()
+          initialFocusId
+            ? (modal.querySelector(`#${initialFocusId}`) as HTMLElement).focus()
+            : firstFocusableElement.focus()
         }
       } else {
         html.style.overflowY = 'visible'
       }
     }
-  }, [isShowing, setIsShowing, closeable])
+  }, [isShowing, setIsShowing, closeable, initialFocusId])
 
   return (
     <>

@@ -115,7 +115,6 @@ export function Profile() {
             label="Name"
             name="displayName"
             type="text"
-            required={true}
             onChange={() => setIsDirty((prev) => (!prev ? true : prev))}
           />
           <Input
@@ -124,7 +123,6 @@ export function Profile() {
             label="E-mail"
             name="email"
             type="email"
-            required={true}
             onChange={() => setIsDirty((prev) => (!prev ? true : prev))}
           />
         </form>

@@ -7,5 +7,7 @@ export default defineConfig({
     // },
     specPattern: 'app/**/*.cy.{ts,tsx}',
     baseUrl: 'http://localhost:3000',
+    viewportHeight: 800,
+    viewportWidth: 1280,
   },
 })

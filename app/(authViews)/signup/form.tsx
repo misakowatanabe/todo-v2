@@ -2,7 +2,7 @@
 
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { auth } from 'app/firebase'
-import { useId, useTransition } from 'react'
+import { useTransition } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
 import { nanoid } from 'nanoid'
@@ -22,33 +22,30 @@ type Data = {
 export function Form() {
   const [error, setError] = useState<null | string>(null)
   const [isPending, startTransition] = useTransition()
-  const nameInputId = useId()
-  const emailInputId = useId()
-  const passwordInputId = useId()
-  const confirmationPasswordInputId = useId()
+  const [inputs, setInputs] = useState<Data>({
+    name: '',
+    email: '',
+    password: '',
+    confirmationPassword: '',
+  })
 
   const router = useRouter()
 
   const validateForm = (data: Data) => {
     // TODO: do proper validation
-    return (
-      data.name.length > 0 &&
-      data.password.length > 0 &&
-      data.password === data.confirmationPassword
-    )
+    return data.password === data.confirmationPassword
   }
 
   const onSubmit = async (formData: FormData) => {
     const data = {
       name: formData.get('name') as string,
-      email: formData.get('email') as string,
+      email: (formData.get('email') as string).trim(),
       password: formData.get('password') as string,
       confirmationPassword: formData.get('confirmationPassword') as string,
     }
 
     if (!validateForm(data)) {
-      // TODO: show what is not validated to user
-      setError('Please check if name, email and password are filled in correctly.')
+      setError('The passwords are not matched. Please fill in correctly.')
       return
     }
 
@@ -87,50 +84,86 @@ export function Form() {
     })
   }
 
+  const { ...allInputs } = inputs
+  const canSubmit = [...Object.values(allInputs)].every(Boolean)
+
+  const disabled = isPending || !canSubmit
+
   return (
     <>
       <Alert severity="critical" message={error} onClose={() => setError(null)} className="mb-4" />
-      <form action={onSubmit} autoComplete="off" className="flex flex-col">
+      <form action={onSubmit} autoComplete="off" className="group flex flex-col">
         <Input
           label="Name"
           name="name"
           type="text"
-          required={true}
-          id={nameInputId}
           testid="sign-up-input-name"
+          pattern="^[^\s]+(\s+[^\s]+)*$"
+          validationMessage="Please do not add any white space at the beginning and end."
+          onChange={(e) =>
+            setInputs((prev) => {
+              return {
+                ...prev,
+                name: e.target.value,
+              }
+            })
+          }
         />
         <Input
           label="Email"
           name="email"
           type="email"
-          required={true}
-          id={emailInputId}
           testid="sign-up-input-email"
+          pattern="^\S+@\S+\.\S+$"
+          validationMessage="Please enter a valid email address."
+          onChange={(e) =>
+            setInputs((prev) => {
+              return {
+                ...prev,
+                email: e.target.value.trim(),
+              }
+            })
+          }
         />
         <Input
           label="Password"
           name="password"
           type="password"
-          required={true}
-          id={passwordInputId}
           autoComplete="off"
           testid="sign-up-input-password"
+          pattern="^(?!.*[\s]).{6,}$"
+          validationMessage="Password needs to be at least 6 characters and cannot contain white space."
+          onChange={(e) =>
+            setInputs((prev) => {
+              return {
+                ...prev,
+                password: e.target.value,
+              }
+            })
+          }
         />
         <Input
           label="Confirm password"
           name="confirmationPassword"
           type="password"
-          required={true}
-          id={confirmationPasswordInputId}
           autoComplete="off"
           testid="sign-up-input-password-confirmation"
+          pattern="^(?!.*[\s]).{6,}$"
+          onChange={(e) =>
+            setInputs((prev) => {
+              return {
+                ...prev,
+                confirmationPassword: e.target.value,
+              }
+            })
+          }
         />
         <Button
-          type="submit"
+          type={!disabled ? 'submit' : 'button'}
           label={isPending ? 'Processing...' : 'Sign up'}
-          className="my-4"
-          disabled={isPending}
-          data-testid="sign-up-submit"
+          className="my-4 group-invalid:text-white group-invalid:bg-[#b3b3b3] group-invalid:cursor-not-allowed group-invalid:pointer-events-none"
+          disabled={disabled}
+          testid="sign-up-submit"
         />
       </form>
     </>

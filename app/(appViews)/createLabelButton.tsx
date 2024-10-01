@@ -101,7 +101,6 @@ export function CreateLabelButton() {
             label="Label name"
             name="label"
             type="text"
-            required={true}
             testid="create-label-name"
           />
         </form>
