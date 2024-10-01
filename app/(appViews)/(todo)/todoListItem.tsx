@@ -229,7 +229,7 @@ export function TodoListItem({
         <div className="pointer-events-none flex justify-between items-center">
           <div
             className={clsx(
-              'pointer-events-none text-xl',
+              'pointer-events-none text-xl mr-8',
               todo.completed ? 'line-through text-gray-400' : 'text-black',
             )}
             data-testid="card-todo-title"
@@ -242,14 +242,14 @@ export function TodoListItem({
             type="button"
             icon={<Icon.Close />}
             onClick={(e) => openDeleteTodoModal(e, todo)}
-            className="absolute right-0 pointer-events-auto group-hover:flex hidden"
+            className="absolute top-0 right-0 pointer-events-auto group-hover:flex hidden"
           />
         </div>
         <div className="pointer-events-none text-gray-500 text-base mt-3 grow">
           {todo.body && (
             <p
               className={clsx(
-                'line-clamp-[4] lg:line-clamp-[9]',
+                'line-clamp-[4] lg:line-clamp-[9] whitespace-pre-wrap',
                 todo.completed ? 'line-through text-gray-400' : 'text-gray-600',
               )}
               data-testid="card-todo-body"
