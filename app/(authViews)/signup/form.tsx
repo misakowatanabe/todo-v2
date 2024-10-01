@@ -22,11 +22,11 @@ type Data = {
 export function Form() {
   const [error, setError] = useState<null | string>(null)
   const [isPending, startTransition] = useTransition()
-  const [inputs, setInputs] = useState({
+  const [inputs, setInputs] = useState<Data>({
     name: '',
     email: '',
     password: '',
-    passwordConfirmation: '',
+    confirmationPassword: '',
   })
 
   const router = useRouter()
@@ -39,7 +39,7 @@ export function Form() {
   const onSubmit = async (formData: FormData) => {
     const data = {
       name: formData.get('name') as string,
-      email: formData.get('email') as string,
+      email: (formData.get('email') as string).trim(),
       password: formData.get('password') as string,
       confirmationPassword: formData.get('confirmationPassword') as string,
     }
@@ -98,6 +98,8 @@ export function Form() {
           name="name"
           type="text"
           testid="sign-up-input-name"
+          pattern="^[^\s]+(\s+[^\s]+)*$"
+          validationMessage="Please do not add any white space at the beginning and end."
           onChange={(e) =>
             setInputs((prev) => {
               return {
@@ -112,13 +114,13 @@ export function Form() {
           name="email"
           type="email"
           testid="sign-up-input-email"
-          validationMessage="Please enter a valid email address"
-          pattern="^.+@.+..+"
+          pattern="^\S+@\S+\.\S+$"
+          validationMessage="Please enter a valid email address."
           onChange={(e) =>
             setInputs((prev) => {
               return {
                 ...prev,
-                email: e.target.value,
+                email: e.target.value.trim(),
               }
             })
           }
@@ -129,8 +131,8 @@ export function Form() {
           type="password"
           autoComplete="off"
           testid="sign-up-input-password"
-          pattern=".{6,}"
-          validationMessage="Password needs to be at least 6 characters."
+          pattern="^(?!.*[\s]).{6,}$"
+          validationMessage="Password needs to be at least 6 characters and cannot contain white space."
           onChange={(e) =>
             setInputs((prev) => {
               return {
@@ -146,11 +148,12 @@ export function Form() {
           type="password"
           autoComplete="off"
           testid="sign-up-input-password-confirmation"
+          pattern="^(?!.*[\s]).{6,}$"
           onChange={(e) =>
             setInputs((prev) => {
               return {
                 ...prev,
-                passwordConfirmation: e.target.value,
+                confirmationPassword: e.target.value,
               }
             })
           }
