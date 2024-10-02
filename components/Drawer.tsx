@@ -21,7 +21,7 @@ export function Drawer({ openButton, setIsOpen, isOpen, children, className }: D
                 id="basic-drawer"
                 aria-label="Side drawer"
                 className={clsx(
-                  'flex fixed top-0 bottom-0 right-0 w-2/4 px-8 z-30 flex-col bg-white transition-transform',
+                  'flex fixed top-0 bottom-0 right-0 w-2/4 px-8 z-30 flex-col bg-white transition-transform overflow-y-auto',
                   isOpen ? '-translate-x-0' : 'translate-x-full w-0',
                 )}
               >

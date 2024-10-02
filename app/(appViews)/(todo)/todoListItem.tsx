@@ -136,7 +136,7 @@ export function TodoListItem({
             <div className="pointer-events-none flex gap-2">
               <div
                 className={clsx(
-                  'pointer-events-none',
+                  'pointer-events-none line-clamp-1',
                   todo.completed ? 'line-through text-gray-400' : 'text-black',
                 )}
                 data-testid="table-todo-title"

@@ -1,7 +1,7 @@
 'use client'
 
 import { Label, useAppContext } from 'app/appContext'
-import { useMemo, useState, useTransition } from 'react'
+import { useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import { Todo } from 'app/actions'
 import { Chip, ChipColor } from 'components/Chip'
 import { Drawer } from 'components/Drawer'
@@ -35,6 +35,18 @@ type TodoDetailProps = {
   formRef: React.RefObject<HTMLFormElement>
 }
 
+function useAutosizeTextArea(textAreaRef: HTMLTextAreaElement | null, value: string) {
+  useEffect(() => {
+    if (textAreaRef) {
+      textAreaRef.style.height = '0px'
+
+      const borderHeight = 2
+      const scrollHeight = textAreaRef.scrollHeight + borderHeight
+      textAreaRef.style.height = scrollHeight + 'px'
+    }
+  }, [textAreaRef, value])
+}
+
 function Contents({
   isMobile = false,
   error,
@@ -47,6 +59,19 @@ function Contents({
   selectedLabels,
   nonSelectedLabels,
 }: ContentsProps) {
+  const titleInputRef = useRef<HTMLTextAreaElement | null>(null)
+  const bodyInputRef = useRef<HTMLTextAreaElement | null>(null)
+  const [title, setTitle] = useState('')
+  const [body, setBody] = useState('')
+
+  useAutosizeTextArea(titleInputRef.current, title)
+  useAutosizeTextArea(bodyInputRef.current, body)
+
+  useEffect(() => {
+    setTitle(selectedTodo?.title ?? '')
+    setBody(selectedTodo?.body ?? '')
+  }, [selectedTodo])
+
   const onRemove = (item: string) => {
     setLabels((prev) => prev.filter((el) => el !== item))
   }
@@ -62,20 +87,24 @@ function Contents({
         ref={formRef}
       >
         <Textarea
+          ref={titleInputRef}
           size="large"
           name="title"
           placeholder="Task title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           disabled={isPending}
           rows={1}
-          defaultValue={selectedTodo?.title}
           testid={!isMobile ? 'todo-detail-title' : undefined}
         />
         <Textarea
+          ref={bodyInputRef}
           name="body"
           placeholder="Add description..."
-          defaultValue={selectedTodo?.body}
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
           disabled={isPending}
-          rows={6}
+          rows={1}
           testid={!isMobile ? 'todo-detail-body' : undefined}
         />
       </form>
@@ -118,11 +147,17 @@ export function TodoDetail({
   const onSubmitTodo = async (formData: FormData) => {
     if (!selectedTodo) return
 
-    // TODO: add validation for mandatory inputs
+    const title = (formData.get('title') as string).trim()
+    if (title === '') {
+      setError('Please add title.')
+
+      return
+    }
+
     const todo: Todo = {
       todoId: selectedTodo.todoId,
-      title: (formData.get('title') ?? '<No title>') as string,
-      body: !formData.get('body') ? undefined : (formData.get('body') as string),
+      title: title,
+      body: !formData.get('body') ? undefined : (formData.get('body') as string).trim(),
       labels: labels,
       completed: false,
     }
@@ -136,6 +171,7 @@ export function TodoDetail({
         setError(res.error)
       } else {
         setIsOpen(false)
+        setError(null)
 
         if (!formRef.current) return
 
@@ -183,18 +219,20 @@ export function TodoDetail({
         }
         className="lg:hidden"
       >
-        <Contents
-          isMobile={true}
-          error={error}
-          setError={setError}
-          onSubmitTodo={onSubmitTodo}
-          formRef={formRef}
-          isPending={isPending}
-          selectedTodo={selectedTodo}
-          setLabels={setLabels}
-          selectedLabels={selectedLabels}
-          nonSelectedLabels={nonSelectedLabels}
-        />
+        <div className="my-8">
+          <Contents
+            isMobile={true}
+            error={error}
+            setError={setError}
+            onSubmitTodo={onSubmitTodo}
+            formRef={formRef}
+            isPending={isPending}
+            selectedTodo={selectedTodo}
+            setLabels={setLabels}
+            selectedLabels={selectedLabels}
+            nonSelectedLabels={nonSelectedLabels}
+          />
+        </div>
       </ModalFull>
       <Drawer isOpen={isOpen} setIsOpen={setIsOpen} className="hidden lg:block">
         <div className="my-8 flex flex-col gap-6">
