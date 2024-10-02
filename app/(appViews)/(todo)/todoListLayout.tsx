@@ -38,7 +38,7 @@ function TodosWrapper({ children, view }: TodosWrapperProps) {
   return (
     <div
       className={clsx({
-        'grid sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4': view === 'card',
+        'grid sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 mb-1': view === 'card',
       })}
     >
       {children}

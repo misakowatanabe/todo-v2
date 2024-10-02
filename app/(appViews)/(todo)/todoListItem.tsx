@@ -190,7 +190,7 @@ export function TodoListItem({
       onDragEnd={(e) => dragStart && e.preventDefault()}
       onDrop={dragStart && drop}
       className={clsx(
-        'group flex items-start gap-0.5 w-full h-48 lg:h-80 p-3 rounded-lg shadow-md',
+        'group flex items-start gap-0.5 w-full h-48 p-3 rounded-lg shadow-md',
         todo.labels
           ? cardBgColor[getLabelColor(todo.labels[0], availableLabels)]
           : cardBgColor.default,
@@ -229,7 +229,7 @@ export function TodoListItem({
         <div className="pointer-events-none flex justify-between items-center">
           <div
             className={clsx(
-              'pointer-events-none text-xl mr-8',
+              'pointer-events-none text-xl mr-8 line-clamp-1',
               todo.completed ? 'line-through text-gray-400' : 'text-black',
             )}
             data-testid="card-todo-title"
@@ -249,7 +249,7 @@ export function TodoListItem({
           {todo.body && (
             <p
               className={clsx(
-                'line-clamp-[4] lg:line-clamp-[9] whitespace-pre-wrap',
+                'line-clamp-4 whitespace-pre-wrap',
                 todo.completed ? 'line-through text-gray-400' : 'text-gray-600',
               )}
               data-testid="card-todo-body"
