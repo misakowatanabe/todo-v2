@@ -72,6 +72,7 @@ export function CreateTodoButton({ isMobile = false }: CreateTodoButtonProps) {
         setError('Something went wrong! Could not create a todo.')
       } else {
         setIsShowing(false)
+        setError(null)
         setLabels([])
       }
     })

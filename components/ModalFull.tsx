@@ -110,7 +110,7 @@ export function ModalFull({
                 />
                 {actions}
               </div>
-              <div className="grow mx-2">{children}</div>
+              <div className="grow mx-2 overflow-y-auto">{children}</div>
             </div>,
             document.body,
           )
