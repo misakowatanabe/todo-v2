@@ -12,7 +12,10 @@ export type Todo = {
 
 /** Data passed from server component to client one must be serializable.
  * https://react.dev/reference/rsc/use-server#serializable-parameters-and-return-values
- */
+ *
+ * Getting cookies is allowed only in a Server Component, Server Action or Route Handler.
+ * Setting/deleting cookies is allowed only in a Server Action or Route Handler.
+ * https://nextjs.org/docs/app/api-reference/functions/cookies */
 
 export async function setCookies(name: string) {
   const hasCookie = cookies().get(name)?.value
@@ -26,14 +29,10 @@ export async function setCookies(name: string) {
       expires: Date.now() + oneDay,
     })
   }
-
-  return true
 }
 
 export async function deleteCookies(name: string) {
   cookies().delete(name)
-
-  return true
 }
 
 export async function getCookies(name: string) {

@@ -1,16 +1,19 @@
 'use client'
 
-import { signInWithEmailAndPassword } from 'firebase/auth'
+import { useAppContext } from 'app/appContext'
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { auth } from 'app/firebase'
-import { useTransition } from 'react'
+import { useEffect, useTransition } from 'react'
 import { Button } from 'components/Button'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { setCookies } from 'app/actions'
+import { deleteCookies, getCookies, setCookies } from 'app/actions'
 import { Input } from 'components/Input'
 import { Alert } from 'components/Alert'
+import { REDIRECTED } from 'utils/constants'
 
 export function Form() {
+  const { user } = useAppContext()
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const [inputs, setInputs] = useState({
@@ -19,6 +22,23 @@ export function Form() {
   })
 
   const router = useRouter()
+
+  useEffect(() => {
+    const checkIsRedirected = async () => {
+      const cookie = await getCookies(REDIRECTED)
+
+      if (!cookie) return
+
+      if (user) {
+        // sign out user either after user_logged_in cookie expired or after the cookie manually got deleted
+        await signOut(auth)
+      }
+
+      await deleteCookies('redirected')
+    }
+
+    checkIsRedirected()
+  }, [user])
 
   const onSubmit = async (formData: FormData) => {
     const data = {
