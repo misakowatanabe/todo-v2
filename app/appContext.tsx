@@ -3,9 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User, onAuthStateChanged } from 'firebase/auth'
 import { auth, db } from './firebase'
-import { useRouter } from 'next/navigation'
-import { Todo, deleteCookies, getCookies, setCookies } from 'app/actions'
-import { signOut } from 'firebase/auth'
+import { Todo, deleteCookies } from 'app/actions'
 import { doc, getDoc, onSnapshot } from 'firebase/firestore'
 import { View, useLocalStorage } from 'utils/useLocalStorage'
 
@@ -35,8 +33,6 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   const [labels, setLabels] = useState<Label[] | null>(null)
   const [globalError, setGlobalError] = useState<Error>(null)
   const [view, setView] = useLocalStorage<View>('view-mode', 'table')
-
-  const router = useRouter()
 
   useEffect(() => {
     if (!user) return
@@ -109,7 +105,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setUser(auth.currentUser)
+        setUser(user)
       } else {
         setTodos(null)
         setCompletedTodos(null)
@@ -120,29 +116,7 @@ export const AppContextProvider = ({ children }: AppContextProps) => {
     })
 
     return () => unsubscribe()
-  }, [router])
-
-  useEffect(() => {
-    if (!user) return
-
-    const interval = setInterval(async () => {
-      const userLoggedIn = await getCookies('user_logged_in')
-
-      if (userLoggedIn) return
-
-      // sign out user either when user_logged_in cookie expired or when the cookie manually got deleted
-      try {
-        await signOut(auth)
-        router.push('/signin')
-      } catch (error) {
-        // set login status cookie to keep the user inside the app routes when sign out failed
-        await setCookies('user_logged_in')
-        setGlobalError('Sign out has failed')
-      }
-    }, 5000)
-
-    return () => clearInterval(interval)
-  }, [user, router])
+  }, [])
 
   const value = {
     user,
